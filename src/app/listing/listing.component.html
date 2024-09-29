@@ -4,16 +4,19 @@
     <div class="row">
       <div class="col-sm-6">
         <form [formGroup]="searchForm">
-        <mat-form-field class="example-full-width">
-          <mat-label>Search</mat-label>
-          <input
-            matInput
-            formControlName="search"
-            placeholder="Eg.value"
-            (keyup)="filterTable()"
-          />
-        </mat-form-field>
-      </form>
+          <mat-form-field class="example-full-width">
+            <mat-label>Search</mat-label>
+            <input
+              matInput
+              formControlName="search"
+              placeholder="Eg.value"
+              (keyup)="filterTable()"
+            />
+          </mat-form-field>
+        </form>
+      </div>
+      <div class="col-sm-6 d-flex align-items-center">
+        <button mat-raised-button color="primary" (click)="onAddClick()">Add Customer</button>
       </div>
     </div>
   </div>

@@ -4,5 +4,6 @@ import { DetailsComponent } from './details/details.component';
 
 export const routes: Routes = [
     { path:'', component:ListingComponent},
-    { path:'details/:id', component:DetailsComponent}
+    { path:'details/:id', component:DetailsComponent},
+    { path: 'details', component: DetailsComponent } // Route for adding new details
 ];

@@ -17,6 +17,10 @@ export class DataService {
     return this.http.get<any[]>(this.customer);
   }
 
+  getCustomerById(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.customer}/${id}`);
+  }
+
   getCountry(countryId: string | null, name: string | null): Observable<any> {
     let url = this.apiUrl + '/country';
     const params = [];
@@ -34,5 +38,10 @@ export class DataService {
     }
 
     return this.http.get<any[]>(url);
+  }
+
+  addCustomer(customer: any): Observable<any> {
+    const url = this.apiUrl + '/customer';
+    return this.http.post<any>(url, customer);
   }
 }

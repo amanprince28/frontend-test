@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import {MatTabsModule} from '@angular/material/tabs';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {FormControl, FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { DataService } from '../data.service';
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule,MatButtonModule,
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule,
     MatSelectModule,
     MatOptionModule
   ],
@@ -21,36 +21,71 @@ import { DataService } from '../data.service';
   styleUrl: './details.component.css'
 })
 export class DetailsComponent {
-  form!:FormGroup;
+  isEditMode: boolean = false;
+  details: any = {};
+
+  form!: FormGroup;
   countries: any[] = [];
   states: any[] = [];
   cities: any[] = [];
-  constructor(private route: ActivatedRoute, private signalService:SignalService, private dataService: DataService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private signalService: SignalService,
+    private dataService: DataService
+  ) { }
 
-  ngOnInit(){
+  ngOnInit() {
     this.form = new FormGroup({
-      name: new FormControl(),
-      ic: new FormControl(),
-      passport: new FormControl(),
-      race: new FormControl(),
-      gender: new FormControl(),
-      marital_status: new FormControl(),
-      no_of_child: new FormControl(),
-      mobile_no: new FormControl(),
-      tel_code: new FormControl(),
-      tel_no: new FormControl(),
-      email: new FormControl(),
-      car_plate: new FormControl(),
-      address: new FormControl(),
-      country: new FormControl(),
-      state: new FormControl(),
-      city: new FormControl(),
+      name: new FormControl('', Validators.required),
+      ic: new FormControl('', Validators.required),
+      passport: new FormControl('', Validators.required),
+      gender: new FormControl('', Validators.required),
+      marital_status: new FormControl('', Validators.required),
+      no_of_child: new FormControl('', Validators.required),
+      mobile_no: new FormControl('', Validators.required),
+      tel_code: new FormControl('', Validators.required),
+      tel_no: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      car_plate: new FormControl('', Validators.required),
+      address_lines: new FormControl('', Validators.required),
+      country: new FormControl('', Validators.required),
+      state: new FormControl('', Validators.required),
+      city: new FormControl('', Validators.required)
     });
 
     this.route.params.subscribe(params => {
-      const signalData = this.signalService.signalData$();
+      const signalData: any = this.signalService.signalData$();
       const id = params;
-      this.form.patchValue(signalData);
+      console.log('id', params);
+      console.log('signalData', signalData);
+      if (params && Object.keys(params).length > 0) {
+        this.isEditMode = true;
+
+      } else {
+        this.isEditMode = false;
+      }
+      this.form.patchValue({
+        name: signalData.name,
+        ic: signalData.ic,
+        passport: signalData.passport,
+        gender: signalData.gender,
+        marital_status: signalData.marital_status,
+        no_of_child: signalData.no_of_child,
+        mobile_no: signalData.mobile_no,
+        tel_code: signalData.tel_code,
+        tel_no: signalData.tel_no,
+        email: signalData.email,
+        car_plate: signalData.car_plate,
+        address_lines: signalData.customer_address[0].address_lines,
+        countries: signalData.customer_address[0].country_id,
+        states: signalData.customer_address[0].state_id,
+        cities: signalData.customer_address[0].city_id
+      });
+
+      // this.countries = signalData.customer_address[0].country_id;
+      //   this.states =signalData.customer_address[0].state_id;
+      //   this.cities= signalData.customer_address[0].city_id;
 
       // You can fetch the row data using the id
     });
@@ -63,34 +98,88 @@ export class DetailsComponent {
       this.countries = data;
     });
   }
-  
-  onCountryChange(event: any){
-    console.log(event); 
+
+  onCountryChange(event: any) {
+    console.log(event);
     this.dataService.getCountry(event, null).subscribe((response: any) => {
       // Assuming response is an array of countries
       if (response && response.length > 0) {
-          const country = response[0];
-          this.states = country.states || [];
-          console.log('States', this.states);
-          this.cities = []; // Reset cities when country changes
-          this.form.get('state')?.reset();
-          this.form.get('city')?.reset();
+        const country = response[0];
+        this.states = country.states || [];
+        console.log('States', this.states);
+        this.cities = []; // Reset cities when country changes
+        this.form.get('state')?.reset();
+        this.form.get('city')?.reset();
       }
-  });
+    });
   }
-  
+
   onStateChange(stateId: string): void {
     console.log(stateId);
     console.log(stateId);
     const selectedState = this.states.find(state => state.id === stateId);
     if (selectedState) {
-        this.cities = selectedState.cities || [];
-        console.log('Cities', this.cities);
-        this.form.get('city')?.reset();
+      this.cities = selectedState.cities || [];
+      console.log('Cities', this.cities);
+      this.form.get('city')?.reset();
     }
   }
-  
-  onSubmit(){
-    console.log(this.form.value)
+
+  addCustomer(): void {
+
+  }
+
+  onSubmit() {
+    const submissionData: any = {
+      name: this.form.get('name')?.value,
+      ic: this.form.get('ic')?.value,
+      passport: this.form.get('passport')?.value,
+      gender: this.form.get('gender')?.value,
+      marital_status: this.form.get('marital_status')?.value,
+      no_of_child: this.form.get('no_of_child')?.value,
+      mobile_no: this.form.get('mobile_no')?.value,
+      tel_code: this.form.get('tel_code')?.value,
+      tel_no: this.form.get('tel_no')?.value,
+      email: this.form.get('email')?.value,
+      car_plate: this.form.get('car_plate')?.value,
+      customer_address: {
+        address_lines: this.form.get('address_lines')?.value,
+        country_id: this.form.get('country')?.value,
+        state_id: this.form.get('state')?.value,
+        city_id: this.form.get('city')?.value
+      }
+    };
+    console.log('this.isEditMode', this.isEditMode);
+    if (this.isEditMode) {
+      // this.dataService.updateCustomer(this.details).subscribe(response => {
+      //   this.router.navigate(['/']);
+      // });
+      submissionData.id = this.details.id;
+    } else {
+      // this.dataService.addCustomer(this.details).subscribe(response => {
+      //   this.router.navigate(['/']);
+      // });
+    }
+
+    console.log('Form submitted');
+    if (this.form.invalid) {
+      // Mark all controls as touched to trigger validation messages
+      this.form.markAllAsTouched();
+      // Log validation errors for debugging
+      Object.keys(this.form.controls).forEach(key => {
+        const controlErrors = this.form.get(key)?.errors;
+        if (controlErrors) {
+          console.log(`Control: ${key}, Errors:`, controlErrors);
+        }
+      });
+      console.log('Form is invalid');
+      return;
+    }
+    console.log(submissionData);
+    this.dataService.addCustomer(submissionData).subscribe(response => {
+      console.log(response);
+      this.router.navigate(['/']);
+    });
+    // console.log(this.form.value)
   }
 }

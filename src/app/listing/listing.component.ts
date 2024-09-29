@@ -50,8 +50,10 @@ export class ListingComponent implements OnInit {
   }
 
   onRowClick(row: any): void {
-    this.signalService.triggerAction(row);
-    this.router.navigate(['/details', row.id]);
+    this.dataService.getCustomerById(row.id).subscribe((response: any) => {
+      this.signalService.triggerAction(response);
+      this.router.navigate(['/details', row.id]);
+    });
   }
 
   // For filtering the table
@@ -61,5 +63,9 @@ export class ListingComponent implements OnInit {
       return;
     }
     this.dataSource.filter = '';
+  }
+
+  onAddClick(): void {
+    this.router.navigate(['/details']);
   }
 }
