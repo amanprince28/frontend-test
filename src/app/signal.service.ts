@@ -5,7 +5,7 @@ import { DataService } from './data.service';
   providedIn: 'root',
 })
 export class SignalService {
-  constructor(private dataService: DataService) {}
+  // constructor(private dataService: DataService) {}
   // Define a signal that will hold the state
   private signalData = signal({}); // Initial value is false
 

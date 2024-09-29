@@ -27,7 +27,7 @@ import { DataService } from '../data.service';
   styleUrls: ['./listing.component.css']
 })
 export class ListingComponent implements OnInit {
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name', 'ic', 'passport'];
   dataSource = new MatTableDataSource<any>([]);
   searchForm = new FormGroup({
     search: new FormControl(''),
@@ -43,17 +43,18 @@ export class ListingComponent implements OnInit {
 
   fetchData(): void {
     const payload = {};
-    this.dataService.getElements(payload).subscribe((data: any[]) => {
-      console.log(data);
-      this.dataSource.data = data;
+    this.dataService.getCustomer(payload).subscribe((response: any) => {
+      console.log(response);
+      this.dataSource.data = response.data;
     });
   }
 
   onRowClick(row: any): void {
     this.signalService.triggerAction(row);
-    this.router.navigate(['/details', row.name]);
+    this.router.navigate(['/details', row.id]);
   }
 
+  // For filtering the table
   filterTable(): void {
     if (this.searchForm.get('search')?.value) {
       this.dataSource.filter = this.searchForm.get('search')?.value as string;

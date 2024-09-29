@@ -12,8 +12,27 @@ export class DataService {
 
   constructor(private http: HttpClient, private signalService: SignalService) {} // Circular dependency
 
-  getElements(payload: any): Observable<any[]> {
-    console.log('Fetching data -----');
+  getCustomer(payload: any): Observable<any> {
+    console.log('Fetching data -----'); 
     return this.http.get<any[]>(this.customer);
+  }
+
+  getCountry(countryId: string | null, name: string | null): Observable<any> {
+    let url = this.apiUrl + '/country';
+    const params = [];
+
+    if (countryId) {
+      params.push(`countryId=${countryId}`);
+    }
+
+    if (name) {
+      params.push(`name=${name}`);
+    }
+
+    if (params.length > 0) {
+      url += '?' + params.join('&');
+    }
+
+    return this.http.get<any[]>(url);
   }
 }

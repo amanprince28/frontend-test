@@ -80,12 +80,44 @@
             <input matInput formControlName="address" placeholder="Address" />
           </mat-form-field>
         </div>
+
+        
+        <!-- Country Dropdown -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
-            <mat-label>Customer Relation</mat-label>
-            <input matInput formControlName="customer_relation" placeholder="Customer Relation" />
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="country" (selectionChange)="onCountryChange($event.value)">
+              <mat-option *ngFor="let country of countries" [value]="country.id">
+                {{ country.name }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
+
+        <!-- State Dropdown -->
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>State</mat-label>
+            <mat-select formControlName="state" (selectionChange)="onStateChange($event.value)">
+              <mat-option *ngFor="let state of states" [value]="state.id">
+                {{ state.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- City Dropdown -->
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>City</mat-label>
+            <mat-select formControlName="city">
+              <mat-option *ngFor="let city of cities" [value]="city.id">
+                {{ city.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
       </div>
     </mat-tab>
 
