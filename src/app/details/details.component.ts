@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,7 +32,8 @@ export class DetailsComponent {
     private route: ActivatedRoute,
     private router: Router,
     private signalService: SignalService,
-    private dataService: DataService
+    private dataService: DataService,
+    private cdRef: ChangeDetectorRef
   ) { }
 
   ngOnInit() {
@@ -61,36 +62,40 @@ export class DetailsComponent {
       console.log('signalData', signalData);
       if (params && Object.keys(params).length > 0) {
         this.isEditMode = true;
-
+        if (signalData && signalData.customer_address && signalData.customer_address.length > 0) {
+          this.onCountryChange(signalData.customer_address[0].country_id);
+        }
       } else {
         this.isEditMode = false;
       }
-      this.form.patchValue({
-        name: signalData.name,
-        ic: signalData.ic,
-        passport: signalData.passport,
-        gender: signalData.gender,
-        marital_status: signalData.marital_status,
-        no_of_child: signalData.no_of_child,
-        mobile_no: signalData.mobile_no,
-        tel_code: signalData.tel_code,
-        tel_no: signalData.tel_no,
-        email: signalData.email,
-        car_plate: signalData.car_plate,
-        address_lines: signalData.customer_address[0].address_lines,
-        countries: signalData.customer_address[0].country_id,
-        states: signalData.customer_address[0].state_id,
-        cities: signalData.customer_address[0].city_id
-      });
-
-      // this.countries = signalData.customer_address[0].country_id;
-      //   this.states =signalData.customer_address[0].state_id;
-      //   this.cities= signalData.customer_address[0].city_id;
-
-      // You can fetch the row data using the id
     });
 
     this.fetchCountries();
+  }
+
+  ngAfterViewInit() {
+    const signalData: any = this.signalService.signalData$();
+    if (this.isEditMode && signalData && signalData.customer_address && signalData.customer_address.length > 0) {
+      this.form.patchValue({
+        name: signalData?.name,
+        ic: signalData?.ic,
+        passport: signalData?.passport,
+        gender: signalData?.gender,
+        marital_status: signalData?.marital_status,
+        no_of_child: signalData?.no_of_child,
+        mobile_no: signalData?.mobile_no,
+        tel_code: signalData?.tel_code,
+        tel_no: signalData?.tel_no,
+        email: signalData?.email,
+        car_plate: signalData?.car_plate,
+        address_lines: signalData?.customer_address[0]?.address_lines,
+        country: signalData?.customer_address[0]?.country_id,
+        state: signalData?.customer_address[0]?.state_id,
+        city: signalData?.customer_address[0]?.city_id
+      });
+      this.cdRef.detectChanges();
+    }
+
   }
 
   fetchCountries(): void {
@@ -107,21 +112,29 @@ export class DetailsComponent {
         const country = response[0];
         this.states = country.states || [];
         console.log('States', this.states);
-        this.cities = []; // Reset cities when country changes
-        this.form.get('state')?.reset();
-        this.form.get('city')?.reset();
+        this.cities = []; // Reset cities when country changes 
+        if (!this.isEditMode) {
+          this.form.get('state')?.reset();
+          this.form.get('city')?.reset();
+        } else {
+          const signalData: any = this.signalService.signalData$();
+          this.onStateChange(signalData.customer_address[0].state_id);
+        }
       }
     });
   }
 
   onStateChange(stateId: string): void {
     console.log(stateId);
-    console.log(stateId);
     const selectedState = this.states.find(state => state.id === stateId);
+    console.log('selectedState', selectedState);
+    console.log('this.states', this.states);
     if (selectedState) {
       this.cities = selectedState.cities || [];
       console.log('Cities', this.cities);
-      this.form.get('city')?.reset();
+      if (!this.isEditMode) {
+        this.form.get('city')?.reset();
+      }
     }
   }
 

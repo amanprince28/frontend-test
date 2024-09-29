@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatTableModule} from '@angular/material/table';
 
 import {MatButtonModule} from '@angular/material/button';
@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 
 @Component({
@@ -20,7 +21,8 @@ import { DataService } from '../data.service';
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
-    HttpClientModule // Ensure HttpClientModule is imported here
+    HttpClientModule, // Ensure HttpClientModule is imported here
+    MatPaginatorModule
   ],
   providers: [DataService], // Ensure DataService is provided here
   templateUrl: './listing.component.html',
@@ -28,6 +30,7 @@ import { DataService } from '../data.service';
 })
 export class ListingComponent implements OnInit {
   displayedColumns: string[] = ['name', 'ic', 'passport'];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchForm = new FormGroup({
     search: new FormControl(''),
@@ -39,6 +42,10 @@ export class ListingComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchData();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
   }
 
   fetchData(): void {
@@ -59,6 +66,7 @@ export class ListingComponent implements OnInit {
   // For filtering the table
   filterTable(): void {
     if (this.searchForm.get('search')?.value) {
+      console.log(this.searchForm.get('search')?.value);
       this.dataSource.filter = this.searchForm.get('search')?.value as string;
       return;
     }
