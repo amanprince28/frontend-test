@@ -1,0 +1,11 @@
+.demo-table {
+    width: 100%;
+  }
+  
+  .mat-mdc-row .mat-mdc-cell {
+    cursor: pointer;
+  }
+  
+  .demo-row-is-clicked {
+    font-weight: bold;
+  }

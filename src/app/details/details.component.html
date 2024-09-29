@@ -1,0 +1,106 @@
+<form [formGroup]="form" class="m-2">
+  <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+    <mat-tab label="Customer" class="m-3">
+      <div class="row m-3">
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" placeholder="Value" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>IC</mat-label>
+            <input matInput formControlName="ic" placeholder="IC" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Passport</mat-label>
+            <input matInput formControlName="passport" placeholder="Passport" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Race</mat-label>
+            <input matInput formControlName="race" placeholder="Race" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Gender</mat-label>
+            <input matInput formControlName="gender" placeholder="Gender" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Marital Status</mat-label>
+            <input matInput formControlName="marital_status" placeholder="Marital Status" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>No. of Children</mat-label>
+            <input matInput formControlName="no_of_child" placeholder="No. of Children" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Mobile No</mat-label>
+            <input matInput formControlName="mobile_no" placeholder="Mobile No" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Tel Code</mat-label>
+            <input matInput formControlName="tel_code" placeholder="Tel Code" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Tel No</mat-label>
+            <input matInput formControlName="tel_no" placeholder="Tel No" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" placeholder="Email" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Car Plate</mat-label>
+            <input matInput formControlName="car_plate" placeholder="Car Plate" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="address" placeholder="Address" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Customer Relation</mat-label>
+            <input matInput formControlName="customer_relation" placeholder="Customer Relation" />
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab class="m-3" label="Customer Relationships">Content 2</mat-tab>
+    <mat-tab label="Employment">Content 3</mat-tab>
+  </mat-tab-group>
+  <div class="row">
+    <div class="col-sm-12 d-flex flex-row-reverse">
+      <button mat-raised-button type="submit" (submit)="onSubmit()">Submit</button>
+    </div>
+    <div class="card text-bg-dark p-3 m-2 col-sm-6">
+      FromData
+      <div class="card-body p-3 row">
+        <code>{{ this.form.value | json }}</code>
+      </div>
+    </div>
+  </div>
+</form>
