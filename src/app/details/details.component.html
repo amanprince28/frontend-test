@@ -39,7 +39,15 @@
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Relationship</mat-label>
-            <input matInput formControlName="relationship" placeholder="Relationship" />
+            <mat-select formControlName="relationship">
+              <mat-option value="father">Father</mat-option>
+              <mat-option value="mother">Mother</mat-option>
+              <mat-option value="hushband">Hushband</mat-option>
+              <mat-option value="wife">Wife</mat-option>
+              <mat-option value="brother">Brother</mat-option>
+              <mat-option value="sister">Sister</mat-option>
+              <mat-option value="child">Child</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
@@ -49,16 +57,16 @@
         </div>
         <div class="col-sm-6">
           <mat-form-field class="example-full-width">
-            <mat-label>Address Line 1</mat-label>
-            <input matInput formControlName="perm_address_line1" placeholder="Address Line 1" />
+            <mat-label>Address</mat-label>
+            <textarea matInput formControlName="perm_address_line1" placeholder="Address"></textarea>
           </mat-form-field>
         </div>
-        <div class="col-sm-6">
+        <!-- <div class="col-sm-6">
           <mat-form-field class="example-full-width">
             <mat-label>Address Line 2</mat-label>
             <input matInput formControlName="perm_address_line2" placeholder="Address Line 2" />
           </mat-form-field>
-        </div>
+        </div> -->
         <!-- Country, State, City -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
@@ -91,6 +99,7 @@
           </mat-form-field>
         </div>
 
+         <!-- NEED TO PUT IN ANOTHER FORMDATA SO THAT CAN BE SUBMITTED SEPERATELY -->
         <!-- Correspondence Address -->
         <div class="col-sm-12">
           <input type="checkbox" formControlName="same_as_permanent" />Same as Permanent Address
@@ -102,14 +111,8 @@
           </div>
           <div class="col-sm-6">
             <mat-form-field class="example-full-width">
-              <mat-label>Address Line 1</mat-label>
-              <input matInput formControlName="corr_address_line1" placeholder="Address Line 1" />
-            </mat-form-field>
-          </div>
-          <div class="col-sm-6">
-            <mat-form-field class="example-full-width">
-              <mat-label>Address Line 2</mat-label>
-              <input matInput formControlName="corr_address_line2" placeholder="Address Line 2" />
+              <mat-label>Address</mat-label>
+              <textarea matInput formControlName="corr_address_line1" placeholder="Address" ></textarea>
             </mat-form-field>
           </div>
           <!-- Country, State, City -->
@@ -195,14 +198,8 @@
         </div>
         <div class="col-sm-6">
           <mat-form-field class="example-full-width">
-            <mat-label>Address Line 1</mat-label>
-            <input matInput formControlName="perm_address_line1" placeholder="Address Line 1" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-6">
-          <mat-form-field class="example-full-width">
-            <mat-label>Address Line 2</mat-label>
-            <input matInput formControlName="perm_address_line2" placeholder="Address Line 2" />
+            <mat-label>Address</mat-label>
+            <input matInput formControlName="perm_address_line1" placeholder="Address" />
           </mat-form-field>
         </div>
         <!-- Country, State, City -->
@@ -248,16 +245,16 @@
           </div>
           <div class="col-sm-6">
             <mat-form-field class="example-full-width">
-              <mat-label>Address Line 1</mat-label>
-              <input matInput formControlName="corr_address_line1" placeholder="Address Line 1" />
+              <mat-label>Address</mat-label>
+              <input matInput formControlName="corr_address_line1" placeholder="Address" />
             </mat-form-field>
           </div>
-          <div class="col-sm-6">
+          <!-- <div class="col-sm-6">
             <mat-form-field class="example-full-width">
               <mat-label>Address Line 2</mat-label>
               <input matInput formControlName="corr_address_line2" placeholder="Address Line 2" />
             </mat-form-field>
-          </div>
+          </div> -->
           <!-- Country, State, City -->
           <div class="col-sm-3">
             <mat-form-field class="example-full-width">

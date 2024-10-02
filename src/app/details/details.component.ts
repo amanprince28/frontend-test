@@ -62,13 +62,13 @@ export class DetailsComponent implements OnInit {
       relationship_gender: new FormControl('male', Validators.required), // Default value
       relationship: new FormControl('', Validators.required),
       perm_address_line1: new FormControl('', Validators.required),
-      perm_address_line2: new FormControl('', Validators.required),
+      // perm_address_line2: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
       same_as_permanent: new FormControl(false),
       corr_address_line1: new FormControl('', Validators.required),
-      corr_address_line2: new FormControl('', Validators.required),
+      // corr_address_line2: new FormControl('', Validators.required),
       corr_country: new FormControl('', Validators.required),
       corr_state: new FormControl('', Validators.required),
       corr_city: new FormControl('', Validators.required),
@@ -146,6 +146,7 @@ export class DetailsComponent implements OnInit {
   }
 
   onCountryChange(event: any) {
+    console.log('onCountryChange ', event)
     this.dataService.getCountry(event, null).subscribe((response: any) => {
       if (response && response.length > 0) {
         const country = response[0];
@@ -163,7 +164,9 @@ export class DetailsComponent implements OnInit {
   }
 
   onStateChange(stateId: string): void {
+    console.log('onStateChange ', stateId)
     const selectedState = this.states.find(state => state.id === stateId);
+    console.log('selectedState', selectedState)
     if (selectedState) {
       this.cities = selectedState.cities || [];
       if (!this.isEditMode) {
@@ -209,7 +212,7 @@ export class DetailsComponent implements OnInit {
       tel_no: this.form.get('tel_no')?.value,
       email: this.form.get('email')?.value,
       car_plate: this.form.get('car_plate')?.value,
-      customer_address: {
+      customer_address: [{
         permanent: {
           address_lines: this.form.get('permanent_address_lines')?.value,
           country_id: this.form.get('permanent_country')?.value,
@@ -222,7 +225,7 @@ export class DetailsComponent implements OnInit {
           state_id: this.form.get('correspondence_state')?.value,
           city_id: this.form.get('correspondence_city')?.value
         }
-      }
+      }]
     };
 
     if (this.isEditMode) {
@@ -234,8 +237,9 @@ export class DetailsComponent implements OnInit {
       return;
     }
 
-    this.dataService.addCustomer(submissionData).subscribe(response => {
-      this.router.navigate(['/']);
-    });
+    console.log(submissionData)
+    // this.dataService.addCustomer(submissionData).subscribe(response => {
+    //   this.router.navigate(['/']);
+    // });
   }
 }
