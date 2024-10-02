@@ -1,0 +1,44 @@
+<mat-drawer-container class="example-container" autosize>
+    <mat-drawer #drawer opened class="example-sidenav" mode="side">
+      <p>Side menu</p>
+  
+      <a
+        style="width: 100%"
+        [routerLink]="['listing']"
+        routerLinkActive="router-link-active"
+        >Listing</a
+      >
+    </mat-drawer>
+    <mat-toolbar>
+      <button
+        (click)="drawer.toggle()"
+        mat-icon-button
+        class="example-icon"
+        aria-label="Example icon-button with menu icon"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>My App</span>
+      <span class="example-spacer"></span>
+
+      <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
+        <mat-icon>account_circle</mat-icon>
+        Profile
+      </button>
+      <mat-menu #profileMenu="matMenu">
+        <!-- <button mat-menu-item (click)="goToSettings()">
+          <mat-icon>settings</mat-icon>
+          Settings
+        </button> -->
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
+    </mat-toolbar>
+  
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
+  

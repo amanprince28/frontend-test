@@ -1,29 +1,36 @@
 <form [formGroup]="form" class="m-2" (ngSubmit)="onSubmit()">
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
-    <mat-tab label="Customer" class="m-3">
+   
+    <mat-tab class="m-3" label="Customer ">
       <div class="row m-3">
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Name</mat-label>
-            <input matInput formControlName="name" placeholder="Value" />
+            <input matInput formControlName="relationship_name" placeholder="Name" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>IC</mat-label>
-            <input matInput formControlName="ic" placeholder="IC" />
+            <input matInput formControlName="relationship_ic" placeholder="IC" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Mobile No</mat-label>
+            <input matInput formControlName="relationship_mobile_no" placeholder="Mobile No" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Passport</mat-label>
-            <input matInput formControlName="passport" placeholder="Passport" />
+            <input matInput formControlName="relationship_passport" placeholder="Passport" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Gender</mat-label>
-            <mat-select formControlName="gender">
+            <mat-select formControlName="relationship_gender">
               <mat-option value="male">Male</mat-option>
               <mat-option value="female">Female</mat-option>
             </mat-select>
@@ -31,87 +38,52 @@
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
-            <mat-label>Marital Status</mat-label>
-            <mat-select formControlName="marital_status">
-              <mat-option value="married">Married</mat-option>
-              <mat-option value="single">Single</mat-option>
-              <mat-option value="divorsed">Divorsed</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>No of Children</mat-label>
-            <input matInput type="number" formControlName="no_of_child">
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Mobile No</mat-label>
-            <input matInput formControlName="mobile_no" placeholder="Mobile No" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Tel Code</mat-label>
-            <input matInput formControlName="tel_code" placeholder="Tel Code" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Tel No</mat-label>
-            <input matInput formControlName="tel_no" placeholder="Tel No" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Email</mat-label>
-            <input matInput formControlName="email" placeholder="Email" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Car Plate</mat-label>
-            <input matInput formControlName="car_plate" placeholder="Car Plate" />
-          </mat-form-field>
-        </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Address</mat-label>
-            <textarea matInput formControlName="address_lines" placeholder="Address"></textarea>
+            <mat-label>Relationship</mat-label>
+            <input matInput formControlName="relationship" placeholder="Relationship" />
           </mat-form-field>
         </div>
 
-        
-        <!-- Country Dropdown -->
+        <!-- Permanent Address -->
+        <div class="col-sm-12">
+          <h3>Permanent Address</h3>
+        </div>
+        <div class="col-sm-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address Line 1</mat-label>
+            <input matInput formControlName="perm_address_line1" placeholder="Address Line 1" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address Line 2</mat-label>
+            <input matInput formControlName="perm_address_line2" placeholder="Address Line 2" />
+          </mat-form-field>
+        </div>
+        <!-- Country, State, City -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Country</mat-label>
-            <mat-select formControlName="country" (selectionChange)="onCountryChange($event.value)">
+            <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
               <mat-option *ngFor="let country of countries" [value]="country.id">
                 {{ country.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-
-        <!-- State Dropdown -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>State</mat-label>
-            <mat-select formControlName="state" (selectionChange)="onStateChange($event.value)">
+            <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
               <mat-option *ngFor="let state of states" [value]="state.id">
                 {{ state.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
-
-        <!-- City Dropdown -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>City</mat-label>
-            <mat-select formControlName="city">
+            <mat-select formControlName="perm_city">
               <mat-option *ngFor="let city of cities" [value]="city.id">
                 {{ city.name }}
               </mat-option>
@@ -119,21 +91,295 @@
           </mat-form-field>
         </div>
 
+        <!-- Correspondence Address -->
+        <div class="col-sm-12">
+          <input type="checkbox" formControlName="same_as_permanent" />Same as Permanent Address
+          <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
+        </div>
+        <div *ngIf="!form.get('same_as_permanent')?.value">
+          <div class="col-sm-12">
+            <h3>Correspondence Address</h3>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address Line 1</mat-label>
+              <input matInput formControlName="corr_address_line1" placeholder="Address Line 1" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address Line 2</mat-label>
+              <input matInput formControlName="corr_address_line2" placeholder="Address Line 2" />
+            </mat-form-field>
+          </div>
+          <!-- Country, State, City -->
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
+                <mat-option *ngFor="let country of countries" [value]="country.id">
+                  {{ country.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>State</mat-label>
+              <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
+                <mat-option *ngFor="let state of states" [value]="state.id">
+                  {{ state.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>City</mat-label>
+              <mat-select formControlName="corr_city">
+                <mat-option *ngFor="let city of cities" [value]="city.id">
+                  {{ city.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
       </div>
     </mat-tab>
 
-    <mat-tab class="m-3" label="Customer Relationships">Content 2</mat-tab>
-    <mat-tab label="Employment">Content 3</mat-tab>
+    <mat-tab class="m-3" label="Customer Relationships">
+      <div class="row m-3">
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="relationship_name" placeholder="Name" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>IC</mat-label>
+            <input matInput formControlName="relationship_ic" placeholder="IC" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Mobile No</mat-label>
+            <input matInput formControlName="relationship_mobile_no" placeholder="Mobile No" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Passport</mat-label>
+            <input matInput formControlName="relationship_passport" placeholder="Passport" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="relationship_gender">
+              <mat-option value="male">Male</mat-option>
+              <mat-option value="female">Female</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Relationship</mat-label>
+            <input matInput formControlName="relationship" placeholder="Relationship" />
+          </mat-form-field>
+        </div>
+
+        <!-- Permanent Address -->
+        <div class="col-sm-12">
+          <h3>Permanent Address</h3>
+        </div>
+        <div class="col-sm-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address Line 1</mat-label>
+            <input matInput formControlName="perm_address_line1" placeholder="Address Line 1" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-6">
+          <mat-form-field class="example-full-width">
+            <mat-label>Address Line 2</mat-label>
+            <input matInput formControlName="perm_address_line2" placeholder="Address Line 2" />
+          </mat-form-field>
+        </div>
+        <!-- Country, State, City -->
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Country</mat-label>
+            <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
+              <mat-option *ngFor="let country of countries" [value]="country.id">
+                {{ country.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>State</mat-label>
+            <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
+              <mat-option *ngFor="let state of states" [value]="state.id">
+                {{ state.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>City</mat-label>
+            <mat-select formControlName="perm_city">
+              <mat-option *ngFor="let city of cities" [value]="city.id">
+                {{ city.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Correspondence Address -->
+        <div class="col-sm-12">
+          <input type="checkbox" formControlName="same_as_permanent" />Same as Permanent Address
+          <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
+        </div>
+        <div *ngIf="!form.get('same_as_permanent')?.value">
+          <div class="col-sm-12">
+            <h3>Correspondence Address</h3>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address Line 1</mat-label>
+              <input matInput formControlName="corr_address_line1" placeholder="Address Line 1" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-6">
+            <mat-form-field class="example-full-width">
+              <mat-label>Address Line 2</mat-label>
+              <input matInput formControlName="corr_address_line2" placeholder="Address Line 2" />
+            </mat-form-field>
+          </div>
+          <!-- Country, State, City -->
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Country</mat-label>
+              <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
+                <mat-option *ngFor="let country of countries" [value]="country.id">
+                  {{ country.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>State</mat-label>
+              <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
+                <mat-option *ngFor="let state of states" [value]="state.id">
+                  {{ state.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>City</mat-label>
+              <mat-select formControlName="corr_city">
+                <mat-option *ngFor="let city of cities" [value]="city.id">
+                  {{ city.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <!-- Tab 3 - Employment -->
+    <mat-tab label="Employment">
+      <div class="row m-3">
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Annual Income</mat-label>
+            <input matInput formControlName="annual_income" placeholder="Annual Income" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Business Type</mat-label>
+            <input matInput formControlName="business_type" placeholder="Business Type" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Department</mat-label>
+            <input matInput formControlName="department" placeholder="Department" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Employee No</mat-label>
+            <input matInput formControlName="employee_no" placeholder="Employee No" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Employee Type</mat-label>
+            <input matInput formControlName="employee_type" placeholder="Employee Type" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Income Date</mat-label>
+            <input matInput formControlName="income_date" placeholder="Income Date" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Income Type</mat-label>
+            <input matInput formControlName="income_type" placeholder="Income Type" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="employment_name" placeholder="Name" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Occupation Category</mat-label>
+            <input matInput formControlName="occupation_category" placeholder="Occupation Category" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Position</mat-label>
+            <input matInput formControlName="position" placeholder="Position" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Remarks</mat-label>
+            <input matInput formControlName="employment_remarks" placeholder="Remarks" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Telecode</mat-label>
+            <input matInput formControlName="telecode" placeholder="Telecode" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Telephone No</mat-label>
+            <input matInput formControlName="telephone_no" placeholder="Telephone No" />
+          </mat-form-field>
+        </div>
+      </div>
+    </mat-tab>
   </mat-tab-group>
   <div class="row">
     <div class="col-sm-12 d-flex flex-row-reverse">
       <button mat-raised-button type="submit" >Submit</button>
-    </div>
-    <div class="card text-bg-dark p-3 m-2 col-sm-6">
-      FromData
-      <div class="card-body p-3 row">
-        <code>{{ this.form.value | json }}</code>
-      </div>
     </div>
   </div>
 </form>
