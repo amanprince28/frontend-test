@@ -37,20 +37,6 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="col-sm-3">
-          <mat-form-field class="example-full-width">
-            <mat-label>Relationship</mat-label>
-            <mat-select formControlName="relationship">
-              <mat-option value="father">Father</mat-option>
-              <mat-option value="mother">Mother</mat-option>
-              <mat-option value="hushband">Hushband</mat-option>
-              <mat-option value="wife">Wife</mat-option>
-              <mat-option value="brother">Brother</mat-option>
-              <mat-option value="sister">Sister</mat-option>
-              <mat-option value="child">Child</mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
 
         <!-- Permanent Address -->
         <div class="col-sm-12">
@@ -202,7 +188,15 @@
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Relationship</mat-label>
-            <input matInput formControlName="relationship" placeholder="Relationship" />
+            <mat-select formControlName="relationship">
+              <mat-option value="father">Father</mat-option>
+              <mat-option value="mother">Mother</mat-option>
+              <mat-option value="hushband">Hushband</mat-option>
+              <mat-option value="wife">Wife</mat-option>
+              <mat-option value="brother">Brother</mat-option>
+              <mat-option value="sister">Sister</mat-option>
+              <mat-option value="child">Child</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
 
