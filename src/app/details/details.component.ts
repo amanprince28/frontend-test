@@ -127,43 +127,17 @@ export class DetailsComponent implements OnInit {
     // Initialize edit mode and load existing data if necessary
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
-      this.dataService.getCustomerById(this.customerId).subscribe(data => {
-        this.signalData = data;
-        if (params && Object.keys(params).length > 0) {
-          this.isEditMode = true;
-          if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-            const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
-            this.customerForm.patchValue({
-              name: this.signalData?.name,
-              ic: this.signalData?.ic,
-              passport: this.signalData?.passport,
-              gender: this.signalData?.gender,
-              marital_status: this.signalData?.marital_status,
-              no_of_child: this.signalData?.no_of_child,
-              mobile_no: this.signalData?.mobile_no,
-              tel_code: this.signalData?.tel_code,
-              tel_no: this.signalData?.tel_no,
-              email: this.signalData?.email,
-              car_plate: this.signalData?.car_plate,
-              same_as_permanent: customerPermanentAddress?.is_permanent,
-              perm_postal_code: customerPermanentAddress?.postal_code,
-              perm_address_line1: customerPermanentAddress?.address_lines,
-              perm_country: customerPermanentAddress?.country_id,
-              perm_state: customerPermanentAddress?.state_id,
-              perm_city: customerPermanentAddress?.city_id,
-            })
-
-            this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
-          }
-        } else {
-          this.isEditMode = false;
-        }
-      });
+      if (this.customerId) {
+        this.loadCustomerData(this.customerId);
+      } else {
+        this.isEditMode = false;
+      }
     });
 
     this.fetchCountries();
   }
+
+
 
   // ngAfterViewInit() {
   //   console.log('ngAfterViewInit signalData', this.signalData)
@@ -220,6 +194,38 @@ export class DetailsComponent implements OnInit {
   //     this.cdRef.detectChanges();
   //   }
   // }
+  loadCustomerData(id: string) {
+    this.dataService.getCustomerById(this.customerId).subscribe(data => {
+      this.signalData = data;
+      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
+
+        this.customerForm.patchValue({
+          name: this.signalData?.name,
+          ic: this.signalData?.ic,
+          passport: this.signalData?.passport,
+          gender: this.signalData?.gender,
+          marital_status: this.signalData?.marital_status,
+          no_of_child: this.signalData?.no_of_child,
+          mobile_no: this.signalData?.mobile_no,
+          tel_code: this.signalData?.tel_code,
+          tel_no: this.signalData?.tel_no,
+          email: this.signalData?.email,
+          car_plate: this.signalData?.car_plate,
+          same_as_permanent: customerPermanentAddress?.is_permanent,
+          perm_postal_code: customerPermanentAddress?.postal_code,
+          perm_address_line1: customerPermanentAddress?.address_lines,
+          perm_country: customerPermanentAddress?.country_id,
+          perm_state: customerPermanentAddress?.state_id,
+          perm_city: customerPermanentAddress?.city_id,
+        })
+
+        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
+      } else {
+        this.isEditMode = false;
+      }
+    });
+  }
 
   fetchCountries(): void {
     this.dataService.getCountry(this.customerForm.get('perm_country')?.value, this.customerForm.get('perm_state')?.value).subscribe(data => {
@@ -246,7 +252,7 @@ export class DetailsComponent implements OnInit {
           const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
           if (customerPermanentAddress) {
             this.onStateChange(customerPermanentAddress.state_id);
-          }else {
+          } else {
             this.onStateChange(this.signalData.customer_address[0].state_id);
           }
         }
