@@ -1,36 +1,37 @@
-<form [formGroup]="form" class="m-2" (ngSubmit)="onSubmit()">
+
   <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
    
     <mat-tab class="m-3" label="Customer ">
+      <form [formGroup]="customerForm" class="m-2" (ngSubmit)="onCustomerSubmit()">
       <div class="row m-3">
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Name</mat-label>
-            <input matInput formControlName="relationship_name" placeholder="Name" />
+            <input matInput formControlName="name" placeholder="Name" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>IC</mat-label>
-            <input matInput formControlName="relationship_ic" placeholder="IC" />
+            <input matInput formControlName="ic" placeholder="IC" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Mobile No</mat-label>
-            <input matInput formControlName="relationship_mobile_no" placeholder="Mobile No" />
+            <input matInput formControlName="mobile_no" placeholder="Mobile No" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Passport</mat-label>
-            <input matInput formControlName="relationship_passport" placeholder="Passport" />
+            <input matInput formControlName="passport" placeholder="Passport" />
           </mat-form-field>
         </div>
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
             <mat-label>Gender</mat-label>
-            <mat-select formControlName="relationship_gender">
+            <mat-select formControlName="gender">
               <mat-option value="male">Male</mat-option>
               <mat-option value="female">Female</mat-option>
             </mat-select>
@@ -61,12 +62,12 @@
             <textarea matInput formControlName="perm_address_line1" placeholder="Address"></textarea>
           </mat-form-field>
         </div>
-        <!-- <div class="col-sm-6">
+        <div class="col-sm-3">
           <mat-form-field class="example-full-width">
-            <mat-label>Address Line 2</mat-label>
-            <input matInput formControlName="perm_address_line2" placeholder="Address Line 2" />
+            <mat-label>Postal Code</mat-label>
+            <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
           </mat-form-field>
-        </div> -->
+        </div>
         <!-- Country, State, City -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
@@ -105,7 +106,7 @@
           <input type="checkbox" formControlName="same_as_permanent" />Same as Permanent Address
           <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
         </div>
-        <div *ngIf="!form.get('same_as_permanent')?.value">
+        <div *ngIf="!customerForm.get('same_as_permanent')?.value">
           <div class="col-sm-12">
             <h3>Correspondence Address</h3>
           </div>
@@ -116,6 +117,12 @@
             </mat-form-field>
           </div>
           <!-- Country, State, City -->
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Postal Code</mat-label>
+              <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
+            </mat-form-field>
+          </div>
           <div class="col-sm-3">
             <mat-form-field class="example-full-width">
               <mat-label>Country</mat-label>
@@ -148,9 +155,16 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-12 d-flex flex-row-reverse">
+          <button mat-raised-button type="submit" >Submit</button>
+        </div>
+      </div>  
+    </form>
     </mat-tab>
 
     <mat-tab class="m-3" label="Customer Relationships">
+      <form [formGroup]="customerRelationshipForm" class="m-2" (ngSubmit)="onCustomerRelationshipSubmit()">
       <div class="row m-3">
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
@@ -205,6 +219,12 @@
         <!-- Country, State, City -->
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
+            <mat-label>Postal Code</mat-label>
+            <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
+          </mat-form-field>
+        </div>
+        <div class="col-sm-3">
+          <mat-form-field class="example-full-width">
             <mat-label>Country</mat-label>
             <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
               <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -239,7 +259,7 @@
           <input type="checkbox" formControlName="same_as_permanent" />Same as Permanent Address
           <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
         </div>
-        <div *ngIf="!form.get('same_as_permanent')?.value">
+        <div *ngIf="!customerRelationshipForm.get('same_as_permanent')?.value">
           <div class="col-sm-12">
             <h3>Correspondence Address</h3>
           </div>
@@ -247,6 +267,12 @@
             <mat-form-field class="example-full-width">
               <mat-label>Address</mat-label>
               <input matInput formControlName="corr_address_line1" placeholder="Address" />
+            </mat-form-field>
+          </div>
+          <div class="col-sm-3">
+            <mat-form-field class="example-full-width">
+              <mat-label>Postal Code</mat-label>
+              <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
             </mat-form-field>
           </div>
           <!-- <div class="col-sm-6">
@@ -288,10 +314,17 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-12 d-flex flex-row-reverse">
+          <button mat-raised-button type="submit" >Submit</button>
+        </div>
+      </div>  
+    </form>
     </mat-tab>
 
     <!-- Tab 3 - Employment -->
     <mat-tab label="Employment">
+      <form [formGroup]="customerEmployemntForm" class="m-2" (ngSubmit)="onEmploymentSubmit()">
       <div class="row m-3">
         <div class="col-sm-3">
           <mat-form-field class="example-full-width">
@@ -372,11 +405,12 @@
           </mat-form-field>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-12 d-flex flex-row-reverse">
+          <button mat-raised-button type="submit" >Submit</button>
+        </div>
+      </div>
+      </form>
     </mat-tab>
   </mat-tab-group>
-  <div class="row">
-    <div class="col-sm-12 d-flex flex-row-reverse">
-      <button mat-raised-button type="submit" >Submit</button>
-    </div>
-  </div>
-</form>
+  
