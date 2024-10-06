@@ -152,20 +152,19 @@ export class DetailsComponent implements OnInit {
   onRowClick(row:any){
     console.log(row,'row');
     this.customerRelationshipForm.patchValue({
-      relationship_name: row?.name,
-      relationship_ic: row?.ic,
-      relationship_mobile_no: row?.mobile_no,
-      relationship_passport: row?.passport,
-      relationship_gender: row?.relationship,
-      relationship: row?.mobile_no,
-      perm_postal_code:row.address[0].postal_code,
-
-      corr_rel_postal_code: row?.address[0]?.postal_code,
-      perm_address_line1: row?.address[0]?.address_lines,
-      perm_city: row?.address[0]?.city_id,
-      perm_state: row?.address[0]?.state_id,
-      perm_country: row?.address[0]?.country_id,
-    })
+      relationship_name: row?.name || '',
+      relationship_ic: row?.ic || '',
+      relationship_mobile_no: row?.mobile_no || '',
+      relationship_passport: row?.passport || '',
+      relationship_gender: row?.gender || '',  
+      relationship: row?.relationship || '',  
+      perm_postal_code: row?.address[0]?.postal_code || '',
+      corr_rel_postal_code: row?.address[0]?.postal_code || '',
+      perm_address_line1: row?.address[0]?.address_lines || '',
+      perm_city: row?.address[0]?.city_id || '',
+      perm_state: row?.address[0]?.state_id || '',
+      perm_country: row?.address[0]?.country_id || ''
+    });
   }
 
   loadCustomerData(id: string) {
