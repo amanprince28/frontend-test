@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,11 +10,13 @@ import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { DataService } from '../data.service';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule],
   templateUrl: './details.component.html',
   styleUrls: ['./details.component.css']
 })
@@ -30,6 +32,11 @@ export class DetailsComponent implements OnInit {
   cities: any[] = [];
   signalData: any;
   customerId!: string;
+  displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
+  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource = new MatTableDataSource<any>([]);
+  dataSourceEmployment = new MatTableDataSource<any>([]);
 
   constructor(
     private route: ActivatedRoute,
@@ -129,6 +136,8 @@ export class DetailsComponent implements OnInit {
       this.customerId = params['id'];
       if (this.customerId) {
         this.loadCustomerData(this.customerId);
+        this.loadCustomerRaltionshipData(this.customerId);
+        this.loadEmployementData(this.customerId);
       } else {
         this.isEditMode = false;
       }
@@ -137,63 +146,28 @@ export class DetailsComponent implements OnInit {
     this.fetchCountries();
   }
 
+  ngAfterViewInit(): void { 
+    this.dataSource.paginator = this.paginator;
+  }
+  onRowClick(row:any){
+    console.log(row,'row');
+    this.customerRelationshipForm.patchValue({
+      relationship_name: row?.name,
+      relationship_ic: row?.ic,
+      relationship_mobile_no: row?.mobile_no,
+      relationship_passport: row?.passport,
+      relationship_gender: row?.relationship,
+      relationship: row?.mobile_no,
+      perm_postal_code:row.address[0].postal_code,
 
+      corr_rel_postal_code: row?.address[0]?.postal_code,
+      perm_address_line1: row?.address[0]?.address_lines,
+      perm_city: row?.address[0]?.city_id,
+      perm_state: row?.address[0]?.state_id,
+      perm_country: row?.address[0]?.country_id,
+    })
+  }
 
-  // ngAfterViewInit() {
-  //   console.log('ngAfterViewInit signalData', this.signalData)
-  //   if (this.isEditMode && this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-  //     const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-  //     this.customerForm.patchValue({
-  //       name: this.signalData?.name,
-  //       ic: this.signalData?.ic,
-  //       passport: this.signalData?.passport,
-  //       gender: this.signalData?.gender,
-  //       marital_status: this.signalData?.marital_status,
-  //       no_of_child: this.signalData?.no_of_child,
-  //       mobile_no: this.signalData?.mobile_no,
-  //       tel_code: this.signalData?.tel_code,
-  //       tel_no: this.signalData?.tel_no,
-  //       email: this.signalData?.email,
-  //       car_plate: this.signalData?.car_plate,
-  //       same_as_permanent: customerPermanentAddress?.is_permanent,
-  //       perm_postal_code: customerPermanentAddress?.postal_code,
-  //       perm_address_line1: customerPermanentAddress?.address_lines,
-  //       perm_country: customerPermanentAddress?.country_id,
-  //       perm_state: customerPermanentAddress?.state_id,
-  //       perm_city: customerPermanentAddress?.city_id,
-  //     })
-  //     // The below will be removed as the data will be displayed in table
-  //     // this.customerRelationshipForm.patchValue({
-  //     //   relationship_name: signalData?.customer_relation[0]?.name,
-  //     //   relationship_ic: signalData?.customer_relation[0]?.ic,
-  //     //   relationship_mobile_no: signalData?.customer_relation[0]?.gender,
-  //     //   relationship_passport: signalData?.customer_relation[0]?.passport,
-  //     //   relationship_gender: signalData?.customer_relation[0]?.relationship,
-  //     //   relationship: signalData?.customer_relation[0]?.mobile_no,
-
-  //     //   cus_rel_postal_code: signalData?.customer_relation[0]?.address[0]?.postal_code,
-  //     //   perm_address_line1: signalData?.customer_relation[0]?.address[0]?.address_lines,
-  //     //   perm_city: signalData?.customer_relation[0]?.address[0]?.city_id,
-  //     //   perm_state: signalData?.customer_relation[0]?.address[0]?.state_id,
-  //     //   perm_country: signalData?.customer_relation[0]?.address[0]?.country_id,
-  //     // })
-  //     // this.customerEmployemntForm.patchValue({
-  //     //   annual_income: signalData?.company[0]?.annual_income,
-  //     //   department: signalData?.company[0]?.department,
-  //     //   employee_no: signalData?.company[0]?.employee_no,
-  //     //   employee_type: signalData?.company[0]?.employee_type,
-  //     //   income_date: signalData?.company[0]?.income_date,
-  //     //   income_type: signalData?.company[0]?.income_type,
-  //     //   employment_name: signalData?.company[0]?.name,
-  //     //   occupation_category: signalData?.company[0]?.occupation_category,
-  //     //   position: signalData?.company[0]?.position,
-  //     //   remark: signalData?.company[0]?.remark,
-  //     //   comp_tel_code: signalData?.company[0]?.tel_code,
-  //     //   comp_tel_no: signalData?.company[0]?.tel_no,
-  //     // });
-  //     this.cdRef.detectChanges();
-  //   }
-  // }
   loadCustomerData(id: string) {
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       this.signalData = data;
@@ -219,6 +193,49 @@ export class DetailsComponent implements OnInit {
           perm_state: customerPermanentAddress?.state_id,
           perm_city: customerPermanentAddress?.city_id,
         })
+
+        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
+      } else {
+        this.isEditMode = false;
+      }
+    });
+  }
+
+  loadCustomerRaltionshipData(id:string) {
+    this.dataService.getCustomerById(this.customerId).subscribe(data => {
+      const signalData = data;
+      this.dataSource.data = signalData.customer_relation;
+      console.log(this.dataSource.data,'ss');
+      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
+
+        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
+      } else {
+        this.isEditMode = false;
+      }
+    });
+  }
+
+  loadEmployementData(id:string){
+    this.dataService.getCustomerById(this.customerId).subscribe(data => {
+      const signalData = data;
+      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
+
+        this.customerEmployemntForm.patchValue({
+          annual_income: signalData?.company[0]?.annual_income,
+          department: signalData?.company[0]?.department,
+          employee_no: signalData?.company[0]?.employee_no,
+          employee_type: signalData?.company[0]?.employee_type,
+          income_date: signalData?.company[0]?.income_date,
+          income_type: signalData?.company[0]?.income_type,
+          employment_name: signalData?.company[0]?.name,
+          occupation_category: signalData?.company[0]?.occupation_category,
+          position: signalData?.company[0]?.position,
+          remark: signalData?.company[0]?.remark,
+          comp_tel_code: signalData?.company[0]?.tel_code,
+          comp_tel_no: signalData?.company[0]?.tel_no,
+        });
 
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
       } else {

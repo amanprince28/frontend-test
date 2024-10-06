@@ -182,6 +182,7 @@
             <mat-select formControlName="relationship_gender">
               <mat-option value="male">Male</mat-option>
               <mat-option value="female">Female</mat-option>
+              <mat-option value="female">gender</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -195,7 +196,7 @@
               <mat-option value="wife">Wife</mat-option>
               <mat-option value="brother">Brother</mat-option>
               <mat-option value="sister">Sister</mat-option>
-              <mat-option value="child">Child</mat-option>
+              <mat-option value="child">"relationship"</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
@@ -266,7 +267,7 @@
           <div class="col-sm-3">
             <mat-form-field class="example-full-width">
               <mat-label>Postal Code</mat-label>
-              <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
+              <input matInput formControlName="corr_rel_postal_code" placeholder="Postal Code" />
             </mat-form-field>
           </div>
           <!-- <div class="col-sm-6">
@@ -314,6 +315,51 @@
         </div>
       </div>  
     </form>
+
+    <div class="mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <!--- Note that these columns can be defined in any order.
+                The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+                The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="ic">
+          <th mat-header-cell *matHeaderCellDef>IC</th>
+          <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
+        </ng-container>
+                The actual rendered columns are set as a property on the row definition" -->
+      
+        <!-- Name Column -->
+        <ng-container matColumnDef="passport">
+          <th mat-header-cell *matHeaderCellDef>Passport</th>
+          <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="address_lines">
+          <th mat-header-cell *matHeaderCellDef>Address Line</th>
+          <td mat-cell *matCellDef="let element">{{ element.address[0].address_lines }}</td>
+        </ng-container>
+
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsForRelationshipForm"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumnsForRelationshipForm"
+          (click)="onRowClick(row)"
+        ></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]"
+                     showFirstLastButtons
+                     aria-label="Select page of periodic elements">
+      </mat-paginator>
+      </div>
+    
     </mat-tab>
 
     <!-- Tab 3 - Employment -->
@@ -405,6 +451,7 @@
         </div>
       </div>
       </form>
+
     </mat-tab>
   </mat-tab-group>
   
