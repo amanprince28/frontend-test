@@ -37,6 +37,7 @@ export class DetailsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   dataSourceEmployment = new MatTableDataSource<any>([]);
+  customerRelationshipId: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -89,11 +90,12 @@ export class DetailsComponent implements OnInit {
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
       same_as_permanent: new FormControl(false),
-      corr_address_line1: new FormControl('', Validators.required),
+      corr_address_line1: new FormControl(''),
       // corr_address_line2: new FormControl('', Validators.required),
-      corr_country: new FormControl('', Validators.required),
-      corr_state: new FormControl('', Validators.required),
-      corr_city: new FormControl('', Validators.required),
+      corr_country: new FormControl(''),
+      corr_state: new FormControl(''),
+      corr_city: new FormControl(''),
+      corr_rel_postal_code : new FormControl('')
     });
     // Employment Details
 
@@ -138,6 +140,7 @@ export class DetailsComponent implements OnInit {
         this.loadCustomerData(this.customerId);
         this.loadCustomerRaltionshipData(this.customerId);
         this.loadEmployementData(this.customerId);
+        this.isEditMode = true;
       } else {
         this.isEditMode = false;
       }
@@ -151,6 +154,7 @@ export class DetailsComponent implements OnInit {
   }
   onRowClick(row:any){
     console.log(row,'row');
+    this.customerRelationshipId = row.id;
     this.customerRelationshipForm.patchValue({
       relationship_name: row?.name || '',
       relationship_ic: row?.ic || '',
@@ -343,7 +347,7 @@ export class DetailsComponent implements OnInit {
     };
 
     if (this.isEditMode) {
-      submissionData.id = this.details.id;
+      submissionData.id = this.customerId;
     }
 
     if (this.customerForm.invalid) {
@@ -375,7 +379,7 @@ export class DetailsComponent implements OnInit {
     };
 
     if (this.isEditMode) {
-      submissionData.id = this.details.id;
+      submissionData.id = this.customerId;
     }
 
     if (this.customerEmployemntForm.invalid) {
@@ -390,6 +394,7 @@ export class DetailsComponent implements OnInit {
   }
 
   onCustomerRelationshipSubmit() {
+    console.log('onCustomerRelationshipSubmit', this.customerRelationshipId)
     const submissionData: any = {
       name: this.customerRelationshipForm.get('relationship_name')?.value,
       ic: this.customerRelationshipForm.get('relationship_ic')?.value,
@@ -406,7 +411,7 @@ export class DetailsComponent implements OnInit {
     };
 
     if (this.isEditMode) {
-      submissionData.id = this.details.id;
+      submissionData.id = this.customerId;
     }
 
     if (this.customerRelationshipForm.invalid) {

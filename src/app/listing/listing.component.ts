@@ -57,6 +57,9 @@ export class ListingComponent implements OnInit {
   }
 
   onRowClick(row: any): void {
+    if (!row.id) {
+      return;
+    }
     this.dataService.getCustomerById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
       this.router.navigate(['/details', row.id]);
