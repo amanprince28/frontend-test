@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SignalService } from './signal.service'; // Hypothetical circular dependency
 
@@ -13,8 +13,11 @@ export class DataService {
   constructor(private http: HttpClient, private signalService: SignalService) {} // Circular dependency
 
   getCustomer(payload: any): Observable<any> {
-    console.log('Fetching data -----'); 
-    return this.http.get<any[]>(this.customer);
+    const params = new HttpParams()
+    .set('page', payload.page.toString())
+    .set('limit', payload.limit.toString());
+    console.log('Fetching data -----', params); 
+    return this.http.get<any[]>(this.customer, { params });
   }
 
   getCustomerById(id: string): Observable<any> {
@@ -43,5 +46,10 @@ export class DataService {
   addCustomer(customer: any): Observable<any> {
     const url = this.apiUrl + '/customer';
     return this.http.post<any>(url, customer);
+  }
+
+  updateCustomer(customer: any): Observable<any> {
+    const url = this.apiUrl + '/customer';
+    return this.http.post<any>(url + '/:id', customer);
   }
 }

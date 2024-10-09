@@ -46,10 +46,13 @@ export class ListingComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
+    this.paginator.page.subscribe(() => {
+      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize);
+    });
   }
 
-  fetchData(): void {
-    const payload = {};
+  fetchData(page: number = 0, limit: number = 5): void {
+    const payload = { page, limit};
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       console.log(response);
       this.dataSource.data = response.data;
