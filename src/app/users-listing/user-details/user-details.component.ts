@@ -4,24 +4,24 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SignalService } from '../signal.service';
+import { SignalService } from '../../signal.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
-import { DataService } from '../data.service';
+import { DataService } from '../../data.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 
 @Component({
-  selector: 'app-details',
+  selector: 'app-user-details',
   standalone: true,
   imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle],
-  templateUrl: './details.component.html',
-  styleUrl: './details.component.scss'
+  templateUrl: './user-details.component.html',
+  styleUrl: './user-details.component.scss'
 })
-export class DetailsComponent {
+export class UserDetailsComponent {
   isEditMode: boolean = false;
   details: any = {};
   form!: FormGroup;

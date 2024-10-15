@@ -1,0 +1,98 @@
+.example-container {
+  width: 100%;
+  height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  background-color: white; /* Set background color to white */
+}
+
+.example-sidenav {
+  padding: 20px;
+  background-color: white; /* Set background color to white */
+  color: black; /* Set text color to black */
+}
+
+.toolbar {
+  display: flex;
+  color: white;
+}
+.blue-background {
+  background-color: #3f51b5; /* Blue background color */
+  width: 100%; /* Ensure the background spans the entire toolbar width */
+}
+
+.my-app-title {
+  font-size: 20px;
+  font-weight: bold;
+  flex-grow: 1; /* Make the title grow to fill available space */
+   /* Center the text horizontally */
+}
+
+
+.content {
+  background-color: white; /* Set content background to white */
+  padding: 20px;
+  color: black; /* Set text color to black */
+}
+
+/* Style heading and text colors */
+h1, h2, h3, h4, h5, h6, p, a {
+  color: black; /* Set headings, text, and links to black */
+}
+
+.example-spacer {
+  flex: 1 1 auto;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: black; /* Ensure profile button text is black */
+}
+
+mat-icon {
+  color: black; /* Ensure icons like the menu and profile icon are black */
+}
+
+/* Ensure profile menu items (Logout, Profile) are black */
+mat-menu-item {
+  color: black; /* Set profile and logout menu items to black */
+}
+
+mat-menu-item mat-icon {
+  color: black; /* Ensure the icons inside the menu are black as well */
+}
+
+/* Ensure menu items are displayed as a block (full-width) and stack vertically */
+.example-sidenav {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Styling for each menu item */
+.menu-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: black;
+  width: 100%; /* Ensures full-width */
+}
+
+.menu-item:hover {
+  background-color: lightgray; /* Optional hover effect */
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.menu-logo {
+  width: 50px; /* Fixed width */
+  height: 20px; /* Fixed height */
+  object-fit: contain; /* Ensure the logo scales nicely within the container */
+}

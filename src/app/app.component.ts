@@ -11,7 +11,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
   imports: [RouterOutlet, MatSidenavModule, MatButtonModule, MatIconModule,
     MatToolbarModule, RouterLink],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.scss'
 })
 export class AppComponent {
 

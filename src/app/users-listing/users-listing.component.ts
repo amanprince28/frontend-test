@@ -13,7 +13,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 
 
 @Component({
-  selector: 'app-listing',
+  selector: 'app-users-listing',
   standalone: true,
   imports: [
     MatTableModule,
@@ -24,12 +24,12 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
     HttpClientModule, // Ensure HttpClientModule is imported here
     MatPaginatorModule
   ],
-  providers: [DataService], // Ensure DataService is provided here
-  templateUrl: './listing.component.html',
-  styleUrls: ['./listing.component.scss']
+  providers: [DataService], 
+  templateUrl: './users-listing.component.html',
+  styleUrl: './users-listing.component.scss'
 })
-export class ListingComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'ic', 'passport','actions'];
+export class UsersListingComponent implements OnInit{
+  displayedColumns: string[] = ['name', 'email', 'role','actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchForm = new FormGroup({
@@ -65,7 +65,7 @@ export class ListingComponent implements OnInit {
     }
     this.dataService.getCustomerById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
-      this.router.navigate(['/details', row.id]);
+      this.router.navigate(['/users-details', row.id]);
     });
   }
 
@@ -80,6 +80,6 @@ export class ListingComponent implements OnInit {
   }
 
   onAddClick(): void {
-    this.router.navigate(['/details']);
+    this.router.navigate(['/users-details']);
   }
 }

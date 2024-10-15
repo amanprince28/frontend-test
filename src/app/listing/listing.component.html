@@ -6,56 +6,63 @@
         <form [formGroup]="searchForm">
           <mat-form-field class="example-full-width">
             <mat-label>Search</mat-label>
-            <input
-              matInput
-              formControlName="search"
-              placeholder="Eg.value"
-              (keyup)="filterTable()"
-            />
+            <input matInput formControlName="search" placeholder="Eg. value" />
           </mat-form-field>
         </form>
       </div>
-      <div class="col-sm-6 d-flex align-items-center">
-        <button mat-raised-button color="primary" (click)="onAddClick()">Add Customer</button>
+      
+      <div class="col-sm-6 d-flex align-items-center button-padding">
+        <button mat-raised-button color="primary" (click)="filterTable()">Filter</button>
+        <button mat-raised-button color="primary" (click)="onAddClick()">Add</button>
       </div>
     </div>
   </div>
 </div>
 
 <div class="mat-elevation-z8">
-<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  <!--- Note that these columns can be defined in any order.
-          The actual rendered columns are set as a property on the row definition" -->
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+    
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef>Name</th>
+      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+    </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
-    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-  </ng-container>
-          The actual rendered columns are set as a property on the row definition" -->
+    <!-- IC Column -->
+    <ng-container matColumnDef="ic">
+      <th mat-header-cell *matHeaderCellDef>IC</th>
+      <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
+    </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="ic">
-    <th mat-header-cell *matHeaderCellDef>IC</th>
-    <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
-  </ng-container>
-          The actual rendered columns are set as a property on the row definition" -->
+    <!-- Passport Column -->
+    <ng-container matColumnDef="passport">
+      <th mat-header-cell *matHeaderCellDef>Passport</th>
+      <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
+    </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="passport">
-    <th mat-header-cell *matHeaderCellDef>Passport</th>
-    <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
-  </ng-container>
+    <!-- Action Column for Edit and View -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-button color="primary" (click)="onRowClick(element)">Edit</button>
+        <button mat-button color="accent" (click)="onRowClick(element)">View</button>
+      </td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    (click)="onRowClick(row)"
-  ></tr>
-</table>
-<mat-paginator [pageSizeOptions]="[5, 10, 20]"
-               showFirstLastButtons
-               aria-label="Select page of periodic elements">
-</mat-paginator>
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      
+    ></tr>
+  </table>
+  
+  <!-- Paginator -->
+  <mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    showFirstLastButtons
+    aria-label="Select page of periodic elements"
+  >
+  </mat-paginator>
 </div>

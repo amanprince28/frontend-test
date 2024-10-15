@@ -1,0 +1,32 @@
+.customer-form {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .customer-form mat-card {
+    width: 100%;
+  }
+  
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .full-width {
+    flex: 1 1 100%;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  @media (min-width: 600px) {
+    .full-width {
+      flex: 1 1 calc(50% - 20px);
+    }
+  }

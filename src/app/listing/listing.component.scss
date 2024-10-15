@@ -1,0 +1,21 @@
+.demo-table {
+  width: 100%;
+  background-color: white; /* Table background set to white */
+}
+
+.mat-mdc-row .mat-mdc-cell {
+  cursor: pointer;
+   /* Table row text color set to black */
+}
+
+.demo-row-is-clicked {
+  font-weight: bold;
+  /* Clicked row text color set to black */
+}
+
+.button-padding {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+

@@ -11,7 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
   standalone: true,
   imports: [RouterOutlet, MatSidenavModule, MatButtonModule, MatIconModule, MatToolbarModule,RouterLink,MatMenuModule],
   templateUrl: './main-layout.component.html',
-  styleUrls: ['./main-layout.component.css'] // Make sure the CSS file is created if needed
+  styleUrls: ['./main-layout.component.scss'] // Make sure the CSS file is created if needed
 })
 export class MainLayoutComponent {
   title = 'frontend-test';
