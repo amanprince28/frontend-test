@@ -32,6 +32,7 @@ export class DetailsComponent {
   states: any[] = [];
   cities: any[] = [];
   signalData: any;
+  customerFullData: any;
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
   
@@ -55,6 +56,7 @@ export class DetailsComponent {
       name: new FormControl('', Validators.required),
       ic: new FormControl('', Validators.required),
       passport: new FormControl('', Validators.required),
+      race: new FormControl('', Validators.required),
       gender: new FormControl('male', Validators.required), // Default value
       marital_status: new FormControl('single', Validators.required), // Default value
       no_of_child: new FormControl(0, Validators.required), // Default value
@@ -65,7 +67,7 @@ export class DetailsComponent {
       car_plate: new FormControl('', Validators.required),
       relationship: new FormControl('', Validators.required),
       same_as_permanent: new FormControl(false),
-      perm_address_line1: new FormControl('', Validators.required),
+      perm_address_line: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
@@ -84,7 +86,7 @@ export class DetailsComponent {
       relationship_passport: new FormControl('', Validators.required),
       relationship_gender: new FormControl('male', Validators.required), // Default value
       relationship: new FormControl('', Validators.required),
-      perm_address_line1: new FormControl('', Validators.required),
+      perm_address_line: new FormControl('', Validators.required),
       // perm_address_line2: new FormControl('', Validators.required),
       perm_postal_code: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
@@ -165,7 +167,7 @@ export class DetailsComponent {
       relationship: row?.relationship || '',  
       perm_postal_code: row?.address[0]?.postal_code || '',
       corr_rel_postal_code: row?.address[0]?.postal_code || '',
-      perm_address_line1: row?.address[0]?.address_lines || '',
+      perm_address_line: row?.address[0]?.address_lines || '',
       perm_city: row?.address[0]?.city_id || '',
       perm_state: row?.address[0]?.state_id || '',
       perm_country: row?.address[0]?.country_id || ''
@@ -173,26 +175,29 @@ export class DetailsComponent {
   }
 
   loadCustomerData(id: string) {
+    console.log('--- loadCustomerData id --- ', id)
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       this.signalData = data;
+      this.customerFullData = data;
+      console.log('--- loadCustomerData --- ', this.signalData)
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
+        console.log('--- customerPermanentAddress --- ', customerPermanentAddress)
         this.customerForm.patchValue({
-          name: this.signalData?.name,
-          ic: this.signalData?.ic,
-          passport: this.signalData?.passport,
-          gender: this.signalData?.gender,
-          marital_status: this.signalData?.marital_status,
-          no_of_child: this.signalData?.no_of_child,
-          mobile_no: this.signalData?.mobile_no,
-          tel_code: this.signalData?.tel_code,
-          tel_no: this.signalData?.tel_no,
-          email: this.signalData?.email,
-          car_plate: this.signalData?.car_plate,
+          name: data.name,
+          ic: data.ic,
+          passport: data.passport,
+          gender: data.gender,
+          marital_status: data.marital_status,
+          no_of_child: data.no_of_child,
+          mobile_no: data.mobile_no,
+          tel_code: data.tel_code,
+          tel_no: data.tel_no,
+          email: data.email,
+          car_plate: data.car_plate,
           same_as_permanent: customerPermanentAddress?.is_permanent,
           perm_postal_code: customerPermanentAddress?.postal_code,
-          perm_address_line1: customerPermanentAddress?.address_lines,
+          perm_address_line: customerPermanentAddress?.address_lines,
           perm_country: customerPermanentAddress?.country_id,
           perm_state: customerPermanentAddress?.state_id,
           perm_city: customerPermanentAddress?.city_id,
@@ -209,7 +214,7 @@ export class DetailsComponent {
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       const signalData = data;
       this.dataSource.data = signalData.customer_relation;
-      console.log(this.dataSource.data,'ss');
+      // console.log(this.dataSource.data,'ss');
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
@@ -258,7 +263,7 @@ export class DetailsComponent {
   }
 
   onCountryChange(event: any) {
-    console.log('onCountryChange ', event)
+    // console.log('onCountryChange ', event)
     this.dataService.getCountry(event, null).subscribe((response: any) => {
       if (response && response.length > 0) {
         const country = response[0];
@@ -282,9 +287,9 @@ export class DetailsComponent {
   }
 
   onStateChange(stateId: string): void {
-    console.log('onStateChange ', stateId)
+    // console.log('onStateChange ', stateId)
     const selectedState = this.states.find(state => state.id === stateId);
-    console.log('selectedState', selectedState)
+    // console.log('selectedState', selectedState)
     if (selectedState) {
       this.cities = selectedState.cities || [];
       if (!this.isEditMode) {

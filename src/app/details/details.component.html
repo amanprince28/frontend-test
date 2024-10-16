@@ -5,81 +5,99 @@
     <mat-card-content>
       <!-- Customer Details -->
       <h3>Customer Details</h3>
-      <form>
+      <form [formGroup]="customerForm">
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Name</mat-label>
-            <input matInput placeholder="Enter name">
+            <input matInput placeholder="Enter name" formControlName="name">
           </mat-form-field>
-
+      
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>IC</mat-label>
-            <input matInput placeholder="Enter IC">
+            <input matInput placeholder="Enter IC" formControlName="ic">
           </mat-form-field>
         </div>
-
+      
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Passport</mat-label>
-            <input matInput placeholder="Enter Passport">
+            <input matInput placeholder="Enter Passport" formControlName="passport">
           </mat-form-field>
-
+      
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Race</mat-label>
-            <input matInput placeholder="Enter Race">
+            <input matInput placeholder="Enter Race" formControlName="race">
           </mat-form-field>
         </div>
-
+      
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Gender</mat-label>
-            <mat-select>
+            <mat-select formControlName="gender">
               <mat-option value="male">Male</mat-option>
               <mat-option value="female">Female</mat-option>
             </mat-select>
           </mat-form-field>
-
+      
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Mental Status</mat-label>
-            <input matInput placeholder="Enter Mental Status">
+            <mat-label>Marital Status</mat-label>
+            <mat-select formControlName="marital_status">
+              <mat-option value="single">Single</mat-option>
+              <mat-option value="married">Married</mat-option>
+              <mat-option value="divorced">Divorced</mat-option>
+              <mat-option value="widowed">Widowed</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
-
+      
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>No. of Child</mat-label>
-            <input matInput type="number" placeholder="Enter No. of Child">
+            <input matInput type="number" placeholder="Enter No. of Child" formControlName="no_of_child">
           </mat-form-field>
-
+      
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Car Plate</mat-label>
-            <input matInput placeholder="Enter Car Plate">
+            <input matInput placeholder="Enter Car Plate" formControlName="car_plate">
           </mat-form-field>
         </div>
-
+      
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input matInput type="email" placeholder="Enter Email">
+            <input matInput type="email" placeholder="Enter Email" formControlName="email">
           </mat-form-field>
         </div>
+        
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Telephone</mat-label>
+            <input matInput placeholder="Enter Telephone" formControlName="tel_no">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Mobile</mat-label>
+            <input matInput placeholder="Enter Mobile" formControlName="mobile_no">
+          </mat-form-field>
+        </div>
+
       </form>
 
       <!-- Tabs for Other Sections -->
       <mat-tab-group>
         <mat-tab label="Address & Contact">
-          <form>
+          <form [formGroup]="customerRelationshipForm">
             <h3>Customer Address</h3>
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 1</mat-label>
-                <input matInput placeholder="Enter Address Line 1">
+                <mat-label>Address Lines</mat-label>
+                <textarea matInput placeholder="Enter Address Line" formControlName="perm_address_line"></textarea>
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width">
+              <!-- <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Address Line 2</mat-label>
-                <input matInput placeholder="Enter Address Line 2">
-              </mat-form-field>
+                <input matInput placeholder="Enter Address Line 2" formControlName="address_line2">
+              </mat-form-field> -->
             </div>
 
             <div class="form-row">
@@ -272,7 +290,7 @@
               <div class="col-sm-6">
                 <mat-form-field class="example-full-width">
                   <mat-label>Address</mat-label>
-                  <input matInput formControlName="perm_address_line1" placeholder="Address" />
+                  <input matInput formControlName="perm_address_line" placeholder="Address" />
                 </mat-form-field>
               </div>
               <!-- Country, State, City -->
