@@ -26,6 +26,7 @@ export class DetailsComponent {
   details: any = {};
   form!: FormGroup;
   customerForm!: FormGroup;
+  customerAddressForm!: FormGroup;
   customerRelationshipForm!: FormGroup;
   customerEmployemntForm!: FormGroup
   countries: any[] = [];
@@ -66,6 +67,9 @@ export class DetailsComponent {
       email: new FormControl('', [Validators.required, Validators.email]),
       car_plate: new FormControl('', Validators.required),
       relationship: new FormControl('', Validators.required),
+    })
+    // Customer Address
+    this.customerAddressForm = new FormGroup({
       same_as_permanent: new FormControl(false),
       perm_address_line: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
@@ -76,7 +80,8 @@ export class DetailsComponent {
       corr_country: new FormControl('', Validators.required),
       corr_state: new FormControl('', Validators.required),
       corr_city: new FormControl('', Validators.required),
-    })
+    });
+
 
     // Customer Relationship
     this.customerRelationshipForm = new FormGroup({
@@ -195,13 +200,15 @@ export class DetailsComponent {
           tel_no: data.tel_no,
           email: data.email,
           car_plate: data.car_plate,
+        })
+        this.customerAddressForm.patchValue({
           same_as_permanent: customerPermanentAddress?.is_permanent,
           perm_postal_code: customerPermanentAddress?.postal_code,
           perm_address_line: customerPermanentAddress?.address_lines,
           perm_country: customerPermanentAddress?.country_id,
           perm_state: customerPermanentAddress?.state_id,
           perm_city: customerPermanentAddress?.city_id,
-        })
+        });
 
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
       } else {
