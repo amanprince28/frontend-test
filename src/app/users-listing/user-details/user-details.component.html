@@ -5,28 +5,28 @@
       <mat-card-content>
         <!-- Customer Details -->
         <h3>User Details</h3>
-        <form>
+        <form [formGroup]="customerForm">
           <div class="form-row">
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Name</mat-label>
-              <input matInput placeholder="Enter name">
+              <input matInput placeholder="Enter name" formControlName="name">
             </mat-form-field>
   
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Email</mat-label>
-              <input matInput type="email" placeholder="Enter Email">
+              <input matInput type="email" placeholder="Enter Email" formControlName="email">
             </mat-form-field>
           </div>
   
           <div class="form-row">
             <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Passport</mat-label>
-              <input matInput placeholder="Enter Passport">
+              <mat-label>Passport/IC</mat-label>
+              <input matInput placeholder="Enter Passport/IC" formControlName="ic">
             </mat-form-field>
   
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Role</mat-label>
-              <input matInput placeholder="Enter Role">
+              <input matInput placeholder="Enter Role" formControlName="role">
             </mat-form-field>
           </div>
         </form>
@@ -34,7 +34,7 @@
         <!-- Tabs for Other Sections -->
   
         <div class="action-buttons">
-          <button mat-raised-button color="primary">Save</button>
+          <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
           <button mat-raised-button>Cancel</button>
         </div>
       </mat-card-content>

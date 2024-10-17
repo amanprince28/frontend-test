@@ -33,7 +33,7 @@ export class UserDetailsComponent {
   cities: any[] = [];
   signalData: any;
   customerId!: string;
-  displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
+  // displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
@@ -54,262 +54,48 @@ export class UserDetailsComponent {
       // Customer Information
       name: new FormControl('', Validators.required),
       ic: new FormControl('', Validators.required),
-      passport: new FormControl('', Validators.required),
-      gender: new FormControl('male', Validators.required), // Default value
-      marital_status: new FormControl('single', Validators.required), // Default value
-      no_of_child: new FormControl(0, Validators.required), // Default value
-      mobile_no: new FormControl('', Validators.required),
-      tel_code: new FormControl('+1', Validators.required), // Default value
-      tel_no: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      car_plate: new FormControl('', Validators.required),
-      relationship: new FormControl('', Validators.required),
-      same_as_permanent: new FormControl(false),
-      perm_address_line: new FormControl('', Validators.required),
-      perm_country: new FormControl('', Validators.required),
-      perm_state: new FormControl('', Validators.required),
-      perm_city: new FormControl('', Validators.required),
-      perm_postal_code: new FormControl('', Validators.required),
-      corr_address_line1: new FormControl('', Validators.required),
-      corr_country: new FormControl('', Validators.required),
-      corr_state: new FormControl('', Validators.required),
-      corr_city: new FormControl('', Validators.required),
+      role: new FormControl('', [Validators.required,]),
     })
 
     // Customer Relationship
-    this.customerRelationshipForm = new FormGroup({
-      relationship_name: new FormControl('', Validators.required),
-      relationship_ic: new FormControl('', Validators.required),
-      relationship_mobile_no: new FormControl('', Validators.required),
-      relationship_passport: new FormControl('', Validators.required),
-      relationship_gender: new FormControl('male', Validators.required), // Default value
-      relationship: new FormControl('', Validators.required),
-      perm_address_line: new FormControl('', Validators.required),
-      // perm_address_line2: new FormControl('', Validators.required),
-      perm_postal_code: new FormControl('', Validators.required),
-      perm_country: new FormControl('', Validators.required),
-      perm_state: new FormControl('', Validators.required),
-      perm_city: new FormControl('', Validators.required),
-      same_as_permanent: new FormControl(false),
-      corr_address_line1: new FormControl(''),
-      // corr_address_line2: new FormControl('', Validators.required),
-      corr_country: new FormControl(''),
-      corr_state: new FormControl(''),
-      corr_city: new FormControl(''),
-      corr_rel_postal_code : new FormControl('')
-    });
-    // Employment Details
-
-    this.customerEmployemntForm = new FormGroup({
-      annual_income: new FormControl(0, Validators.required), // Default value
-      business_type: new FormControl('', Validators.required),
-      department: new FormControl('', Validators.required),
-      employee_no: new FormControl('', Validators.required),
-      income_date: new FormControl('', Validators.required),
-      income_type: new FormControl('', Validators.required),
-      employment_name: new FormControl('', Validators.required),
-      occupation_category: new FormControl('', Validators.required),
-
-      position: new FormControl('', Validators.required),
-      employment_remarks: new FormControl('', Validators.required),
-      telecode: new FormControl('', Validators.required),
-      telephone_no: new FormControl('', Validators.required),
-      employee_type: new FormControl('full_time'), // Default value
-    });
-
-    // Watch for changes in the 'same_as_permanent' checkbox
-    this.customerForm.get('same_as_permanent')?.valueChanges.subscribe(value => {
-      if (value) {
-        this.copyPermanentToCorrespondence();
-      } else {
-        this.clearCorrespondenceAddress();
-      }
-    });
-
-    this.customerRelationshipForm.get('same_as_permanent')?.valueChanges.subscribe(value => {
-      if (value) {
-        this.copyPermanentToCorrespondence();
-      } else {
-        this.clearCorrespondenceAddress();
-      }
-    });
 
     // Initialize edit mode and load existing data if necessary
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
       if (this.customerId) {
         this.loadCustomerData(this.customerId);
-        this.loadCustomerRaltionshipData(this.customerId);
-        this.loadEmployementData(this.customerId);
         this.isEditMode = true;
       } else {
         this.isEditMode = false;
       }
     });
 
-    this.fetchCountries();
   }
 
   ngAfterViewInit(): void { 
     this.dataSource.paginator = this.paginator;
   }
-  onRowClick(row:any){
-    console.log(row,'row');
-    this.customerRelationshipId = row.id;
-    this.customerRelationshipForm.patchValue({
-      relationship_name: row?.name || '',
-      relationship_ic: row?.ic || '',
-      relationship_mobile_no: row?.mobile_no || '',
-      relationship_passport: row?.passport || '',
-      relationship_gender: row?.gender || '',  
-      relationship: row?.relationship || '',  
-      perm_postal_code: row?.address[0]?.postal_code || '',
-      corr_rel_postal_code: row?.address[0]?.postal_code || '',
-      perm_address_line: row?.address[0]?.address_lines || '',
-      perm_city: row?.address[0]?.city_id || '',
-      perm_state: row?.address[0]?.state_id || '',
-      perm_country: row?.address[0]?.country_id || ''
-    });
-  }
 
   loadCustomerData(id: string) {
+    console.log('eit')
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       this.signalData = data;
+      console.log('eit',)
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
         this.customerForm.patchValue({
           name: this.signalData?.name,
           ic: this.signalData?.ic,
-          passport: this.signalData?.passport,
-          gender: this.signalData?.gender,
-          marital_status: this.signalData?.marital_status,
-          no_of_child: this.signalData?.no_of_child,
-          mobile_no: this.signalData?.mobile_no,
-          tel_code: this.signalData?.tel_code,
-          tel_no: this.signalData?.tel_no,
           email: this.signalData?.email,
-          car_plate: this.signalData?.car_plate,
-          same_as_permanent: customerPermanentAddress?.is_permanent,
-          perm_postal_code: customerPermanentAddress?.postal_code,
-          perm_address_line: customerPermanentAddress?.address_lines,
-          perm_country: customerPermanentAddress?.country_id,
-          perm_state: customerPermanentAddress?.state_id,
-          perm_city: customerPermanentAddress?.city_id,
+          role: this.signalData?.role,
         })
 
-        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
+       
       } else {
         this.isEditMode = false;
       }
-    });
-  }
-
-  loadCustomerRaltionshipData(id:string) {
-    this.dataService.getCustomerById(this.customerId).subscribe(data => {
-      const signalData = data;
-      this.dataSource.data = signalData.customer_relation;
-      console.log(this.dataSource.data,'ss');
-      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
-        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
-      } else {
-        this.isEditMode = false;
-      }
-    });
-  }
-
-  loadEmployementData(id:string){
-    this.dataService.getCustomerById(this.customerId).subscribe(data => {
-      const signalData = data;
-      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
-        this.customerEmployemntForm.patchValue({
-          annual_income: signalData?.company[0]?.annual_income,
-          department: signalData?.company[0]?.department,
-          employee_no: signalData?.company[0]?.employee_no,
-          employee_type: signalData?.company[0]?.employee_type,
-          income_date: signalData?.company[0]?.income_date,
-          income_type: signalData?.company[0]?.income_type,
-          employment_name: signalData?.company[0]?.name,
-          occupation_category: signalData?.company[0]?.occupation_category,
-          position: signalData?.company[0]?.position,
-          remark: signalData?.company[0]?.remark,
-          comp_tel_code: signalData?.company[0]?.tel_code,
-          comp_tel_no: signalData?.company[0]?.tel_no,
-        });
-
-        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
-      } else {
-        this.isEditMode = false;
-      }
-    });
-  }
-
-  fetchCountries(): void {
-    this.dataService.getCountry(this.customerForm.get('perm_country')?.value, this.customerForm.get('perm_state')?.value).subscribe(data => {
-      this.countries = data;
-    });
-    this.dataService.getCountry(this.customerRelationshipForm.get('perm_country')?.value, this.customerRelationshipForm.get('perm_state')?.value).subscribe(data => {
-      this.countries = data;
-    });
-  }
-
-  onCountryChange(event: any) {
-    console.log('onCountryChange ', event)
-    this.dataService.getCountry(event, null).subscribe((response: any) => {
-      if (response && response.length > 0) {
-        const country = response[0];
-        this.states = country.states || [];
-        this.cities = [];
-        if (!this.isEditMode) {
-          this.customerForm.get('permanent_state')?.reset();
-          this.customerForm.get('permanent_city')?.reset();
-          this.customerRelationshipForm.get('permanent_state')?.reset();
-          this.customerRelationshipForm.get('permanent_city')?.reset();
-        } else {
-          const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-          if (customerPermanentAddress) {
-            this.onStateChange(customerPermanentAddress.state_id);
-          } else {
-            this.onStateChange(this.signalData.customer_address[0].state_id);
-          }
-        }
-      }
-    });
-  }
-
-  onStateChange(stateId: string): void {
-    console.log('onStateChange ', stateId)
-    const selectedState = this.states.find(state => state.id === stateId);
-    console.log('selectedState', selectedState)
-    if (selectedState) {
-      this.cities = selectedState.cities || [];
-      if (!this.isEditMode) {
-        this.customerForm.get('permanent_city')?.reset();
-      }
-    }
-  }
-
-  // Method to copy permanent address to correspondence address
-  copyPermanentToCorrespondence(): void {
-    this.customerForm.patchValue({
-      correspondence_address_lines: this.customerForm.get('permanent_address_lines')?.value,
-      correspondence_country: this.customerForm.get('permanent_country')?.value,
-      correspondence_state: this.customerForm.get('permanent_state')?.value,
-      correspondence_city: this.customerForm.get('permanent_city')?.value
-    });
-  }
-
-  // Method to clear correspondence address fields
-  clearCorrespondenceAddress(): void {
-    this.customerForm.patchValue({
-      correspondence_address_lines: '',
-      correspondence_country: '',
-      correspondence_state: '',
-      correspondence_city: ''
     });
   }
 
@@ -318,33 +104,8 @@ export class UserDetailsComponent {
     const submissionData: any = {
       name: this.customerForm.get('name')?.value,
       ic: this.customerForm.get('ic')?.value,
-      passport: this.customerForm.get('passport')?.value,
-      gender: this.customerForm.get('gender')?.value,
-      marital_status: this.customerForm.get('marital_status')?.value,
-      no_of_child: this.customerForm.get('no_of_child')?.value,
-      mobile_no: this.customerEmployemntForm.get('mobile_no')?.value,
-      address_lines: this.customerForm.get('perm_address_lines1')?.value,
-      country_id: this.customerForm.get('perm_country')?.value,
-      state_id: this.customerForm.get('perm_state')?.value,
-      city_id: this.customerForm.get('perm_city')?.value,
-      tel_code: this.customerForm.get('tel_code')?.value,
-      tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
-      //  car_plate: this.form.get('car_plate')?.value,
-      customer_address: [{
-        permanent: {
-          address_lines: this.customerForm.get('perm_address_lines1')?.value,
-          country_id: this.customerForm.get('perm_country')?.value,
-          state_id: this.customerForm.get('perm_state')?.value,
-          city_id: this.customerForm.get('perma_city')?.value
-        },
-        correspondence: {
-          address_lines: this.customerForm.get('corr_address_lines1')?.value,
-          country_id: this.customerForm.get('corr_country')?.value,
-          state_id: this.customerForm.get('corr_state')?.value,
-          city_id: this.customerForm.get('corr_city')?.value
-        }
-      }]
+      role: this.customerForm.get('role')?.value,
     };
 
     if (this.isEditMode) {
@@ -353,70 +114,6 @@ export class UserDetailsComponent {
 
     if (this.customerForm.invalid) {
       this.customerForm.markAllAsTouched();
-      return;
-    }
-
-    console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
-  }
-
-  onEmploymentSubmit() {
-    const submissionData: any = {
-      annual_income: this.customerEmployemntForm.get('annual_income')?.value,
-      business_type: this.customerEmployemntForm.get('business_type')?.value,
-      department: this.customerEmployemntForm.get('department')?.value,
-      employee_no: this.customerEmployemntForm.get('employee_no')?.value,
-      income_date: this.customerEmployemntForm.get('income_date')?.value,
-      income_type: this.customerEmployemntForm.get('income_type')?.value,
-      employment_name: this.customerEmployemntForm.get('employment_name')?.value,
-      occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
-      position: this.customerEmployemntForm.get('position')?.value,
-      employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
-      telecode: this.customerEmployemntForm.get('telecode')?.value,
-      employee_type: this.customerEmployemntForm.get('employee_type')?.value,
-      telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
-    };
-
-    if (this.isEditMode) {
-      submissionData.id = this.customerId;
-    }
-
-    if (this.customerEmployemntForm.invalid) {
-      this.customerEmployemntForm.markAllAsTouched();
-      return;
-    }
-
-    console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
-  }
-
-  onCustomerRelationshipSubmit() {
-    console.log('onCustomerRelationshipSubmit', this.customerRelationshipId)
-    const submissionData: any = {
-      name: this.customerRelationshipForm.get('relationship_name')?.value,
-      ic: this.customerRelationshipForm.get('relationship_ic')?.value,
-      passport: this.customerRelationshipForm.get('relationship_passport')?.value,
-      gender: this.customerRelationshipForm.get('relationship_gender')?.value,
-      mobile_no: this.customerRelationshipForm.get('perm_country')?.value,
-      relationship: this.customerRelationshipForm.get('relationship')?.value,
-      address: [{
-        address_lines: this.customerRelationshipForm.get('perm_address_lines1')?.value,
-        country_id: this.customerRelationshipForm.get('perm_country')?.value,
-        state_id: this.customerRelationshipForm.get('perm_state')?.value,
-        city_id: this.customerRelationshipForm.get('perma_city')?.value
-      }]
-    };
-
-    if (this.isEditMode) {
-      submissionData.id = this.customerId;
-    }
-
-    if (this.customerRelationshipForm.invalid) {
-      this.customerRelationshipForm.markAllAsTouched();
       return;
     }
 

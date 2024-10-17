@@ -67,39 +67,42 @@ export class DetailsComponent {
       email: new FormControl('', [Validators.required, Validators.email]),
       car_plate: new FormControl('', Validators.required),
       relationship: new FormControl('', Validators.required),
+     
     })
     // Customer Address
     this.customerAddressForm = new FormGroup({
-      same_as_permanent: new FormControl(false),
+      cus_same_as_permanent: new FormControl(false),
       perm_address_line: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
       perm_postal_code: new FormControl('', Validators.required),
-      corr_address_line1: new FormControl('', Validators.required),
+      corr_address_line: new FormControl('', Validators.required),
       corr_country: new FormControl('', Validators.required),
       corr_state: new FormControl('', Validators.required),
       corr_city: new FormControl('', Validators.required),
+      cus_mobile :new FormControl('', Validators.required),
+      cus_tel_no:new FormControl('', Validators.required),
+      staying_since:new FormControl('', Validators.required),
     });
 
 
     // Customer Relationship
     this.customerRelationshipForm = new FormGroup({
+      
       relationship_name: new FormControl('', Validators.required),
       relationship_ic: new FormControl('', Validators.required),
       relationship_mobile_no: new FormControl('', Validators.required),
       relationship_passport: new FormControl('', Validators.required),
       relationship_gender: new FormControl('male', Validators.required), // Default value
       relationship: new FormControl('', Validators.required),
+      same_as_permanent: new FormControl(false),
       perm_address_line: new FormControl('', Validators.required),
-      // perm_address_line2: new FormControl('', Validators.required),
       perm_postal_code: new FormControl('', Validators.required),
       perm_country: new FormControl('', Validators.required),
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
-      same_as_permanent: new FormControl(false),
-      corr_address_line1: new FormControl(''),
-      // corr_address_line2: new FormControl('', Validators.required),
+      corr_address_line: new FormControl(''),
       corr_country: new FormControl(''),
       corr_state: new FormControl(''),
       corr_city: new FormControl(''),
@@ -125,19 +128,19 @@ export class DetailsComponent {
     });
 
     // Watch for changes in the 'same_as_permanent' checkbox
-    this.customerForm.get('same_as_permanent')?.valueChanges.subscribe(value => {
+    this.customerAddressForm.get('cus_same_as_permanent')?.valueChanges.subscribe(value => {
       if (value) {
-        this.copyPermanentToCorrespondence();
+        this.copyPermanentToCorrespondence('customerAddressForm');
       } else {
-        this.clearCorrespondenceAddress();
+        this.clearCorrespondenceAddress('customerAddressForm');
       }
     });
 
     this.customerRelationshipForm.get('same_as_permanent')?.valueChanges.subscribe(value => {
       if (value) {
-        this.copyPermanentToCorrespondence();
+        this.copyPermanentToCorrespondence('customerRelationshipForm');
       } else {
-        this.clearCorrespondenceAddress();
+        this.clearCorrespondenceAddress('customerRelationshipForm');
       }
     });
 
@@ -161,7 +164,6 @@ export class DetailsComponent {
     this.dataSource.paginator = this.paginator;
   }
   onRowClick(row:any){
-    console.log(row,'row');
     this.customerRelationshipId = row.id;
     this.customerRelationshipForm.patchValue({
       relationship_name: row?.name || '',
@@ -306,23 +308,42 @@ export class DetailsComponent {
   }
 
   // Method to copy permanent address to correspondence address
-  copyPermanentToCorrespondence(): void {
-    this.customerForm.patchValue({
-      correspondence_address_lines: this.customerForm.get('permanent_address_lines')?.value,
-      correspondence_country: this.customerForm.get('permanent_country')?.value,
-      correspondence_state: this.customerForm.get('permanent_state')?.value,
-      correspondence_city: this.customerForm.get('permanent_city')?.value
-    });
+  copyPermanentToCorrespondence(formName:any): void {
+    if(formName ==='customerAddressForm'){
+    this.customerAddressForm.patchValue({
+      corr_address_line: this.customerAddressForm.get('perm_address_line')?.value,
+      corr_country: this.customerAddressForm.get('perm_country')?.value,
+      corr_state: this.customerAddressForm.get('perm_state')?.value,
+      corr_city: this.customerAddressForm.get('perm_city')?.value
+    })}
+    if(formName==='customerRelationshipForm'){
+      this.customerRelationshipForm.patchValue({
+        corr_address_line: this.customerRelationshipForm.get('perm_address_line')?.value,
+        corr_country: this.customerRelationshipForm.get('perm_country')?.value,
+        corr_state: this.customerRelationshipForm.get('perm_state')?.value,
+        corr_city: this.customerRelationshipForm.get('perm_city')?.value,
+        corr_rel_postal_code: this.customerRelationshipForm.get('perm_postal_code')?.value
+      })}
   }
 
   // Method to clear correspondence address fields
-  clearCorrespondenceAddress(): void {
-    this.customerForm.patchValue({
-      correspondence_address_lines: '',
-      correspondence_country: '',
-      correspondence_state: '',
-      correspondence_city: ''
+  clearCorrespondenceAddress(formName:any): void {
+    if(formName ==='customerAddressForm'){
+    this.customerAddressForm.patchValue({
+      corr_address_line: '',
+      corr_country: '',
+      corr_state: '',
+      corr_city: ''
     });
+  }
+  if(formName ==='customerRelationshipForm'){
+    this.customerRelationshipForm.patchValue({
+      corr_address_line: '',
+      corr_country: '',
+      corr_state: '',
+      corr_city: ''
+    });
+  }
   }
 
   onCustomerSubmit() {
@@ -334,30 +355,29 @@ export class DetailsComponent {
       gender: this.customerForm.get('gender')?.value,
       marital_status: this.customerForm.get('marital_status')?.value,
       no_of_child: this.customerForm.get('no_of_child')?.value,
-      mobile_no: this.customerEmployemntForm.get('mobile_no')?.value,
-      address_lines: this.customerForm.get('perm_address_lines1')?.value,
-      country_id: this.customerForm.get('perm_country')?.value,
-      state_id: this.customerForm.get('perm_state')?.value,
-      city_id: this.customerForm.get('perm_city')?.value,
-      tel_code: this.customerForm.get('tel_code')?.value,
+      mobile_no: this.customerForm.get('mobile_no')?.value,
       tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
-      //  car_plate: this.form.get('car_plate')?.value,
+      car_plate: this.form.get('car_plate')?.value,
       customer_address: [{
         permanent: {
-          address_lines: this.customerForm.get('perm_address_lines1')?.value,
-          country_id: this.customerForm.get('perm_country')?.value,
-          state_id: this.customerForm.get('perm_state')?.value,
-          city_id: this.customerForm.get('perma_city')?.value
+          address_lines: this.customerAddressForm.get('perm_address_line')?.value,
+          country_id: this.customerAddressForm.get('perm_country')?.value,
+          state_id: this.customerAddressForm.get('perm_state')?.value,
+          city_id: this.customerAddressForm.get('perm_city')?.value,
+          cus_mobile:this.customerAddressForm.get('cus_mobile')?.value,
+          cus_telephone:this.customerAddressForm.get('cus_tel_no')?.value
         },
         correspondence: {
-          address_lines: this.customerForm.get('corr_address_lines1')?.value,
-          country_id: this.customerForm.get('corr_country')?.value,
-          state_id: this.customerForm.get('corr_state')?.value,
-          city_id: this.customerForm.get('corr_city')?.value
+          address_lines: this.customerAddressForm.get('corr_address_line')?.value,
+          country_id: this.customerAddressForm.get('corr_country')?.value,
+          state_id: this.customerAddressForm.get('corr_state')?.value,
+          city_id: this.customerAddressForm.get('corr_city')?.value
         }
       }]
     };
+
+    console.log(submissionData,'submisson data');
 
     if (this.isEditMode) {
       submissionData.id = this.customerId;
@@ -416,11 +436,20 @@ export class DetailsComponent {
       mobile_no: this.customerRelationshipForm.get('perm_country')?.value,
       relationship: this.customerRelationshipForm.get('relationship')?.value,
       address: [{
-        address_lines: this.customerRelationshipForm.get('perm_address_lines1')?.value,
+        permanent:{
+        address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
         country_id: this.customerRelationshipForm.get('perm_country')?.value,
         state_id: this.customerRelationshipForm.get('perm_state')?.value,
-        city_id: this.customerRelationshipForm.get('perma_city')?.value
-      }]
+        city_id: this.customerRelationshipForm.get('perm_city')?.value
+      },
+      correspondence: {
+        address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
+        country_id: this.customerRelationshipForm.get('corr_country')?.value,
+        state_id: this.customerRelationshipForm.get('corr_state')?.value,
+        city_id: this.customerRelationshipForm.get('corr_city')?.value
+      }
+    },
+    ]
     };
 
     if (this.isEditMode) {
@@ -436,5 +465,9 @@ export class DetailsComponent {
     // this.dataService.addCustomer(submissionData).subscribe(response => {
     //   this.router.navigate(['/']);
     // });
+  }
+
+  saveData(){
+
   }
 }

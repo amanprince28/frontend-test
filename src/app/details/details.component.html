@@ -82,7 +82,7 @@
         </div>
 
       </form>
-
+      
       <!-- Tabs for Other Sections -->
       <mat-tab-group>
         <mat-tab label="Address & Contact">
@@ -101,48 +101,69 @@
             </div>
 
             <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field class="full-width">
                 <mat-label>Postal Code</mat-label>
-                <input matInput placeholder="Enter Postal Code">
+                <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field class="full-width">
                 <mat-label>City</mat-label>
-                <input matInput placeholder="Enter City">
+                <mat-select formControlName="perm_city">
+                  <mat-option *ngFor="let city of cities" [value]="city.id">
+                    {{ city.name }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
 
             <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field class="full-width">
                 <mat-label>State</mat-label>
-                <input matInput placeholder="Enter State">
+                <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
+                  <mat-option *ngFor="let state of states" [value]="state.id">
+                    {{ state.name }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
 
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field class="full-width">
                 <mat-label>Country</mat-label>
-                <input matInput placeholder="Enter Country">
+                <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
+                  <mat-option *ngFor="let country of countries" [value]="country.id">
+                    {{ country.name }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
             </div>
 
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Telephone</mat-label>
-                <input matInput placeholder="Enter Telephone">
+                <input matInput placeholder="Enter Telephone" formControlName="cus_tel_no">
               </mat-form-field>
-
+    
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Mobile</mat-label>
-                <input matInput placeholder="Enter Mobile">
+                <input matInput placeholder="Enter Mobile" formControlName="cus_mobile">
               </mat-form-field>
             </div>
 
             <div class="form-row">
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Staying Since</mat-label>
-                <input matInput type="date">
+                <input matInput type="date" formControlName="staying_since">
               </mat-form-field>
             </div>
+            <div class="col-sm-12">
+              <input type="checkbox" formControlName="cus_same_as_permanent" />Correspondance addresss Same as Permanent Address
+              <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
+            </div>
           </form>
+
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
+            <button mat-raised-button>Cancel</button>
+          </div>
         </mat-tab>
 
         <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="m-2" (ngSubmit)="onEmploymentSubmit()">
@@ -226,14 +247,15 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="row">
+          <div class="action-buttons">
             <div class="col-sm-12 d-flex flex-row-reverse">
-              <button mat-raised-button type="submit" >Submit</button>
+              <button mat-raised-button type="submit" color="primary">Submit</button>
             </div>
           </div>
           </form></mat-tab>
         <mat-tab label="Family & Guarantor">
           <form [formGroup]="customerRelationshipForm" class="m-2" (ngSubmit)="onCustomerRelationshipSubmit()">
+
             <div class="row m-3">
               <div class="col-sm-3">
                 <mat-form-field class="example-full-width">
@@ -288,9 +310,9 @@
                 <h3>Permanent Address</h3>
               </div>
               <div class="col-sm-6">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Address</mat-label>
-                  <input matInput formControlName="perm_address_line" placeholder="Address" />
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Address Lines</mat-label>
+                  <textarea matInput placeholder="Enter Address Line" formControlName="perm_address_line"></textarea>
                 </mat-form-field>
               </div>
               <!-- Country, State, City -->
@@ -341,13 +363,13 @@
                   <h3>Correspondence Address</h3>
                 </div>
                 <div class="col-sm-6">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Address</mat-label>
-                    <input matInput formControlName="corr_address_line1" placeholder="Address" />
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Address Lines</mat-label>
+                    <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
                   </mat-form-field>
                 </div>
                 <div class="col-sm-3">
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field class="full-width">
                     <mat-label>Postal Code</mat-label>
                     <input matInput formControlName="corr_rel_postal_code" placeholder="Postal Code" />
                   </mat-form-field>
@@ -360,7 +382,7 @@
                 </div> -->
                 <!-- Country, State, City -->
                 <div class="col-sm-3">
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field class="full-width">
                     <mat-label>Country</mat-label>
                     <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
                       <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -370,7 +392,7 @@
                   </mat-form-field>
                 </div>
                 <div class="col-sm-3">
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field class="full-width">
                     <mat-label>State</mat-label>
                     <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
                       <mat-option *ngFor="let state of states" [value]="state.id">
@@ -380,7 +402,7 @@
                   </mat-form-field>
                 </div>
                 <div class="col-sm-3">
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field class="full-width">
                     <mat-label>City</mat-label>
                     <mat-select formControlName="corr_city">
                       <mat-option *ngFor="let city of cities" [value]="city.id">
@@ -393,7 +415,8 @@
             </div>
             <div class="row">
               <div class="col-sm-12 d-flex flex-row-reverse">
-                <button mat-raised-button type="submit" >Submit</button>
+                <button mat-raised-button color="primary" type ="submit" >Save</button>
+                <!-- <button mat-raised-button type="submit" >Submit</button> -->
               </div>
             </div>  
           </form>
@@ -446,10 +469,10 @@
         <mat-tab label="Documents">Content for Documents</mat-tab>
       </mat-tab-group>
 
-      <div class="action-buttons">
-        <button mat-raised-button color="primary">Save</button>
+      <!-- <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="saveData()">Save</button>
         <button mat-raised-button>Cancel</button>
-      </div>
+      </div> -->
     </mat-card-content>
   </mat-card>
 </div>
