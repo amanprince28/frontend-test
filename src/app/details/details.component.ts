@@ -358,7 +358,7 @@ export class DetailsComponent {
       mobile_no: this.customerForm.get('mobile_no')?.value,
       tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
-      car_plate: this.form.get('car_plate')?.value,
+      car_plate: this.customerForm.get('car_plate')?.value,
       customer_address: [{
         permanent: {
           address_lines: this.customerAddressForm.get('perm_address_line')?.value,
@@ -383,10 +383,10 @@ export class DetailsComponent {
       submissionData.id = this.customerId;
     }
 
-    if (this.customerForm.invalid) {
-      this.customerForm.markAllAsTouched();
-      return;
-    }
+    // if (this.customerForm.invalid) {
+    //   this.customerForm.markAllAsTouched();
+    //   return;
+    // }
 
     console.log(submissionData)
     this.dataService.addCustomer(submissionData).subscribe(response => {
@@ -415,15 +415,15 @@ export class DetailsComponent {
       submissionData.id = this.customerId;
     }
 
-    if (this.customerEmployemntForm.invalid) {
-      this.customerEmployemntForm.markAllAsTouched();
-      return;
-    }
+    // if (this.customerEmployemntForm.invalid) {
+    //   this.customerEmployemntForm.markAllAsTouched();
+    //   return;
+    // }
 
     console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
+    this.dataService.addCustomer(submissionData).subscribe(response => {
+      //this.router.navigate(['/']);
+    });
   }
 
   onCustomerRelationshipSubmit() {
@@ -456,18 +456,15 @@ export class DetailsComponent {
       submissionData.id = this.customerId;
     }
 
-    if (this.customerRelationshipForm.invalid) {
-      this.customerRelationshipForm.markAllAsTouched();
-      return;
-    }
+    // if (this.customerRelationshipForm.invalid) {
+    //   this.customerRelationshipForm.markAllAsTouched();
+    //   return;
+    // }
 
     console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
+    this.dataService.addCustomer(submissionData).subscribe(response => {
+      //this.router.navigate(['/']);
+    });
   }
 
-  saveData(){
-
-  }
 }
