@@ -389,9 +389,9 @@ export class DetailsComponent {
     }
 
     console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
+    this.dataService.addCustomer(submissionData).subscribe(response => {
+      // this.router.navigate(['/']);
+    });
   }
 
   onEmploymentSubmit() {
