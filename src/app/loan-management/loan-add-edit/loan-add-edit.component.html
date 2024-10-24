@@ -1,0 +1,120 @@
+<div class="loan-add-container">
+  <h2>Loan - Add</h2>
+  <mat-card class="card">
+    <!-- Agent Details Section -->
+    <div class="section">
+      <h3>
+        <mat-icon>search</mat-icon> Agent Details
+      </h3>
+      <form [formGroup]="agentDetailsForm">
+        <div class="fields-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Agent Name</mat-label>
+            <input formControlName="agentName" matInput required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Agent ID</mat-label>
+            <mat-select formControlName="agentId" required>
+              <mat-option *ngFor="let agent of agentIddropdown" [value]="agent.id">
+                {{ agent.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Agent Lead</mat-label>
+            <mat-select formControlName="agentLead" required>
+              <mat-option *ngFor="let agent of agentLead" [value]="agent.id">
+                {{ agent.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+
+    <!-- Customer Details Section -->
+    <div class="section">
+      <h3>
+        <mat-icon>search</mat-icon> Customer Details
+      </h3>
+      <form [formGroup]="customerDetailsForm">
+        <div class="fields-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Customer ID</mat-label>
+            <input formControlName="customerId" matInput required>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Customer Name</mat-label>
+            <input formControlName="customerName" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Mobile</mat-label>
+            <input formControlName="mobile" matInput type="tel">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Customer Address</mat-label>
+            <input formControlName="customerAddress" matInput required>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+
+    <!-- Loan Details Section -->
+    <div class="section">
+      <h3>Loan Details</h3>
+      <form [formGroup]="loanDetailsForm">
+        <div class="fields-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Loan Package</mat-label>
+            <input formControlName="loanPackage" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Repayment Date</mat-label>
+            <input formControlName="repaymentDate" matInput type="date">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Date Period</mat-label>
+            <mat-select formControlName="datePeriod" required>
+              <mat-option *ngFor="let period of datePeriod" [value]="period.id">
+                {{ period.month }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Principal Amount</mat-label>
+            <input formControlName="principalAmount" matInput type="number">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Deposit Amount</mat-label>
+            <input formControlName="depositAmount" matInput type="number">
+          </mat-form-field>
+        </div>
+        <div class="fields-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Application Fees</mat-label>
+            <input formControlName="applicationFee" matInput type="number">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Upfront</mat-label>
+            <input formControlName="paymentUpfront" matInput type="number">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Interest (%)</mat-label>
+            <input formControlName="interest" matInput type="number">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Loan Remark</mat-label>
+            <input formControlName="loanRemark" matInput>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+  </mat-card>
+
+  <!-- Footer Buttons -->
+  <div class="actions">
+    <button mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
+    <button mat-raised-button color="primary" (click)="saveLoan()">Create Loan</button>
+  </div>
+</div>

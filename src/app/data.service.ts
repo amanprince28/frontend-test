@@ -52,4 +52,8 @@ export class DataService {
     const url = this.apiUrl + '/customer';
     return this.http.post<any>(url + '/:id', customer);
   }
+
+  saveLoan(loanData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/add`, loanData);
+  }
 }
