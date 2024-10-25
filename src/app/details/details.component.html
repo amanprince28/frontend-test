@@ -410,56 +410,58 @@
                 <div class="col-sm-12">
                   <h3>Correspondence Address</h3>
                 </div>
-                <div class="col-sm-6">
-                  <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Address Lines</mat-label>
-                    <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
-                  </mat-form-field>
+              
+                <!-- Address Line, Postal Code, Country Row -->
+                <div class="row">
+                  <div class="col-sm-6">
+                    <mat-form-field appearance="outline" class="full-width">
+                      <mat-label>Address Lines</mat-label>
+                      <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-label>Postal Code</mat-label>
+                      <input matInput formControlName="corr_rel_postal_code" placeholder="Postal Code" />
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-label>Country</mat-label>
+                      <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
+                        <mat-option *ngFor="let country of countries" [value]="country.id">
+                          {{ country.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
                 </div>
-                <div class="col-sm-3">
-                  <mat-form-field class="full-width">
-                    <mat-label>Postal Code</mat-label>
-                    <input matInput formControlName="corr_rel_postal_code" placeholder="Postal Code" />
-                  </mat-form-field>
-                </div>
-                <!-- <div class="col-sm-6">
-                  <mat-form-field class="example-full-width">
-                    <mat-label>Address Line 2</mat-label>
-                    <input matInput formControlName="corr_address_line2" placeholder="Address Line 2" />
-                  </mat-form-field>
-                </div> -->
-                <!-- Country, State, City -->
-                <div class="col-sm-3">
-                  <mat-form-field class="full-width">
-                    <mat-label>Country</mat-label>
-                    <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
-                      <mat-option *ngFor="let country of countries" [value]="country.id">
-                        {{ country.name }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="col-sm-3">
-                  <mat-form-field class="full-width">
-                    <mat-label>State</mat-label>
-                    <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
-                      <mat-option *ngFor="let state of states" [value]="state.id">
-                        {{ state.name }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
-                </div>
-                <div class="col-sm-3">
-                  <mat-form-field class="full-width">
-                    <mat-label>City</mat-label>
-                    <mat-select formControlName="corr_city">
-                      <mat-option *ngFor="let city of cities" [value]="city.id">
-                        {{ city.name }}
-                      </mat-option>
-                    </mat-select>
-                  </mat-form-field>
+              
+                <!-- State, City Row -->
+                <div class="row">
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-label>State</mat-label>
+                      <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
+                        <mat-option *ngFor="let state of states" [value]="state.id">
+                          {{ state.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
+                  <div class="col-sm-3">
+                    <mat-form-field class="full-width">
+                      <mat-label>City</mat-label>
+                      <mat-select formControlName="corr_city">
+                        <mat-option *ngFor="let city of cities" [value]="city.id">
+                          {{ city.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </div>
                 </div>
               </div>
+              
             </div>
             <div class="row">
               <div class="col-sm-12 d-flex flex-row-reverse">
