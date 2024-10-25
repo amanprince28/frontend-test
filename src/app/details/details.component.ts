@@ -77,6 +77,7 @@ export class DetailsComponent {
       perm_state: new FormControl('', Validators.required),
       perm_city: new FormControl('', Validators.required),
       perm_postal_code: new FormControl('', Validators.required),
+      corr_postal_code: new FormControl('', Validators.required),
       corr_address_line: new FormControl('', Validators.required),
       corr_country: new FormControl('', Validators.required),
       corr_state: new FormControl('', Validators.required),
@@ -314,7 +315,8 @@ export class DetailsComponent {
       corr_address_line: this.customerAddressForm.get('perm_address_line')?.value,
       corr_country: this.customerAddressForm.get('perm_country')?.value,
       corr_state: this.customerAddressForm.get('perm_state')?.value,
-      corr_city: this.customerAddressForm.get('perm_city')?.value
+      corr_city: this.customerAddressForm.get('perm_city')?.value,
+      corr_postal_code:this.customerAddressForm.get('perm_postal_code')?.value,
     })}
     if(formName==='customerRelationshipForm'){
       this.customerRelationshipForm.patchValue({
@@ -333,7 +335,8 @@ export class DetailsComponent {
       corr_address_line: '',
       corr_country: '',
       corr_state: '',
-      corr_city: ''
+      corr_city: '',
+      corr_postal_code:''
     });
   }
   if(formName ==='customerRelationshipForm'){

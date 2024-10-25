@@ -158,6 +158,54 @@
               <input type="checkbox" formControlName="cus_same_as_permanent" />Correspondance addresss Same as Permanent Address
               <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
             </div>
+            <h5>Correspondance Address</h5>
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address Lines</mat-label>
+                <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
+              </mat-form-field>
+
+              <!-- <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Address Line 2</mat-label>
+                <input matInput placeholder="Enter Address Line 2" formControlName="address_line2">
+              </mat-form-field> -->
+            </div>
+
+            <div class="form-row">
+              <mat-form-field class="full-width">
+                <mat-label>Postal Code</mat-label>
+                <input matInput formControlName="corr_postal_code" placeholder="Postal Code" />
+              </mat-form-field>
+
+              <mat-form-field class="full-width">
+                <mat-label>City</mat-label>
+                <mat-select formControlName="corr_city">
+                  <mat-option *ngFor="let city of cities" [value]="city.id">
+                    {{ city.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="form-row">
+              <mat-form-field class="full-width">
+                <mat-label>State</mat-label>
+                <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
+                  <mat-option *ngFor="let state of states" [value]="state.id">
+                    {{ state.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field class="full-width">
+                <mat-label>Country</mat-label>
+                <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
+                  <mat-option *ngFor="let country of countries" [value]="country.id">
+                    {{ country.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
           </form>
 
           <div class="action-buttons">
