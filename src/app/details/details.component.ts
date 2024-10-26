@@ -363,20 +363,19 @@ export class DetailsComponent {
       email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
       customer_address: [{
-        permanent: {
-          address_lines: this.customerAddressForm.get('perm_address_line')?.value,
-          country_id: this.customerAddressForm.get('perm_country')?.value,
-          state_id: this.customerAddressForm.get('perm_state')?.value,
-          city_id: this.customerAddressForm.get('perm_city')?.value,
-          cus_mobile:this.customerAddressForm.get('cus_mobile')?.value,
-          cus_telephone:this.customerAddressForm.get('cus_tel_no')?.value
-        },
-        correspondence: {
-          address_lines: this.customerAddressForm.get('corr_address_line')?.value,
-          country_id: this.customerAddressForm.get('corr_country')?.value,
-          state_id: this.customerAddressForm.get('corr_state')?.value,
-          city_id: this.customerAddressForm.get('corr_city')?.value
-        }
+        address_lines: this.customerAddressForm.get('perm_address_line')?.value,
+        postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
+        is_permanent: this.customerAddressForm.get('perm_address_line')?.value ? true : false,
+        country_id: this.customerAddressForm.get('perm_country')?.value,
+        state_id: this.customerAddressForm.get('perm_state')?.value,
+        city_id: this.customerAddressForm.get('perm_city')?.value,
+      },
+      {
+        address_lines:this.customerAddressForm.get('corr_address_line')?.value,
+        postal_code:this.customerAddressForm.get('perm_postal_code')?.value,
+        country_id:this.customerAddressForm.get('perm_country')?.value,
+        state_id:this.customerAddressForm.get('perm_state')?.value,
+        city_id:this.customerAddressForm.get('perm_city')?.value,
       }]
     };
 
