@@ -59,16 +59,18 @@ export class LoanManagementComponent {
     this.router.navigateByUrl('loan-add')
   }
 
-  onRowClick(row: any): void {
-    console.log(row,'roww')
-    // if (row.customerId) {
-    //   return;
-    // }
-    // this.dataService.getCustomerById(row.loanId).subscribe((response: any) => {
-      this.signalService.triggerAction(row);
-      this.router.navigate(['/loan-add', row]);
-    //});
-  }
+  onRowClick(row: any, action: string): void {
+    console.log(row, 'row');
+
+    // Add the action to the row object
+    row.action = action;
+
+    // Trigger action with the modified row object
+    this.signalService.triggerAction(row);
+
+    // Navigate to the loan-add route, passing the modified row object
+    this.router.navigate(['/loan-add', row]);
+}
 
   filterTable(): void {
     if (this.searchForm.get('search')?.value) {

@@ -65,7 +65,11 @@ export class UserDetailsComponent {
       this.customerId = params['id'];
       if (this.customerId) {
         this.loadCustomerData(this.customerId);
+        if(params['action']==='edit')
         this.isEditMode = true;
+        if(params['action']==='view'){
+          this.customerForm.disable();
+        }
       } else {
         this.isEditMode = false;
       }

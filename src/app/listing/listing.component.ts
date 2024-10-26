@@ -59,10 +59,11 @@ export class ListingComponent implements OnInit {
     });
   }
 
-  onRowClick(row: any): void {
+  onRowClick(row: any,action:string): void {
     if (!row.id) {
       return;
     }
+    row.action = action;
     this.dataService.getCustomerById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
       this.router.navigate(['/details', row.id]);

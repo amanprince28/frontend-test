@@ -68,11 +68,16 @@ export class LoanAddEditComponent implements OnInit{
 
     this.route.params.subscribe(params => {
       console.log(params,'parms')
-      if (params) {
+      if (params && params['action']==='edit') {
         this.loadAllData(params);
-       
         this.isEditMode = true;
-      } else {
+      }  if (params && params['action']==='view') {
+        this.loadAllData(params);
+        this.agentDetailsForm.disable()
+        this.customerDetailsForm.disable();
+        this.loanDetailsForm.disable();
+      } 
+      else {
         this.isEditMode = false;
       }
     });

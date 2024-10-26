@@ -148,11 +148,19 @@ export class DetailsComponent {
     // Initialize edit mode and load existing data if necessary
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
-      if (this.customerId) {
+      if (this.customerId && params) {
         this.loadCustomerData(this.customerId);
         this.loadCustomerRaltionshipData(this.customerId);
         this.loadEmployementData(this.customerId);
-        this.isEditMode = true;
+        if(params['action']==='edit'){
+          this.isEditMode = true;
+        }else{
+          this.customerForm.disable();
+          this.customerAddressForm.disable();
+          this.customerEmployemntForm.disable();
+          this.customerRelationshipForm.disable();
+        }
+        
       } else {
         this.isEditMode = false;
       }
