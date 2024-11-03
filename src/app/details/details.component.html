@@ -7,39 +7,43 @@
       <h3>Customer Details</h3>
       <form [formGroup]="customerForm">
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Name</mat-label>
             <input matInput placeholder="Enter name" formControlName="name">
           </mat-form-field>
-      
-          <mat-form-field appearance="outline" class="full-width">
+        
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>IC</mat-label>
-            <input matInput placeholder="Enter IC" formControlName="ic">
+            <input matInput type="text" maxlength="12" placeholder="Enter IC" formControlName="ic">
+            <mat-error *ngIf="customerForm.hasError('eitherFieldRequired')">
+              Either IC or Passport is required.
+            </mat-error>
           </mat-form-field>
-        </div>
       
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Passport</mat-label>
             <input matInput placeholder="Enter Passport" formControlName="passport">
+            <mat-error *ngIf="customerForm.hasError('eitherFieldRequired')">
+              Either IC or Passport is required.
+            </mat-error>
           </mat-form-field>
-      
-          <mat-form-field appearance="outline" class="full-width">
+        
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Race</mat-label>
             <input matInput placeholder="Enter Race" formControlName="race">
           </mat-form-field>
         </div>
       
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Gender</mat-label>
             <mat-select formControlName="gender">
               <mat-option value="male">Male</mat-option>
               <mat-option value="female">Female</mat-option>
             </mat-select>
           </mat-form-field>
-      
-          <mat-form-field appearance="outline" class="full-width">
+        
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Marital Status</mat-label>
             <mat-select formControlName="marital_status">
               <mat-option value="single">Single</mat-option>
@@ -48,65 +52,56 @@
               <mat-option value="widowed">Widowed</mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
       
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>No. of Child</mat-label>
             <input matInput type="number" placeholder="Enter No. of Child" formControlName="no_of_child">
           </mat-form-field>
       
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Car Plate</mat-label>
             <input matInput placeholder="Enter Car Plate" formControlName="car_plate">
           </mat-form-field>
         </div>
       
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Email</mat-label>
             <input matInput type="email" placeholder="Enter Email" formControlName="email">
           </mat-form-field>
-        </div>
-        
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Telephone</mat-label>
             <input matInput placeholder="Enter Telephone" formControlName="tel_no">
           </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
+      
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Mobile</mat-label>
             <input matInput placeholder="Enter Mobile" formControlName="mobile_no">
           </mat-form-field>
         </div>
-
       </form>
+      
       
       <!-- Tabs for Other Sections -->
       <mat-tab-group>
         <mat-tab label="Address & Contact">
           <form [formGroup]="customerAddressForm">
             <h3>Customer Address</h3>
+          
+            <!-- Address Line (Half width) -->
             <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field appearance="outline" class="half-width">
                 <mat-label>Address Lines</mat-label>
                 <textarea matInput placeholder="Enter Address Line" formControlName="perm_address_line"></textarea>
               </mat-form-field>
-
-              <!-- <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 2</mat-label>
-                <input matInput placeholder="Enter Address Line 2" formControlName="address_line2">
-              </mat-form-field> -->
-            </div>
-
-            <div class="form-row">
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>Postal Code</mat-label>
                 <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
               </mat-form-field>
-
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>City</mat-label>
                 <mat-select formControlName="perm_city">
                   <mat-option *ngFor="let city of cities" [value]="city.id">
@@ -115,9 +110,10 @@
                 </mat-select>
               </mat-form-field>
             </div>
-
+          
+            <!-- Row with 4 fields -->
             <div class="form-row">
-              <mat-form-field class="full-width">
+              <mat-form-field class="quarter-width">
                 <mat-label>State</mat-label>
                 <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
                   <mat-option *ngFor="let state of states" [value]="state.id">
@@ -125,8 +121,8 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>Country</mat-label>
                 <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
                   <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -134,50 +130,46 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-            </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+          
+              <mat-form-field appearance="outline" class="quarter-width">
                 <mat-label>Telephone</mat-label>
                 <input matInput placeholder="Enter Telephone" formControlName="cus_tel_no">
               </mat-form-field>
-    
-              <mat-form-field appearance="outline" class="full-width">
+          
+              <mat-form-field appearance="outline" class="quarter-width">
                 <mat-label>Mobile</mat-label>
                 <input matInput placeholder="Enter Mobile" formControlName="cus_mobile">
               </mat-form-field>
             </div>
-
+          
+            <!-- Staying Since (Full width) -->
             <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field appearance="outline" class="quarter-width">
                 <mat-label>Staying Since</mat-label>
                 <input matInput type="date" formControlName="staying_since">
               </mat-form-field>
             </div>
+          
+            <!-- Checkbox -->
             <div class="col-sm-12">
-              <input type="checkbox" formControlName="cus_same_as_permanent" />Correspondance addresss Same as Permanent Address
-              <!-- <mat-checkbox formControlName="same_as_permanent">Same as Permanent Address</mat-checkbox> -->
+              <input type="checkbox" formControlName="cus_same_as_permanent" /> Correspondence address same as Permanent Address
             </div>
-            <h5>Correspondance Address</h5>
+          
+            <h5>Correspondence Address</h5>
+          
+            <!-- Correspondence Address Line (Half width) -->
             <div class="form-row">
-              <mat-form-field appearance="outline" class="full-width">
+              <mat-form-field appearance="outline" class="half-width">
                 <mat-label>Address Lines</mat-label>
                 <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
               </mat-form-field>
-
-              <!-- <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Address Line 2</mat-label>
-                <input matInput placeholder="Enter Address Line 2" formControlName="address_line2">
-              </mat-form-field> -->
-            </div>
-
-            <div class="form-row">
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>Postal Code</mat-label>
                 <input matInput formControlName="corr_postal_code" placeholder="Postal Code" />
               </mat-form-field>
-
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>City</mat-label>
                 <mat-select formControlName="corr_city">
                   <mat-option *ngFor="let city of cities" [value]="city.id">
@@ -186,9 +178,10 @@
                 </mat-select>
               </mat-form-field>
             </div>
-
+          
+            <!-- Correspondence Address Row with 4 fields -->
             <div class="form-row">
-              <mat-form-field class="full-width">
+              <mat-form-field class="quarter-width">
                 <mat-label>State</mat-label>
                 <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
                   <mat-option *ngFor="let state of states" [value]="state.id">
@@ -196,8 +189,8 @@
                   </mat-option>
                 </mat-select>
               </mat-form-field>
-
-              <mat-form-field class="full-width">
+          
+              <mat-form-field class="quarter-width">
                 <mat-label>Country</mat-label>
                 <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
                   <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -207,6 +200,7 @@
               </mat-form-field>
             </div>
           </form>
+          
 
           <div class="action-buttons">
             <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>

@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -55,8 +55,8 @@ export class DetailsComponent {
     this.customerForm = new FormGroup({
       // Customer Information
       name: new FormControl('', Validators.required),
-      ic: new FormControl('', Validators.required),
-      passport: new FormControl('', Validators.required),
+      ic: new FormControl(''),
+      passport: new FormControl(''),
       race: new FormControl('', Validators.required),
       gender: new FormControl('male', Validators.required), // Default value
       marital_status: new FormControl('single', Validators.required), // Default value
@@ -68,7 +68,7 @@ export class DetailsComponent {
       car_plate: new FormControl('', Validators.required),
       relationship: new FormControl('', Validators.required),
      
-    })
+    }, { validators: this.eitherFieldRequiredValidator } )
     // Customer Address
     this.customerAddressForm = new FormGroup({
       cus_same_as_permanent: new FormControl(false),
@@ -169,9 +169,24 @@ export class DetailsComponent {
     this.fetchCountries();
   }
 
+  eitherFieldRequiredValidator(form: AbstractControl): { [key: string]: boolean } | null {
+    const ic = form.get('ic')?.value;
+    const passport = form.get('passport')?.value;
+    if (!ic && !passport) {
+      return { eitherFieldRequired: true }; // Error if both are empty
+    }
+    return null; // Valid if either field has a value
+  }
+
   ngAfterViewInit(): void { 
     this.dataSource.paginator = this.paginator;
   }
+
+  numericOnly(event:any): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/[^0-9]/g, ''); // Remove any non-numeric characters
+  }
+
   onRowClick(row:any){
     this.customerRelationshipId = row.id;
     this.customerRelationshipForm.patchValue({
