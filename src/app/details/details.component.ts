@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatButtonModule } from '@angular/material/button';
@@ -29,6 +29,8 @@ export class DetailsComponent {
   customerAddressForm!: FormGroup;
   customerRelationshipForm!: FormGroup;
   customerEmployemntForm!: FormGroup
+  bankingForm!:FormGroup;
+  documentsForm!:FormGroup;
   countries: any[] = [];
   states: any[] = [];
   cities: any[] = [];
@@ -36,12 +38,15 @@ export class DetailsComponent {
   customerFullData: any;
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
+  displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo', 'actions'];
+
   race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
+  bankRecords: FormArray<FormGroup>;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,7 +54,9 @@ export class DetailsComponent {
     private signalService: SignalService,
     private dataService: DataService,
     private cdRef: ChangeDetectorRef
-  ) { }
+  ) { 
+    this.bankRecords = new FormArray<FormGroup>([]);
+  }
 
   ngOnInit() {
     // Initialize form controls
@@ -144,6 +151,19 @@ export class DetailsComponent {
       employee_type: new FormControl('full_time'), // Default value
     });
 
+    this.bankingForm = new FormGroup({
+      bankName: new FormControl('', Validators.required),
+      accountNo: new FormControl('', Validators.required),
+      bankHolder: new FormControl('', Validators.required),
+      bankCard: new FormControl('', Validators.required),
+      pinNo: new FormControl('', Validators.required),
+      remark: new FormControl('')
+    })
+
+    this.documentsForm= new FormGroup({
+      fileName : new FormControl('')
+    })
+
     // Watch for changes in the 'same_as_permanent' checkbox
     this.customerAddressForm.get('cus_same_as_permanent')?.valueChanges.subscribe(value => {
       if (value) {
@@ -219,6 +239,50 @@ export class DetailsComponent {
       perm_state: row?.address[0]?.state_id || '',
       perm_country: row?.address[0]?.country_id || ''
     });
+  }
+
+  onBankingSubmit(): void {
+    if (this.bankingForm.valid) {
+      const bankRecord = this.bankingForm.value;
+      // Push the form group with the bank record data to the bankRecords array
+      this.bankRecords.push(new FormGroup({
+        bankName: new FormControl(bankRecord.bankName, Validators.required),
+        accountNo: new FormControl(bankRecord.accountNo, Validators.required),
+        bankHolder: new FormControl(bankRecord.bankHolder, Validators.required),
+        bankCard: new FormControl(bankRecord.bankCard, Validators.required),
+        pinNo: new FormControl(bankRecord.pinNo, Validators.required),
+        remark: new FormControl(bankRecord.remark)
+      }));
+      console.log(bankRecord,'ban');
+      this.dataService.addCustomer(bankRecord).subscribe(response => {
+        //this.router.navigate(['/']);
+      });
+      // Reset the banking form after submission
+      this.bankingForm.reset();
+    }
+  }
+
+  onDocumentSubmit(){
+
+  }
+  onFileChange(event:any){
+    const file = event.target.files[0];
+    if (file) {
+      // Add file size and other information as needed
+      this.form.patchValue({
+        fileName: file.name,
+        size: file.size,
+        attachment: file.name,
+      });
+    }
+  }
+
+  addDocumentRecord(){
+
+  }
+
+  clearForm(){
+
   }
 
   loadCustomerData(id: string) {
@@ -506,6 +570,14 @@ export class DetailsComponent {
     this.dataService.addCustomer(submissionData).subscribe(response => {
       //this.router.navigate(['/']);
     });
+  }
+
+  onBankEdit(data:any){
+    console.log(data)
+  }
+
+  onBankDelete(data:any){
+
   }
 
 }

@@ -58,7 +58,7 @@ export class LoanAddEditComponent implements OnInit{
 
     this.loanDetailsForm = new FormGroup({
       loanPackage: new FormControl('', Validators.required),
-      repaymentDate: new FormControl('', Validators.required),
+      repaymentDate: new FormControl(new Date()),
       datePeriod: new FormControl('', Validators.required),
       principalAmount: new FormControl('', Validators.required),
       depositAmount: new FormControl('', Validators.required),
