@@ -13,13 +13,15 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from '../../data.service';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-loan-add',
   templateUrl: './loan-add-edit.component.html',
   styleUrls: ['./loan-add-edit.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatIconModule],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatIconModule,MatDatepickerModule,MatNativeDateModule],
 })
 export class LoanAddEditComponent implements OnInit{
   isEditMode: boolean = false;
@@ -29,7 +31,7 @@ export class LoanAddEditComponent implements OnInit{
   formValid: boolean = false;
   agentIddropdown=[{'id':1,'name':'agent 1'},{'id':2,'name':'agent 2'}]
   agentLead=[{'id':1,'name':'Lead 1'},{'id':2,'name':'Lead 2'}]
-  datePeriod=[{'id':1,'month':' 1'},{'id':2,'month':'2'}]
+  // datePeriod=[{'id':1,'month':' 1'},{'id':2,'month':'2'}]
   customerId: any;
 
   constructor(private router:Router,private dataService:DataService,private route: ActivatedRoute,){

@@ -1,6 +1,9 @@
 
 <div class="loan-management-container">
-    <h2>Loan</h2>
+  <nav class="breadcrumb">
+    <h6>Loan Management</h6> <!-- Adjust the component name as needed -->
+  </nav>
+    <!-- <h5>Filter</h5> -->
     <div class="search-filter-create">
       <mat-form-field class="search-input" appearance="outline">
         <!-- <mat-label>Allow user to search with Registration No, Chase No, etc.</mat-label> -->
@@ -8,7 +11,7 @@
       </mat-form-field>
       <button mat-stroked-button color="primary">Filter</button>
       <button mat-stroked-button color="accent">Export</button>
-      <button mat-raised-button color="primary" (click)="onAddEdit()">Create</button>
+      <button mat-raised-button color="primary" (click)="onAddEdit()">Add Loan</button>
     </div>
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="loanData" class="mat-elevation-z8 demo-table">

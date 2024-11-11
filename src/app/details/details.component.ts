@@ -36,6 +36,7 @@ export class DetailsComponent {
   customerFullData: any;
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
+  race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
@@ -52,6 +53,21 @@ export class DetailsComponent {
 
   ngOnInit() {
     // Initialize form controls
+    this.race = [
+      'Mixed Race',
+      'Arctic (Siberian, Eskimo)',
+      'Caucasian (European)',
+      'Caucasian (Indian)',
+      'Caucasian (Middle East)',
+      'Caucasian (North African, Other)',
+      'Indigenous Australian',
+      'Native American',
+      'North East Asian (Mongol, Tibetan, Korean Japanese, etc)',
+      'Pacific (Polynesian, Micronesian, etc)',
+      'South East Asian (Chinese, Thai, Malay, Filipino, etc)',
+      'West African, Bushmen, Ethiopian',
+      'Other Race'
+    ];
     this.customerForm = new FormGroup({
       // Customer Information
       name: new FormControl('', Validators.required),

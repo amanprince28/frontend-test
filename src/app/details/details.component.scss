@@ -1,12 +1,12 @@
 .customer-form {
   max-width: 100%;
-  margin: 0 auto;
-  padding: 20px;
+  //margin: 0 auto;
+  //padding: 20px;
 }
 
-.customer-form mat-card {
-  width: 100%;
-}
+// .customer-form mat-card {
+//   width: 100%;
+// }
 
 // .form-row {
 //   display: flex;
@@ -25,6 +25,10 @@
 
 .quarter-width {
   flex: 0 0 25%;
+}
+
+.one-fifth-width {
+  flex: 0 0 20%;
 }
 
 .full-width {

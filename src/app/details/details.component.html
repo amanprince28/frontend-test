@@ -4,7 +4,7 @@
     <mat-card-title>Customer - Add</mat-card-title>
     <mat-card-content>
       <!-- Customer Details -->
-      <h3>Customer Details</h3>
+      <h6>Customer Details</h6>
       <form [formGroup]="customerForm">
         <div class="form-row">
           <mat-form-field appearance="outline" class="quarter-width">
@@ -28,9 +28,17 @@
             </mat-error>
           </mat-form-field>
         
-          <mat-form-field appearance="outline" class="quarter-width">
+          <!-- <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Race</mat-label>
             <input matInput placeholder="Enter Race" formControlName="race">
+          </mat-form-field> -->
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Race</mat-label>
+            <mat-select formControlName="race" placeholder="Select Race">
+              <mat-option *ngFor="let race of race" [value]="race">
+                {{ race }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
       
@@ -87,7 +95,7 @@
       <mat-tab-group>
         <mat-tab label="Address & Contact">
           <form [formGroup]="customerAddressForm">
-            <h3>Customer Address</h3>
+            <h6>Customer Address</h6>
           
             <!-- Address Line (Half width) -->
             <div class="form-row">
@@ -113,7 +121,7 @@
           
             <!-- Row with 4 fields -->
             <div class="form-row">
-              <mat-form-field class="quarter-width">
+              <mat-form-field class="one-fifth-width">
                 <mat-label>State</mat-label>
                 <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
                   <mat-option *ngFor="let state of states" [value]="state.id">
@@ -122,7 +130,7 @@
                 </mat-select>
               </mat-form-field>
           
-              <mat-form-field class="quarter-width">
+              <mat-form-field class="one-fifth-width">
                 <mat-label>Country</mat-label>
                 <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
                   <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -131,31 +139,33 @@
                 </mat-select>
               </mat-form-field>
           
-              <mat-form-field appearance="outline" class="quarter-width">
+              <mat-form-field appearance="outline" class="one-fifth-width">
                 <mat-label>Telephone</mat-label>
                 <input matInput placeholder="Enter Telephone" formControlName="cus_tel_no">
               </mat-form-field>
           
-              <mat-form-field appearance="outline" class="quarter-width">
+              <mat-form-field appearance="outline" class="one-fifth-width">
                 <mat-label>Mobile</mat-label>
                 <input matInput placeholder="Enter Mobile" formControlName="cus_mobile">
               </mat-form-field>
-            </div>
-          
-            <!-- Staying Since (Full width) -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="quarter-width">
+
+              <mat-form-field appearance="outline" class="one-fifth-width">
                 <mat-label>Staying Since</mat-label>
                 <input matInput type="date" formControlName="staying_since">
               </mat-form-field>
             </div>
+          
+            <!-- Staying Since (Full width) -->
+            <!-- <div class="form-row">
+              
+            </div> -->
           
             <!-- Checkbox -->
             <div class="col-sm-12">
               <input type="checkbox" formControlName="cus_same_as_permanent" /> Correspondence address same as Permanent Address
             </div>
           
-            <h5>Correspondence Address</h5>
+            <h6>Correspondence Address</h6>
           
             <!-- Correspondence Address Line (Half width) -->
             <div class="form-row">

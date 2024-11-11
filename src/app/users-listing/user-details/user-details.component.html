@@ -26,7 +26,11 @@
   
             <mat-form-field appearance="outline" class="full-width">
               <mat-label>Role</mat-label>
-              <input matInput placeholder="Enter Role" formControlName="role">
+              <mat-select formControlName="role">
+                <mat-option *ngFor="let role of role" [value]="role.value">
+                  {{ role.viewValue }}
+                </mat-option>
+              </mat-select>
             </mat-form-field>
           </div>
         </form>
@@ -35,7 +39,7 @@
   
         <div class="action-buttons">
           <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
-          <button mat-raised-button>Cancel</button>
+          <button mat-raised-button (click)="onCustomerCancel()">Cancel</button>
         </div>
       </mat-card-content>
     </mat-card>

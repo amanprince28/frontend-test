@@ -33,6 +33,7 @@ export class UserDetailsComponent {
   cities: any[] = [];
   signalData: any;
   customerId!: string;
+  role:any[]=[];
   // displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -57,6 +58,11 @@ export class UserDetailsComponent {
       email: new FormControl('', [Validators.required, Validators.email]),
       role: new FormControl('', [Validators.required,]),
     })
+    this.role = [
+      { value: 'admin', viewValue: 'Admin' },
+      { value: 'lead', viewValue: 'Lead' },
+      { value: 'agent', viewValue: 'Agent' }
+    ];
 
     // Customer Relationship
 
@@ -122,8 +128,11 @@ export class UserDetailsComponent {
     }
 
     console.log(submissionData)
-    // this.dataService.addCustomer(submissionData).subscribe(response => {
-    //   this.router.navigate(['/']);
-    // });
+    this.dataService.addCustomer(submissionData).subscribe(response => {
+      this.router.navigate(['/']);
+    });
+  }
+  onCustomerCancel(){
+    this.customerForm.reset();
   }
 }
