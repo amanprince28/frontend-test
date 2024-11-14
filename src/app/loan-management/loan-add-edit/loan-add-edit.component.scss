@@ -24,14 +24,33 @@
       }
     }
   
-    .actions {
+    .action-buttons {
       display: flex;
-      justify-content: flex-end;
-      margin-top: 16px;
-  
-      button {
-        margin-left: 8px;
-      }
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
     }
+
+    .clickable-icon {
+      cursor: pointer;
+      color: #1976d2; // Blue color for the clickable icon
+    }
+    
   }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between search field and button */
+  }
+  
+  .search-field.small-search {
+    width: 25%; /* Set search field to 25% width */
+  }
+  
+  button {
+    height: 40px; /* Adjust button height if necessary */
+  }
+  
   

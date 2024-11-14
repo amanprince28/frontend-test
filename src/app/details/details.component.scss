@@ -1,5 +1,5 @@
 .customer-form {
-  max-width: 100%;
+  //max-width: 100%;
   //margin: 0 auto;
   //padding: 20px;
 }
@@ -13,8 +13,15 @@
 //   flex-wrap: wrap;
 //   gap: 20px;
 // }
+mat-card-title{
+  padding: 10px 5px;
+}
+.customerForm{
+  border: 1px solid black
+}
 
 .form-row {
+  width: 95%;
   display: flex;
   gap: 16px; /* Adjust gap between fields as needed */
 }
@@ -37,7 +44,8 @@
 
 .action-buttons {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
   margin-top: 20px;
 }
@@ -48,17 +56,79 @@
   }
 }
 
+.documents-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
 .upload-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
 .upload-label {
-  font-weight: bold;
-  margin-bottom: 8px;
+  font-size: 1.2em;
+  margin-bottom: 1em;
+  color: #666;
+  cursor: pointer;
 }
+
+// #fileUpload {
+//   display: none; /* Hide the input, only the label will show */
+// }
 
 .file-name-field {
   width: 100%;
+  margin-top: 1em;
 }
+
+.button-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 1em;
+}
+.heading-text{
+  padding:10px 10px;
+}
+
+
+.form-seperate {
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+::ng-deep .mat-tab-group {
+  background-color: #2196f3; // Blue background for the entire tab group
+}
+
+::ng-deep .mat-tab-header {
+  background-color: #2196f3; // Blue background for the tab header
+}
+
+::ng-deep .mat-tab-label {
+  background-color: #1976d2; // Default color for each tab label
+  color: white;
+}
+
+::ng-deep .mat-tab-label-active {
+  background-color: #0d47a1; // Darker blue for the active tab
+  font-weight: bold;
+}
+
+::ng-deep .mat-tab-label:hover {
+  background-color: #1e88e5; // Slightly lighter shade on hover
+}
+
+

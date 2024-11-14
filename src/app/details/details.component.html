@@ -4,8 +4,8 @@
     <mat-card-title>Customer - Add</mat-card-title>
     <mat-card-content>
       <!-- Customer Details -->
-      <h6>Customer Details</h6>
-      <form [formGroup]="customerForm">
+      <h6 class="heading-text">Customer Details</h6>
+      <form [formGroup]="customerForm" class="form-seperate">
         <div class="form-row">
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Name</mat-label>
@@ -27,11 +27,6 @@
               Either IC or Passport is required.
             </mat-error>
           </mat-form-field>
-        
-          <!-- <mat-form-field appearance="outline" class="quarter-width">
-            <mat-label>Race</mat-label>
-            <input matInput placeholder="Enter Race" formControlName="race">
-          </mat-form-field> -->
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Race</mat-label>
             <mat-select formControlName="race" placeholder="Select Race">
@@ -41,7 +36,6 @@
             </mat-select>
           </mat-form-field>
         </div>
-      
         <div class="form-row">
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Gender</mat-label>
@@ -92,10 +86,10 @@
       
       
       <!-- Tabs for Other Sections -->
-      <mat-tab-group>
+      <mat-tab-group class="form-seperate">
         <mat-tab label="Address & Contact">
           <form [formGroup]="customerAddressForm">
-            <h6>Customer Address</h6>
+            <h6 class="heading-text" style="margin-bottom: 10px;">Customer Address</h6>
           
             <!-- Address Line (Half width) -->
             <div class="form-row">
@@ -165,7 +159,7 @@
               <input type="checkbox" formControlName="cus_same_as_permanent" /> Correspondence address same as Permanent Address
             </div>
           
-            <h6>Correspondence Address</h6>
+            <h6 class="heading-text">Correspondence Address</h6>
           
             <!-- Correspondence Address Line (Half width) -->
             <div class="form-row">
@@ -212,13 +206,13 @@
           </form>
           
 
-          <div class="action-buttons">
+          <!-- <div class="action-buttons">
             <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
             <button mat-raised-button>Cancel</button>
-          </div>
+          </div> -->
         </mat-tab>
 
-        <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="m-2" (ngSubmit)="onEmploymentSubmit()">
+        <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="m-2" >
           <div class="row m-3">
             <div class="col-sm-3">
               <mat-form-field class="example-full-width">
@@ -299,14 +293,14 @@
               </mat-form-field>
             </div>
           </div>
-          <div class="action-buttons">
+          <!-- <div class="action-buttons">
             <div class="col-sm-12 d-flex flex-row-reverse">
               <button mat-raised-button type="submit" color="primary">Submit</button>
             </div>
-          </div>
+          </div> -->
           </form></mat-tab>
         <mat-tab label="Family & Guarantor">
-          <form [formGroup]="customerRelationshipForm" class="m-2" (ngSubmit)="onCustomerRelationshipSubmit()">
+          <form [formGroup]="customerRelationshipForm" class="m-2">
 
             <div class="row m-3">
               <div class="col-sm-3">
@@ -359,7 +353,7 @@
       
               <!-- Permanent Address -->
               <div class="col-sm-12">
-                <h3>Permanent Address</h3>
+                <h5>Permanent Address</h5>
               </div>
               <div class="col-sm-6">
                 <mat-form-field appearance="outline" class="full-width">
@@ -412,7 +406,7 @@
               </div>
               <div *ngIf="!customerRelationshipForm.get('same_as_permanent')?.value">
                 <div class="col-sm-12">
-                  <h3>Correspondence Address</h3>
+                  <h5>Correspondence Address</h5>
                 </div>
               
                 <!-- Address Line, Postal Code, Country Row -->
@@ -467,12 +461,12 @@
               </div>
               
             </div>
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-sm-12 d-flex flex-row-reverse">
                 <button mat-raised-button color="primary" type ="submit" >Save</button>
-                <!-- <button mat-raised-button type="submit" >Submit</button> -->
+                
               </div>
-            </div>  
+            </div>   -->
           </form>
       
           <div class="mat-elevation-z8">
@@ -619,34 +613,31 @@
 
         <mat-tab label="Documents">
           <div [formGroup]="documentsForm" class="documents-tab">
-            <h3>Upload Document</h3>
+            
             
             <div class="upload-container">
               <label for="fileUpload" class="upload-label">Upload File or Drag & Drop</label>
               <input type="file" formControlName="fileUpload" id="fileUpload" (change)="onFileChange($event)" />
               
               <mat-form-field class="file-name-field">
-                <mat-label>File Name</mat-label>
-                <input matInput formControlName="fileName" />
+                <mat-label>File description</mat-label>
+                <input type ="text" matInput formControlName="fileName" />
               </mat-form-field>
               
               <div class="button-container">
-                <button mat-raised-button color="primary" (click)="addDocumentRecord()">Save</button>
+                <button mat-raised-button color="primary" (click)="addDocumentRecord()">Upload</button>
                 <button mat-button color="warn" (click)="clearForm()">Clear</button>
               </div>
             </div>
-        
-            
-            
-           
           </div>
         </mat-tab>
+
       </mat-tab-group>
 
-      <!-- <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="saveData()">Save</button>
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="onMasterSubmit()">Save</button>
         <button mat-raised-button>Cancel</button>
-      </div> -->
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

@@ -3,10 +3,19 @@
   <mat-card class="card">
     <!-- Agent Details Section -->
     <div class="section">
-      <h5>
-        <mat-icon>search</mat-icon> Agent Details
-      </h5>
+      <h5>Agent Details</h5>
       <form [formGroup]="agentDetailsForm">
+        <!-- Search Bar for Agent Details -->
+        <div class="search-bar">
+          <mat-form-field appearance="outline" class="search-field small-search">
+            <mat-label>Search Agent</mat-label>
+            <input matInput formControlName="agentSearchQuery" placeholder="Enter agent name or ID">
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="searchAgentDetails()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+        <!-- Agent Details Fields -->
         <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Agent Name</mat-label>
@@ -34,10 +43,19 @@
 
     <!-- Customer Details Section -->
     <div class="section">
-      <h5>
-        <mat-icon>search</mat-icon> Customer Details
-      </h5>
+      <h5>Customer Details</h5>
       <form [formGroup]="customerDetailsForm">
+        <!-- Search Bar for Customer Details -->
+        <div class="search-bar">
+          <mat-form-field appearance="outline" class="search-field small-search">
+            <mat-label>Search Customer</mat-label>
+            <input matInput formControlName="customerSearchQuery" placeholder="Enter customer name or ID">
+          </mat-form-field>
+          <button mat-icon-button color="primary" (click)="searchCustomerDetails()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
+        <!-- Customer Details Fields -->
         <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Customer ID</mat-label>
@@ -45,11 +63,11 @@
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Customer Name</mat-label>
-            <input formControlName="customerName" matInput>
+            <input formControlName="customerName" matInput required>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Mobile</mat-label>
-            <input formControlName="mobile" matInput type="tel">
+            <input formControlName="mobile" matInput type="tel" required>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Customer Address</mat-label>
@@ -66,7 +84,11 @@
         <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Loan Package</mat-label>
-            <input formControlName="loanPackage" matInput>
+            <mat-select formControlName="loanPackage" required>
+              <mat-option *ngFor="let package of loanPackage" [value]="package.id">
+                {{ package.details }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Repayment Date</mat-label>
@@ -75,10 +97,19 @@
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
           <mat-form-field appearance="outline">
+            <mat-label>Unit Date Period</mat-label>
+            <mat-select formControlName="unitofDate" required>
+              <mat-option *ngFor="let unit of dateUnit" [value]="unit.id">
+                {{ unit.unit }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline">
             <mat-label>Date Period</mat-label>
             <input formControlName="datePeriod" matInput type="number">
           </mat-form-field>
-
+        </div>
+        <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Principal Amount</mat-label>
             <input formControlName="principalAmount" matInput type="number">
@@ -87,8 +118,6 @@
             <mat-label>Deposit Amount</mat-label>
             <input formControlName="depositAmount" matInput type="number">
           </mat-form-field>
-        </div>
-        <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Application Fees</mat-label>
             <input formControlName="applicationFee" matInput type="number">
@@ -97,11 +126,13 @@
             <mat-label>Payment Upfront</mat-label>
             <input formControlName="paymentUpfront" matInput type="number">
           </mat-form-field>
-          <mat-form-field appearance="outline">
+        </div>
+        <div class="fields-row">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Interest (%)</mat-label>
             <input formControlName="interest" matInput type="number">
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loanRemark" matInput>
           </mat-form-field>
@@ -111,7 +142,7 @@
   </mat-card>
 
   <!-- Footer Buttons -->
-  <div class="actions">
+  <div class="action-buttons">
     <button mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
     <button mat-raised-button color="primary" (click)="saveLoan()">Save</button>
   </div>

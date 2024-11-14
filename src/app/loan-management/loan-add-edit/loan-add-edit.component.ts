@@ -31,8 +31,12 @@ export class LoanAddEditComponent implements OnInit{
   formValid: boolean = false;
   agentIddropdown=[{'id':1,'name':'agent 1'},{'id':2,'name':'agent 2'}]
   agentLead=[{'id':1,'name':'Lead 1'},{'id':2,'name':'Lead 2'}]
+  dateUnit=[{'id':1,'unit':'Days'},{'id':2,'unit':'Week'},{'id':3,'unit':'Month'},{'id':4,'unit':'Year'}]
+  loanPackage=[{'id':1,'details':'Package 1'},{'id':2,'details':'Package 2'},{'id':3,'details':'Package 3'},{'id':4,'details':'Package 4'}]
   // datePeriod=[{'id':1,'month':' 1'},{'id':2,'month':'2'}]
   customerId: any;
+  agentSearchQuery: string = '';
+  customerSearchQuery: string = '';
 
   constructor(private router:Router,private dataService:DataService,private route: ActivatedRoute,){
 
@@ -44,12 +48,14 @@ export class LoanAddEditComponent implements OnInit{
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
+      agentSearchQuery:  new FormControl(''),
       agentName: new FormControl('', Validators.required),
       agentId: new FormControl('', Validators.required),
       agentLead: new FormControl('', Validators.required),
     });
 
     this.customerDetailsForm = new FormGroup({
+      customerSearchQuery: new FormControl(''),
       customerId: new FormControl('', Validators.required),
       customerName: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.required),
@@ -60,12 +66,13 @@ export class LoanAddEditComponent implements OnInit{
       loanPackage: new FormControl('', Validators.required),
       repaymentDate: new FormControl(new Date()),
       datePeriod: new FormControl('', Validators.required),
+      unitofDate: new FormControl('', Validators.required),
       principalAmount: new FormControl('', Validators.required),
       depositAmount: new FormControl('', Validators.required),
       applicationFee: new FormControl('', Validators.required),
       paymentUpfront: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
-      loanRemark: new FormControl('', Validators.required),
+      loanRemark: new FormControl(''),
     });
 
     this.route.params.subscribe(params => {
@@ -149,5 +156,75 @@ export class LoanAddEditComponent implements OnInit{
   validateForm() {
     // Add form validation logic here
     this.formValid = true; // Example
+  }
+
+  searchAgentDetails() {
+    // Perform search based on agentSearchQuery - replace with actual service call
+    const agentData = this.mockAgentSearch(this.agentSearchQuery);
+
+    if (agentData) {
+      this.agentDetailsForm.patchValue({
+        agentName: agentData.agentName,
+        agentId: agentData.agentId,
+        agentLead: agentData.agentLead
+      });
+    }
+  }
+
+  searchCustomerDetails() {
+    // Perform search based on customerSearchQuery - replace with actual service call
+    const customerData = this.mockCustomerSearch(this.customerSearchQuery);
+
+    if (customerData) {
+      this.customerDetailsForm.patchValue({
+        customerId: customerData.customerId,
+        customerName: customerData.customerName,
+        mobile: customerData.mobile,
+        customerAddress: customerData.customerAddress
+      });
+    }
+  }
+
+  // searchAgentDetails() {
+  //   // Replace mock search with actual API call when available
+  //   this.dataService.searchAgent(this.agentSearchQuery).subscribe({
+  //     next: (agentData) => {
+  //       this.agentDetailsForm.patchValue({
+  //         agentName: agentData.agentName,
+  //         agentId: agentData.agentId,
+  //         agentLead: agentData.agentLead,
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.error('Agent search error:', error);
+  //     },
+  //   });
+  // }
+
+  // searchCustomerDetails() {
+  //   // Replace mock search with actual API call when available
+  //   this.dataService.searchCustomer(this.customerSearchQuery).subscribe({
+  //     next: (customerData) => {
+  //       this.customerDetailsForm.patchValue({
+  //         customerId: customerData.customerId,
+  //         customerName: customerData.customerName,
+  //         mobile: customerData.mobile,
+  //         customerAddress: customerData.customerAddress,
+  //       });
+  //     },
+  //     error: (error) => {
+  //       console.error('Customer search error:', error);
+  //     },
+  //   });
+  // }
+
+  private mockAgentSearch(query: string) {
+    // Return mock data based on query
+    return query ? { agentName: 'John Doe', agentId: 'A123', agentLead: 'L456' } : null;
+  }
+
+  private mockCustomerSearch(query: string) {
+    // Return mock data based on query
+    return query ? { customerId: 'C789', customerName: 'Jane Smith', mobile: '1234567890', customerAddress: '123 Elm Street' } : null;
   }
 }
