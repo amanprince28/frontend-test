@@ -155,7 +155,7 @@ export class DetailsComponent {
       employee_no: new FormControl('', ),
       income_date: new FormControl('', ),
       income_type: new FormControl('', ),
-      employment_name: new FormControl('', ),
+      // employment_name: new FormControl('', ),
       occupation_category: new FormControl('', ),
 
       position: new FormControl('', ),
@@ -366,7 +366,7 @@ export class DetailsComponent {
           employee_type: signalData?.company[0]?.employee_type,
           income_date: signalData?.company[0]?.income_date,
           income_type: signalData?.company[0]?.income_type,
-          employment_name: signalData?.company[0]?.name,
+          // employment_name: signalData?.company[0]?.name,
           occupation_category: signalData?.company[0]?.occupation_category,
           position: signalData?.company[0]?.position,
           remark: signalData?.company[0]?.remark,
@@ -636,13 +636,13 @@ export class DetailsComponent {
         employee_no: this.customerEmployemntForm.get('employee_no')?.value,
         income_date: this.customerEmployemntForm.get('income_date')?.value,
         income_type: this.customerEmployemntForm.get('income_type')?.value,
-        employment_name: this.customerEmployemntForm.get('employment_name')?.value,
+        // employment_name: this.customerEmployemntForm.get('employment_name')?.value,
         occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
         position: this.customerEmployemntForm.get('position')?.value,
-        employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
-        telecode: this.customerEmployemntForm.get('telecode')?.value,
+        // employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
+        tel_code: this.customerEmployemntForm.get('telecode')?.value,
         employee_type: this.customerEmployemntForm.get('employee_type')?.value,
-        telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
+        // telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
       };
     }
     
@@ -658,18 +658,19 @@ export class DetailsComponent {
         relationship: this.customerRelationshipForm.get('relationship')?.value,
         address: [
           {
-            permanent: {
-              address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
-              country_id: this.customerRelationshipForm.get('perm_country')?.value,
-              state_id: this.customerRelationshipForm.get('perm_state')?.value,
-              city_id: this.customerRelationshipForm.get('perm_city')?.value,
-            },
-            correspondence: {
-              address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
-              country_id: this.customerRelationshipForm.get('corr_country')?.value,
-              state_id: this.customerRelationshipForm.get('corr_state')?.value,
-              city_id: this.customerRelationshipForm.get('corr_city')?.value,
-            }
+            address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
+            postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
+            is_permanent: !!this.customerAddressForm.get('perm_address_line')?.value,
+            country_id: this.customerRelationshipForm.get('perm_country')?.value,
+            state_id: this.customerRelationshipForm.get('perm_state')?.value,
+            city_id: this.customerRelationshipForm.get('perm_city')?.value,
+          },
+          {
+            address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
+            postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
+            country_id: this.customerRelationshipForm.get('corr_country')?.value,
+            state_id: this.customerRelationshipForm.get('corr_state')?.value,
+            city_id: this.customerRelationshipForm.get('corr_city')?.value,
           }
         ]
       }];
