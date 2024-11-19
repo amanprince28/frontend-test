@@ -48,6 +48,11 @@ export class DataService {
     return this.http.post<any>(url, customer);
   }
 
+  addUser(customer: any): Observable<any> {
+    const url = this.apiUrl + '/user';
+    return this.http.post<any>(url, customer);
+  }
+
   updateCustomer(customer: any): Observable<any> {
     const url = this.apiUrl + '/customer';
     return this.http.post<any>(url + '/:id', customer);

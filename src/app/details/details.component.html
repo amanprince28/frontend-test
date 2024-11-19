@@ -258,7 +258,7 @@
             </div>
             <div class="col-sm-3">
               <mat-form-field class="example-full-width">
-                <mat-label>Name</mat-label>
+                <mat-label>Employment Name</mat-label>
                 <input matInput formControlName="employment_name" placeholder="Name" />
               </mat-form-field>
             </div>
@@ -515,7 +515,7 @@
         </mat-tab>
 
         <mat-tab label="Banking">
-          <form [formGroup]="bankingForm" class="m-2" (ngSubmit)="onBankingSubmit()">
+          <form [formGroup]="bankingForm" class="m-2">
             <h6>Bank Info</h6>
             <div class="row m-3">
               <div class="col-sm-3">
@@ -561,7 +561,7 @@
           </form>
         
           <h3>Bank Records</h3>
-          <table mat-table [dataSource]="bankRecords.controls" class="mat-elevation-z8">
+          <table mat-table [dataSource]="bankDataSource" class="mat-elevation-z8">
             <ng-container matColumnDef="bankName">
               <th mat-header-cell *matHeaderCellDef> Bank Name </th>
               <td mat-cell *matCellDef="let record" [formGroup]="record">

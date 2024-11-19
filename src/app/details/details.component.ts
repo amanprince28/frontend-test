@@ -13,11 +13,12 @@ import { DataService } from '../data.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatSnackBarModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
@@ -29,7 +30,8 @@ export class DetailsComponent {
   customerAddressForm!: FormGroup;
   customerRelationshipForm!: FormGroup;
   customerEmployemntForm!: FormGroup
-  bankingForm!:FormGroup;
+  bankingForm!: FormGroup;
+  bankRecords: FormArray;
   documentsForm!:FormGroup;
   countries: any[] = [];
   states: any[] = [];
@@ -44,22 +46,34 @@ export class DetailsComponent {
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
+  bankDataSource: any[] = [];
+
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
-  bankRecords: FormArray<FormGroup>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private signalService: SignalService,
     private dataService: DataService,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private snackBar: MatSnackBar
   ) { 
+    this.bankingForm = new FormGroup({
+      bankName: new FormControl('', ),
+      accountNo: new FormControl('', ),
+      bankHolder: new FormControl('',),
+      bankCard: new FormControl('', ),
+      pinNo: new FormControl('',),
+      remark: new FormControl('')
+    });
+
     this.bankRecords = new FormArray<FormGroup>([]);
   }
 
   ngOnInit() {
     // Initialize form controls
+    
     this.race = [
       'Mixed Race',
       'Arctic (Siberian, Eskimo)',
@@ -120,7 +134,7 @@ export class DetailsComponent {
       relationship_passport: new FormControl(''),
       relationship_gender: new FormControl('',), // Default value
       relationship: new FormControl('',),
-      same_as_permanent: new FormControl(false),
+      same_as_permanent: new FormControl(),
       perm_address_line: new FormControl('', ),
       perm_postal_code: new FormControl('',),
       perm_country: new FormControl('',),
@@ -135,7 +149,7 @@ export class DetailsComponent {
     // Employment Details
 
     this.customerEmployemntForm = new FormGroup({
-      annual_income: new FormControl(0,), // Default value
+      annual_income: new FormControl(''), // Default value
       business_type: new FormControl('', ),
       department: new FormControl('', ),
       employee_no: new FormControl('', ),
@@ -151,17 +165,11 @@ export class DetailsComponent {
       employee_type: new FormControl(''), // Default value
     });
     // Banking Form
-    this.bankingForm = new FormGroup({
-      bankName: new FormControl('', ),
-      accountNo: new FormControl('', ),
-      bankHolder: new FormControl('',),
-      bankCard: new FormControl('', ),
-      pinNo: new FormControl('', ),
-      remark: new FormControl('')
-    })
+  
     // dcoument form
     this.documentsForm= new FormGroup({
-      fileName : new FormControl('')
+      fileName : new FormControl(''),
+      fileUpload: new FormControl('')
     })
 
     // Watch for changes in the 'same_as_permanent' checkbox
@@ -217,6 +225,8 @@ export class DetailsComponent {
 
   ngAfterViewInit(): void { 
     this.dataSource.paginator = this.paginator;
+    
+
   }
 
   numericOnly(event:any): void {
@@ -245,27 +255,31 @@ export class DetailsComponent {
   onBankingSubmit(): void {
     if (this.bankingForm.valid) {
       const bankRecord = this.bankingForm.value;
-      // Push the form group with the bank record data to the bankRecords array
+
       this.bankRecords.push(new FormGroup({
-        bankName: new FormControl(bankRecord.bankName, Validators.required),
-        accountNo: new FormControl(bankRecord.accountNo, Validators.required),
-        bankHolder: new FormControl(bankRecord.bankHolder, Validators.required),
-        bankCard: new FormControl(bankRecord.bankCard, Validators.required),
-        pinNo: new FormControl(bankRecord.pinNo, Validators.required),
+        bankName: new FormControl(bankRecord.bankName),
+        accountNo: new FormControl(bankRecord.accountNo),
+        bankHolder: new FormControl(bankRecord.bankHolder),
+        bankCard: new FormControl(bankRecord.bankCard),
+        pinNo: new FormControl(bankRecord.pinNo),
         remark: new FormControl(bankRecord.remark)
       }));
-      console.log(bankRecord,'ban');
-      this.dataService.addCustomer(bankRecord).subscribe(response => {
-        //this.router.navigate(['/']);
-      });
-      // Reset the banking form after submission
+      
       this.bankingForm.reset();
+      this.bankDataSource = [...this.bankRecords.controls as FormGroup[]];
     }
   }
+
+  
 
   onDocumentSubmit(){
 
   }
+
+  get bankRecordsArray(): FormGroup[] {
+    return this.bankRecords.controls as FormGroup[];
+  }
+
   onFileChange(event:any){
     const file = event.target.files[0];
     if (file) {
@@ -613,7 +627,8 @@ export class DetailsComponent {
     };
     
     // Add employmentData only if there are values in the form
-    if (Object.values(this.customerEmployemntForm.value).some(value => value !== null && value !== "")) {
+    if (Object.values(this.customerEmployemntForm.value).some(value => value !== null && value !==undefined && value !== "")) {
+      console.log(this.customerEmployemntForm,'valuesss');
       submissionData.company = {
         annual_income: this.customerEmployemntForm.get('annual_income')?.value,
         business_type: this.customerEmployemntForm.get('business_type')?.value,
@@ -633,6 +648,7 @@ export class DetailsComponent {
     
     // Add customerRelationshipData only if there are values in the form
     if (Object.values(this.customerRelationshipForm.value).some(value => value !== null && value !== "")) {
+      console.log(this.customerRelationshipForm,'valuesss 111')
       submissionData.customer_relation = [{
         name: this.customerRelationshipForm.get('relationship_name')?.value,
         ic: this.customerRelationshipForm.get('relationship_ic')?.value,
@@ -658,14 +674,21 @@ export class DetailsComponent {
         ]
       }];
     }
-    
-    // Add bankDetails only if there are values in the array
     if (this.bankRecords && this.bankRecords.length > 0) {
-      submissionData.bankDetails = this.bankRecords;
+        submissionData.bankDetails = this.bankRecords.value;
     }
+    
+    if (this.isEditMode) {
+           submissionData.id = this.customerId;
+      }
     console.log(submissionData,'master submit');
     this.dataService.addCustomer(submissionData).subscribe(response => {
-      // this.router.navigate(['/']);
+      this.snackBar.open('Record Saved', 'Close', {
+        duration: 3000, // Duration in milliseconds
+        horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        verticalPosition: 'bottom', // Position: 'top', 'bottom'
+      });
+      this.router.navigate(['/listing']);
     });
   }
 

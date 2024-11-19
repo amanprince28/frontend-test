@@ -54,7 +54,7 @@ export class UserDetailsComponent {
     this.customerForm = new FormGroup({
       // Customer Information
       name: new FormControl('', Validators.required),
-      ic: new FormControl('', Validators.required),
+      password: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       role: new FormControl('', [Validators.required,]),
     })
@@ -97,7 +97,7 @@ export class UserDetailsComponent {
 
         this.customerForm.patchValue({
           name: this.signalData?.name,
-          ic: this.signalData?.ic,
+          password: this.signalData?.ic,
           email: this.signalData?.email,
           role: this.signalData?.role,
         })
@@ -113,7 +113,7 @@ export class UserDetailsComponent {
     console.log('onCustomerSubmit')
     const submissionData: any = {
       name: this.customerForm.get('name')?.value,
-      ic: this.customerForm.get('ic')?.value,
+      password: this.customerForm.get('password')?.value,
       email: this.customerForm.get('email')?.value,
       role: this.customerForm.get('role')?.value,
     };
@@ -128,7 +128,7 @@ export class UserDetailsComponent {
     }
 
     console.log(submissionData)
-    this.dataService.addCustomer(submissionData).subscribe(response => {
+    this.dataService.addUser(submissionData).subscribe(response => {
       this.router.navigate(['/']);
     });
   }
