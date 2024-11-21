@@ -594,7 +594,7 @@ export class DetailsComponent {
     // Add customerRelationshipData only if there are values in the form
     if (this.dataSource.data.length>0){
       console.log(this.customerRelationshipForm,'valuesss 111')
-      submissionData.customer_relation = this.dataSource.data;
+      submissionData.relations = this.dataSource.data;
     }
     if (this.bankRecords && this.bankRecords.length > 0) {
         submissionData.bankDetails = this.bankRecords.value;
