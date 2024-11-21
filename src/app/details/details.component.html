@@ -461,57 +461,67 @@
               </div>
               
             </div>
-            <!-- <div class="row">
+            <div class="row">
               <div class="col-sm-12 d-flex flex-row-reverse">
-                <button mat-raised-button color="primary" type ="submit" >Save</button>
+                <button mat-raised-button color="primary" type ="submit" (click)="onCustomerRelationSave()" >Insert</button>
                 
               </div>
-            </div>   -->
+            </div>  
           </form>
       
           <div class="mat-elevation-z8">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-              <!--- Note that these columns can be defined in any order.
-                      The actual rendered columns are set as a property on the row definition" -->
-            
               <!-- Name Column -->
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef>Name</th>
                 <td mat-cell *matCellDef="let element">{{ element.name }}</td>
               </ng-container>
-                      The actual rendered columns are set as a property on the row definition" -->
-            
-              <!-- Name Column -->
+          
+              <!-- IC Column -->
               <ng-container matColumnDef="ic">
                 <th mat-header-cell *matHeaderCellDef>IC</th>
                 <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
               </ng-container>
-                      The actual rendered columns are set as a property on the row definition" -->
-            
-              <!-- Name Column -->
+          
+              <!-- Passport Column -->
               <ng-container matColumnDef="passport">
                 <th mat-header-cell *matHeaderCellDef>Passport</th>
                 <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
               </ng-container>
-      
+          
+              <!-- Address Line Column -->
               <ng-container matColumnDef="address_lines">
                 <th mat-header-cell *matHeaderCellDef>Address Line</th>
-                <td mat-cell *matCellDef="let element">{{ element.address[0].address_lines }}</td>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.customer_address[0]?.address_lines }}
+                </td>
               </ng-container>
-      
-            
+          
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let record">
+                  <button mat-button color="accent" (click)="onRowClick(record)">Edit</button>
+                  <button mat-button color="warn" (click)="onBankDelete(record)">Delete</button>
+                </td>
+              </ng-container>
+          
+              <!-- Table Rows -->
               <tr mat-header-row *matHeaderRowDef="displayedColumnsForRelationshipForm"></tr>
               <tr
                 mat-row
                 *matRowDef="let row; columns: displayedColumnsForRelationshipForm"
-                (click)="onRowClick(row)"
               ></tr>
             </table>
-            <mat-paginator [pageSizeOptions]="[5, 10, 20]"
-                           showFirstLastButtons
-                           aria-label="Select page of periodic elements">
+          
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+              aria-label="Select page of periodic elements"
+            >
             </mat-paginator>
-            </div>
+          </div>
+          
         </mat-tab>
 
         <mat-tab label="Banking">
@@ -613,24 +623,73 @@
 
         <mat-tab label="Documents">
           <div [formGroup]="documentsForm" class="documents-tab">
-            
-            
+            <!-- Upload Section -->
             <div class="upload-container">
               <label for="fileUpload" class="upload-label">Upload File or Drag & Drop</label>
-              <input type="file" formControlName="fileUpload" id="fileUpload" (change)="onFileChange($event)" />
-              
+              <input
+                type="file"
+                formControlName="fileUpload"
+                id="fileUpload"
+                (change)="onFileChange($event)"
+              />
+        
               <mat-form-field class="file-name-field">
                 <mat-label>File description</mat-label>
-                <input type ="text" matInput formControlName="fileName" />
+                <input type="text" matInput formControlName="fileDescription" />
               </mat-form-field>
-              
+        
               <div class="button-container">
-                <button mat-raised-button color="primary" (click)="addDocumentRecord()">Upload</button>
+                <button mat-raised-button color="primary" (click)="addDocumentRecord()">Upload File</button>
                 <button mat-button color="warn" (click)="clearForm()">Clear</button>
               </div>
             </div>
+        
+            <!-- Table Section -->
+            <div class="table-container" *ngIf="uploadedFiles.length > 0">
+              <table mat-table [dataSource]="uploadedFiles" class="mat-elevation-z8">
+                <!-- File Name Column -->
+                <ng-container matColumnDef="fileName">
+                  <th mat-header-cell *matHeaderCellDef>File Name</th>
+                  <td mat-cell *matCellDef="let element">{{ element.fileName }}</td>
+                </ng-container>
+        
+                <!-- File Description Column -->
+                <ng-container matColumnDef="fileDescription">
+                  <th mat-header-cell *matHeaderCellDef>File Description</th>
+                  <td mat-cell *matCellDef="let element">{{ element.fileDescription }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fileSize">
+                  <th mat-header-cell *matHeaderCellDef>File Size</th>
+                  <td mat-cell *matCellDef="let element">{{ element.fileSize }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fileType">
+                  <th mat-header-cell *matHeaderCellDef>File Type</th>
+                  <td mat-cell *matCellDef="let element">{{ element.fileType }}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let record">
+                    <button mat-button color="accent" (click)="onBankEdit(record)">Edit</button>
+                    <button mat-button color="warn" (click)="onBankDelete(record)">Delete</button>
+                  </td>
+                </ng-container>
+        
+                <!-- Table Header -->
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <!-- Table Row -->
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+        
+              <!-- <div class="save-button-container">
+                <button mat-raised-button color="accent" (click)="saveAllDocuments()">Save</button>
+              </div> -->
+            </div>
           </div>
         </mat-tab>
+        
 
       </mat-tab-group>
 

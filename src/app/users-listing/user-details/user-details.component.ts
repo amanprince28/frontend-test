@@ -59,9 +59,9 @@ export class UserDetailsComponent {
       role: new FormControl('', [Validators.required,]),
     })
     this.role = [
-      { value: 'admin', viewValue: 'Admin' },
-      { value: 'lead', viewValue: 'Lead' },
-      { value: 'agent', viewValue: 'Agent' }
+      { value: 'Admin', viewValue: 'Admin' },
+      { value: 'Lead', viewValue: 'Lead' },
+      { value: 'Agent', viewValue: 'Agent' }
     ];
 
     // Customer Relationship
@@ -70,7 +70,7 @@ export class UserDetailsComponent {
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
       if (this.customerId) {
-        this.loadCustomerData(this.customerId);
+        this.loadUserData(this.customerId);
         if(params['action']==='edit')
         this.isEditMode = true;
         if(params['action']==='view'){
@@ -87,34 +87,35 @@ export class UserDetailsComponent {
     this.dataSource.paginator = this.paginator;
   }
 
-  loadCustomerData(id: string) {
+  loadUserData(id: string) {
     console.log('eit')
-    this.dataService.getCustomerById(this.customerId).subscribe(data => {
+    this.dataService.getUserById(this.customerId).subscribe(data => {
       this.signalData = data;
       console.log('eit',)
-      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
+      // if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+      //   const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
         this.customerForm.patchValue({
-          name: this.signalData?.name,
+          name: this.signalData?.username,
           password: this.signalData?.ic,
           email: this.signalData?.email,
           role: this.signalData?.role,
         })
 
        
-      } else {
-        this.isEditMode = false;
-      }
+      // } else {
+      //   this.isEditMode = false;
+      // }
     });
   }
 
   onCustomerSubmit() {
     console.log('onCustomerSubmit')
     const submissionData: any = {
-      name: this.customerForm.get('name')?.value,
+      //name: this.customerForm.get('name')?.value,
       password: this.customerForm.get('password')?.value,
       email: this.customerForm.get('email')?.value,
+      username:this.customerForm.get('email')?.value,
       role: this.customerForm.get('role')?.value,
     };
 
@@ -134,5 +135,6 @@ export class UserDetailsComponent {
   }
   onCustomerCancel(){
     this.customerForm.reset();
+    this.router.navigate(['/users']);
   }
 }

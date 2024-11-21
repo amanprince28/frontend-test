@@ -1,23 +1,3 @@
-<!-- <div class="row">
-  <div class="col-sm-12 m-3">
-    Filter
-    <div class="row">
-      <div class="col-sm-6">
-        <form [formGroup]="searchForm">
-          <mat-form-field class="example-full-width">
-            <mat-label>Search</mat-label>
-            <input matInput formControlName="search" placeholder="Eg. value" />
-          </mat-form-field>
-        </form>
-      </div>
-      
-      <div class="col-sm-6 d-flex align-items-center button-padding">
-        <button mat-raised-button color="primary" (click)="filterTable()">Filter</button>
-        <button mat-raised-button color="primary" (click)="onAddClick()">Add</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 <div class="listing-management-container">
   <nav class="breadcrumb">
     <h4>Customer Management</h4> <!-- Adjust the component name as needed -->
@@ -30,51 +10,47 @@
     <button mat-raised-button color="primary" (click)="onAddClick()">Add Customer</button>
   </div>
 
-
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
-    
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
-
-    <!-- IC Column -->
-    <ng-container matColumnDef="ic">
-      <th mat-header-cell *matHeaderCellDef>IC</th>
-      <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
-    </ng-container>
-
-    <!-- Passport Column -->
-    <ng-container matColumnDef="passport">
-      <th mat-header-cell *matHeaderCellDef>Passport</th>
-      <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
-    </ng-container>
-
-    <!-- Action Column for Edit and View -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-button color="primary" (click)="onRowClick(element,'edit')">Edit</button>
-        <button mat-button color="accent" (click)="onRowClick(element,'view')">View</button>
-      </td>
-    </ng-container>
-
-    <!-- Header and Row Definitions -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
       
-    ></tr>
-  </table>
-  
-  <!-- Paginator -->
-  <mat-paginator
-    [pageSizeOptions]="[5, 10, 20]"
-    showFirstLastButtons
-    aria-label="Select page of periodic elements"
-  >
-  </mat-paginator>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <!-- IC Column -->
+      <ng-container matColumnDef="ic">
+        <th mat-header-cell *matHeaderCellDef>IC</th>
+        <td mat-cell *matCellDef="let element">{{ element.ic }}</td>
+      </ng-container>
+
+      <!-- Passport Column -->
+      <ng-container matColumnDef="passport">
+        <th mat-header-cell *matHeaderCellDef>Passport</th>
+        <td mat-cell *matCellDef="let element">{{ element.passport }}</td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-button color="primary" (click)="onRowClick(element, 'edit')">Edit</button>
+          <button mat-button color="accent" (click)="onRowClick(element, 'view')">View</button>
+        </td>
+      </ng-container>
+
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <!-- Paginator -->
+    <mat-paginator
+      [pageSizeOptions]="[5, 10, 20]"
+      showFirstLastButtons
+      aria-label="Select page of periodic elements"
+    >
+    </mat-paginator>
+  </div>
 </div>

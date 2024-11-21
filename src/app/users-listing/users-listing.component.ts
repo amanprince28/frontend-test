@@ -53,9 +53,9 @@ export class UsersListingComponent implements OnInit{
 
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit};
-    this.dataService.getCustomer(payload).subscribe((response: any) => {
+    this.dataService.getUser(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response.data;
+      this.dataSource.data = response;
     });
   }
 
@@ -64,7 +64,7 @@ export class UsersListingComponent implements OnInit{
       return;
     }
     row.action = action;
-    this.dataService.getCustomerById(row.id).subscribe((response: any) => {
+    this.dataService.getUserById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
       this.router.navigate(['/users-details', row.id]);
     });

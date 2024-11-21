@@ -33,23 +33,27 @@ export class DetailsComponent {
   bankingForm!: FormGroup;
   bankRecords: FormArray;
   documentsForm!:FormGroup;
+  uploadedFiles:any[] = [];
+  displayedColumns: string[] = ['fileName', 'fileDescription','fileSize','fileType','actions'];
   countries: any[] = [];
   states: any[] = [];
   cities: any[] = [];
   signalData: any;
   customerFullData: any;
   customerId!: string;
-  displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
+  displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines','actions'];
   displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo', 'actions'];
 
   race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  dataSource = new MatTableDataSource<any>([]);
+  dataSource=new MatTableDataSource<any>([]);;
   bankDataSource: any[] = [];
 
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
+  selectedFile: any;
+  uploadedDocuments: any[]=[];
 
   constructor(
     private route: ActivatedRoute,
@@ -75,19 +79,9 @@ export class DetailsComponent {
     // Initialize form controls
     
     this.race = [
-      'Mixed Race',
-      'Arctic (Siberian, Eskimo)',
-      'Caucasian (European)',
-      'Caucasian (Indian)',
-      'Caucasian (Middle East)',
-      'Caucasian (North African, Other)',
-      'Indigenous Australian',
-      'Native American',
-      'North East Asian (Mongol, Tibetan, Korean Japanese, etc)',
-      'Pacific (Polynesian, Micronesian, etc)',
-      'South East Asian (Chinese, Thai, Malay, Filipino, etc)',
-      'West African, Bushmen, Ethiopian',
-      'Other Race'
+      'Chinese',
+      'Malay',
+      'Indian'
     ];
     this.customerForm = new FormGroup({
       // Customer Information
@@ -169,7 +163,10 @@ export class DetailsComponent {
     // dcoument form
     this.documentsForm= new FormGroup({
       fileName : new FormControl(''),
-      fileUpload: new FormControl('')
+      fileDescription: new FormControl(''),
+      fileSize:new FormControl(''),
+      fileUpload: new FormControl(''),
+      fileType: new FormControl('')
     })
 
     // Watch for changes in the 'same_as_permanent' checkbox
@@ -214,6 +211,42 @@ export class DetailsComponent {
     this.fetchCountries();
   }
 
+  onCustomerRelationSave() {
+    // Create the customer_relation object
+    const customer_relation = {
+      name: this.customerRelationshipForm.get('relationship_name')?.value,
+      ic: this.customerRelationshipForm.get('relationship_ic')?.value,
+      passport: this.customerRelationshipForm.get('relationship_passport')?.value,
+      gender: this.customerRelationshipForm.get('relationship_gender')?.value,
+      mobile_no: this.customerRelationshipForm.get('relationship_mobile_no')?.value,
+      relationship: this.customerRelationshipForm.get('relationship')?.value,
+      customer_address: [
+        {
+          address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
+          country_id: this.customerRelationshipForm.get('perm_country')?.value,
+          state_id: this.customerRelationshipForm.get('perm_state')?.value,
+          city_id: this.customerRelationshipForm.get('perm_city')?.value,
+        },
+        {
+          address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
+          country_id: this.customerRelationshipForm.get('corr_country')?.value,
+          state_id: this.customerRelationshipForm.get('corr_state')?.value,
+          city_id: this.customerRelationshipForm.get('corr_city')?.value,
+        },
+      ],
+    };
+  
+    // Update the dataSource's underlying data
+    const currentData = this.dataSource.data; // Get the current data
+    currentData.push(customer_relation); // Add the new customer relation
+    this.dataSource.data = [...currentData]; // Refresh the data in the table
+  
+    // Reset the form
+    this.customerRelationshipForm.reset();
+  }
+  
+  
+
   eitherFieldRequiredValidator(form: AbstractControl): { [key: string]: boolean } | null {
     const ic = form.get('ic')?.value;
     const passport = form.get('passport')?.value;
@@ -243,12 +276,12 @@ export class DetailsComponent {
       relationship_passport: row?.passport || '',
       relationship_gender: row?.gender || '',  
       relationship: row?.relationship || '',  
-      perm_postal_code: row?.address[0]?.postal_code || '',
-      corr_rel_postal_code: row?.address[0]?.postal_code || '',
-      perm_address_line: row?.address[0]?.address_lines || '',
-      perm_city: row?.address[0]?.city_id || '',
-      perm_state: row?.address[0]?.state_id || '',
-      perm_country: row?.address[0]?.country_id || ''
+      perm_postal_code: row?.customer_address[0]?.postal_code || '',
+      corr_rel_postal_code: row?.customer_address[0]?.postal_code || '',
+      perm_address_line: row?.customer_address[0]?.address_lines || '',
+      perm_city: row?.customer_address[0]?.city_id || '',
+      perm_state: row?.customer_address[0]?.state_id || '',
+      perm_country: row?.customer_address[0]?.country_id || ''
     });
   }
 
@@ -280,20 +313,44 @@ export class DetailsComponent {
     return this.bankRecords.controls as FormGroup[];
   }
 
-  onFileChange(event:any){
+  onFileChange(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Add file size and other information as needed
-      this.form.patchValue({
+      this.selectedFile = file;
+
+      this.documentsForm.patchValue({
         fileName: file.name,
-        size: file.size,
-        attachment: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+        fileDescription: this.documentsForm.value.fileDescription
       });
     }
   }
 
-  addDocumentRecord(){
+  addDocumentRecord(): void {
+    if (this.documentsForm.valid && this.selectedFile) {
+      const formData = new FormData();
+      formData.append('file', this.selectedFile);
+      formData.append('fileName', this.documentsForm.value.fileName);
+      formData.append('fileDescription', this.documentsForm.value.fileDescription);
+      formData.append('fileSize', this.documentsForm.value.fileSize);
+      formData.append('fileType', this.documentsForm.value.fileType);
 
+      this.uploadedDocuments.push(formData)
+      // Simulate upload or send to backend
+      //this.uploadFile(formData);
+
+      // Add file to the table
+      this.uploadedFiles.push({
+        fileName: this.documentsForm.value.fileName,
+        fileDescription: this.documentsForm.value.fileDescription,
+        fileSize: this.documentsForm.value.fileSize,
+        fileType: this.documentsForm.value.fileType
+      });
+
+      this.documentsForm.reset(); // Clear the form
+      this.selectedFile = null; // Reset selected file
+    }
   }
 
   clearForm(){
@@ -467,126 +524,6 @@ export class DetailsComponent {
   }
   }
 
-  // onCustomerSubmit() {
-  //   console.log('onCustomerSubmit')
-  //   const submissionData: any = {
-  //     name: this.customerForm.get('name')?.value,
-  //     ic: this.customerForm.get('ic')?.value,
-  //     passport: this.customerForm.get('passport')?.value,
-  //     gender: this.customerForm.get('gender')?.value,
-  //     marital_status: this.customerForm.get('marital_status')?.value,
-  //     no_of_child: this.customerForm.get('no_of_child')?.value,
-  //     mobile_no: this.customerForm.get('mobile_no')?.value,
-  //     tel_no: this.customerForm.get('tel_no')?.value,
-  //     email: this.customerForm.get('email')?.value,
-  //     car_plate: this.customerForm.get('car_plate')?.value,
-  //     customer_address: [{
-  //       address_lines: this.customerAddressForm.get('perm_address_line')?.value,
-  //       postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
-  //       is_permanent: this.customerAddressForm.get('perm_address_line')?.value ? true : false,
-  //       country_id: this.customerAddressForm.get('perm_country')?.value,
-  //       state_id: this.customerAddressForm.get('perm_state')?.value,
-  //       city_id: this.customerAddressForm.get('perm_city')?.value,
-  //     },
-  //     {
-  //       address_lines:this.customerAddressForm.get('corr_address_line')?.value,
-  //       postal_code:this.customerAddressForm.get('perm_postal_code')?.value,
-  //       country_id:this.customerAddressForm.get('perm_country')?.value,
-  //       state_id:this.customerAddressForm.get('perm_state')?.value,
-  //       city_id:this.customerAddressForm.get('perm_city')?.value,
-  //     }]
-  //   };
-
-  //   console.log(submissionData,'submisson data');
-
-  //   if (this.isEditMode) {
-  //     submissionData.id = this.customerId;
-  //   }
-
-  //   // if (this.customerForm.invalid) {
-  //   //   this.customerForm.markAllAsTouched();
-  //   //   return;
-  //   // }
-
-  //   console.log(submissionData)
-  //   this.dataService.addCustomer(submissionData).subscribe(response => {
-  //     // this.router.navigate(['/']);
-  //   });
-  // }
-
-  // onEmploymentSubmit() {
-  //   const submissionData: any = {
-  //     annual_income: this.customerEmployemntForm.get('annual_income')?.value,
-  //     business_type: this.customerEmployemntForm.get('business_type')?.value,
-  //     department: this.customerEmployemntForm.get('department')?.value,
-  //     employee_no: this.customerEmployemntForm.get('employee_no')?.value,
-  //     income_date: this.customerEmployemntForm.get('income_date')?.value,
-  //     income_type: this.customerEmployemntForm.get('income_type')?.value,
-  //     employment_name: this.customerEmployemntForm.get('employment_name')?.value,
-  //     occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
-  //     position: this.customerEmployemntForm.get('position')?.value,
-  //     employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
-  //     telecode: this.customerEmployemntForm.get('telecode')?.value,
-  //     employee_type: this.customerEmployemntForm.get('employee_type')?.value,
-  //     telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
-  //   };
-
-  //   if (this.isEditMode) {
-  //     submissionData.id = this.customerId;
-  //   }
-
-  //   // if (this.customerEmployemntForm.invalid) {
-  //   //   this.customerEmployemntForm.markAllAsTouched();
-  //   //   return;
-  //   // }
-
-  //   console.log(submissionData)
-  //   this.dataService.addCustomer(submissionData).subscribe(response => {
-  //     //this.router.navigate(['/']);
-  //   });
-  // }
-
-  // onCustomerRelationshipSubmit() {
-  //   console.log('onCustomerRelationshipSubmit', this.customerRelationshipId)
-  //   const submissionData: any = {
-  //     name: this.customerRelationshipForm.get('relationship_name')?.value,
-  //     ic: this.customerRelationshipForm.get('relationship_ic')?.value,
-  //     passport: this.customerRelationshipForm.get('relationship_passport')?.value,
-  //     gender: this.customerRelationshipForm.get('relationship_gender')?.value,
-  //     mobile_no: this.customerRelationshipForm.get('perm_country')?.value,
-  //     relationship: this.customerRelationshipForm.get('relationship')?.value,
-  //     address: [{
-  //       permanent:{
-  //       address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
-  //       country_id: this.customerRelationshipForm.get('perm_country')?.value,
-  //       state_id: this.customerRelationshipForm.get('perm_state')?.value,
-  //       city_id: this.customerRelationshipForm.get('perm_city')?.value
-  //     },
-  //     correspondence: {
-  //       address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
-  //       country_id: this.customerRelationshipForm.get('corr_country')?.value,
-  //       state_id: this.customerRelationshipForm.get('corr_state')?.value,
-  //       city_id: this.customerRelationshipForm.get('corr_city')?.value
-  //     }
-  //   },
-  //   ]
-  //   };
-
-  //   if (this.isEditMode) {
-  //     submissionData.id = this.customerId;
-  //   }
-
-  //   // if (this.customerRelationshipForm.invalid) {
-  //   //   this.customerRelationshipForm.markAllAsTouched();
-  //   //   return;
-  //   // }
-
-  //   console.log(submissionData)
-  //   this.dataService.addCustomer(submissionData).subscribe(response => {
-  //     //this.router.navigate(['/']);
-  //   });
-  // }
-
   onBankEdit(data:any){
     console.log(data)
   }
@@ -656,32 +593,33 @@ export class DetailsComponent {
         gender: this.customerRelationshipForm.get('relationship_gender')?.value,
         mobile_no: this.customerRelationshipForm.get('perm_country')?.value,
         relationship: this.customerRelationshipForm.get('relationship')?.value,
-        address: [
-          {
-            address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
-            postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
-            is_permanent: !!this.customerAddressForm.get('perm_address_line')?.value,
-            country_id: this.customerRelationshipForm.get('perm_country')?.value,
-            state_id: this.customerRelationshipForm.get('perm_state')?.value,
-            city_id: this.customerRelationshipForm.get('perm_city')?.value,
-          },
-          {
-            address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
-            postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
-            country_id: this.customerRelationshipForm.get('corr_country')?.value,
-            state_id: this.customerRelationshipForm.get('corr_state')?.value,
-            city_id: this.customerRelationshipForm.get('corr_city')?.value,
-          }
+        customer_address: [
+             {
+              address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
+              country_id: this.customerRelationshipForm.get('perm_country')?.value,
+              state_id: this.customerRelationshipForm.get('perm_state')?.value,
+              city_id: this.customerRelationshipForm.get('perm_city')?.value,
+            },
+            {
+              address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
+              country_id: this.customerRelationshipForm.get('corr_country')?.value,
+              state_id: this.customerRelationshipForm.get('corr_state')?.value,
+              city_id: this.customerRelationshipForm.get('corr_city')?.value,
+            }
         ]
       }];
     }
     if (this.bankRecords && this.bankRecords.length > 0) {
         submissionData.bankDetails = this.bankRecords.value;
     }
+    // if(this.uploadedFiles && this.uploadedFiles.length >0){
+    //   submissionData.dcoument = this.uploadedDocuments
+    // }
     
     if (this.isEditMode) {
            submissionData.id = this.customerId;
       }
+
     console.log(submissionData,'master submit');
     this.dataService.addCustomer(submissionData).subscribe(response => {
       this.snackBar.open('Record Saved', 'Close', {

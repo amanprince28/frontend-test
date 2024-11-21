@@ -1,16 +1,15 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
-
-import {MatButtonModule} from '@angular/material/button';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-listing',
@@ -29,37 +28,61 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   styleUrls: ['./listing.component.scss']
 })
 export class ListingComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'ic', 'passport','actions'];
+  displayedColumns: string[] = ['name', 'ic', 'passport', 'actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
-  searchForm = new FormGroup({
-    search: new FormControl(''),
-  });
-  signalData = signal({});
-  search = new FormControl();
+  searchForm!: FormGroup;
 
-  constructor(private router: Router, private signalService: SignalService, private dataService: DataService) {}
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private signalService: SignalService,
+    private dataService: DataService
+  ) {}
 
   ngOnInit(): void {
-    this.fetchData();
+    this.searchForm = this.fb.group({
+      search: [''], // Initialize the 'search' field
+    });
+
+    this.fetchData(); // Initial data fetch
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
     this.paginator.page.subscribe(() => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize);
+      this.filterTable(); // Refetch data when page changes
     });
   }
 
   fetchData(page: number = 0, limit: number = 5): void {
-    const payload = { page, limit};
+    const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       console.log(response);
       this.dataSource.data = response.data;
     });
   }
 
-  onRowClick(row: any,action:string): void {
+  filterTable(): void {
+    const searchValue = this.searchForm.value.search;
+    console.log(searchValue, 'Search Value');
+
+    const skip = this.paginator.pageIndex * this.paginator.pageSize;
+    const take = this.paginator.pageSize;
+ 
+    const payload = {
+      search: searchValue || '',
+      skip,
+      take,
+    };
+
+    this.dataService.getCustomer(payload).subscribe((response: any) => {
+      console.log(response);
+      this.dataSource.data = response.data; // Update table with filtered results
+      this.paginator.length = response.totalCount; // Update total record count
+    });
+  }
+
+  onRowClick(row: any, action: string): void {
     if (!row.id) {
       return;
     }
@@ -68,16 +91,6 @@ export class ListingComponent implements OnInit {
       this.signalService.triggerAction(response);
       this.router.navigate(['/details', row]);
     });
-  }
-
-  // For filtering the table
-  filterTable(): void {
-    if (this.searchForm.get('search')?.value) {
-      console.log(this.searchForm.get('search')?.value);
-      this.dataSource.filter = this.searchForm.get('search')?.value as string;
-      return;
-    }
-    this.dataSource.filter = '';
   }
 
   onAddClick(): void {
