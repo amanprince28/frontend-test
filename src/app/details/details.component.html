@@ -506,7 +506,7 @@
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record">
                   <button mat-button color="accent" (click)="onRowClick(record)">Edit</button>
-                  <button mat-button color="warn" (click)="onBankDelete(record)">Delete</button>
+                  <button mat-button color="warn" (click)="onRowDelete(record)">Delete</button>
                 </td>
               </ng-container>
           
@@ -676,7 +676,7 @@
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
                   <td mat-cell *matCellDef="let record">
-                    <button mat-button color="accent" (click)="onBankEdit(record)">Edit</button>
+                    <button mat-button color="accent" (click)="onFileEdit(record)">Edit</button>
                     <button mat-button color="warn" (click)="onBankDelete(record)">Delete</button>
                   </td>
                 </ng-container>
@@ -699,7 +699,7 @@
 
       <div class="action-buttons">
         <button mat-raised-button color="primary" (click)="onMasterSubmit()">Save</button>
-        <button mat-raised-button>Cancel</button>
+        <button mat-raised-button (click)="masterCancel()">Cancel</button>
       </div>
     </mat-card-content>
   </mat-card>

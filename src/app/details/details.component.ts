@@ -244,6 +244,10 @@ export class DetailsComponent {
     // Reset the form
     this.customerRelationshipForm.reset();
   }
+
+  onRowDelete(record:any){
+
+  }
   
   
 
@@ -303,7 +307,13 @@ export class DetailsComponent {
     }
   }
 
+  masterCancel(){
+    this.router.navigate(['/listing']);
+  }
   
+  onFileEdit(record:any){
+    console.log(record)
+  }
 
   onDocumentSubmit(){
 
