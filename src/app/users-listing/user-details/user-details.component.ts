@@ -130,7 +130,7 @@ export class UserDetailsComponent {
 
     console.log(submissionData)
     this.dataService.addUser(submissionData).subscribe(response => {
-      this.router.navigate(['/']);
+      this.router.navigate(['/users']);
     });
   }
   onCustomerCancel(){
