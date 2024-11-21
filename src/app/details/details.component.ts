@@ -31,7 +31,7 @@ export class DetailsComponent {
   customerRelationshipForm!: FormGroup;
   customerEmployemntForm!: FormGroup
   bankingForm!: FormGroup;
-  bankRecords: FormArray;
+  bankRecords: any[]=[];
   documentsForm!:FormGroup;
   uploadedFiles:any[] = [];
   displayedColumns: string[] = ['fileName', 'fileDescription','fileSize','fileType','actions'];
@@ -42,13 +42,18 @@ export class DetailsComponent {
   customerFullData: any;
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines','actions'];
-  displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo', 'actions'];
+  displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo','remarks', 'actions'];
 
   race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  dataSource=new MatTableDataSource<any>([]);;
-  bankDataSource: any[] = [];
+  dataSource=new MatTableDataSource<any>([]);
+  bankEditIndex: number=0;
+  isBankEditMode: boolean=false;
+  isCustRelationEditMode: boolean=false;
+  isCustRelationEditIndex: number=0;
+;
+  bankDataSource=new MatTableDataSource<any>([]);;
 
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
@@ -72,7 +77,6 @@ export class DetailsComponent {
       remark: new FormControl('')
     });
 
-    this.bankRecords = new FormArray<FormGroup>([]);
   }
 
   ngOnInit() {
@@ -117,8 +121,7 @@ export class DetailsComponent {
       // cus_tel_no:new FormControl('', Validators.required),
       staying_since:new FormControl('', Validators.required),
     });
-
-
+    
     // Customer Relationship
     this.customerRelationshipForm = new FormGroup({
       
@@ -233,17 +236,29 @@ export class DetailsComponent {
         },
       ],
     };
-  
-    // Update the dataSource's underlying data
-    const currentData = this.dataSource.data; // Get the current data
-    currentData.push(customer_relation); // Add the new customer relation
-    this.dataSource.data = [...currentData]; // Refresh the data in the table
+    if (this.isCustRelationEditMode) {
+      // Update the record in edit mode
+      this.dataSource.data[this.isCustRelationEditIndex] = customer_relation;
+      this.isCustRelationEditMode = false; // Reset edit mode
+    } else {
+      // Add a new record in insert mode
+      this.dataSource.data.push(customer_relation);
+    }
+
+    // Update the data source for the table
+    this.dataSource.data = [...this.dataSource.data];
+
   
     // Reset the form
     this.customerRelationshipForm.reset();
   }
 
   onRowDelete(record:any){
+    const index = this.dataSource.data.indexOf(record);
+    if (index >= 0) {
+      this.dataSource.data.splice(index, 1);
+      this.dataSource.data = [...this.dataSource.data]; // Update the data source
+    }
 
   }
   
@@ -270,6 +285,12 @@ export class DetailsComponent {
   }
 
   onRowClick(row:any){
+    // console.log(record,this.bankRecords,'ssrecord');
+    this.isCustRelationEditMode = true;
+    this.isCustRelationEditIndex = this.dataSource.data.indexOf(row); // Store the index of the record being edited
+
+    // Patch the values into the form
+    // this.customerRelationshipForm.patchValue(row);
     this.customerRelationshipId = row.id;
     this.customerRelationshipForm.patchValue({
       relationship_name: row?.name || '',
@@ -285,23 +306,27 @@ export class DetailsComponent {
       perm_state: row?.customer_address[0]?.state_id || '',
       perm_country: row?.customer_address[0]?.country_id || ''
     });
+
   }
 
   onBankingSubmit(): void {
     if (this.bankingForm.valid) {
       const bankRecord = this.bankingForm.value;
 
-      this.bankRecords.push(new FormGroup({
-        bankName: new FormControl(bankRecord.bankName),
-        accountNo: new FormControl(bankRecord.accountNo),
-        bankHolder: new FormControl(bankRecord.bankHolder),
-        bankCard: new FormControl(bankRecord.bankCard),
-        pinNo: new FormControl(bankRecord.pinNo),
-        remark: new FormControl(bankRecord.remark)
-      }));
-      
+      if (this.isBankEditMode) {
+        // Update the record in edit mode
+        this.bankDataSource.data[this.bankEditIndex] = bankRecord;
+        this.isBankEditMode = false; // Reset edit mode
+      } else {
+        // Add a new record in insert mode
+        this.bankRecords.push(bankRecord);
+      }
+
+      // Update the data source for the table
+      this.bankDataSource.data = [...this.bankDataSource.data];
+
+      // Reset the form
       this.bankingForm.reset();
-      this.bankDataSource = [...this.bankRecords.controls as FormGroup[]];
     }
   }
 
@@ -315,10 +340,6 @@ export class DetailsComponent {
 
   onDocumentSubmit(){
 
-  }
-
-  get bankRecordsArray(): FormGroup[] {
-    return this.bankRecords.controls as FormGroup[];
   }
 
   onFileChange(event: any): void {
@@ -337,32 +358,39 @@ export class DetailsComponent {
 
   addDocumentRecord(): void {
     if (this.documentsForm.valid && this.selectedFile) {
-      const formData = new FormData();
-      formData.append('file', this.selectedFile);
-      formData.append('fileName', this.documentsForm.value.fileName);
-      formData.append('fileDescription', this.documentsForm.value.fileDescription);
-      formData.append('fileSize', this.documentsForm.value.fileSize);
-      formData.append('fileType', this.documentsForm.value.fileType);
+      // const formData = new FormData();
+      // formData.append('file', this.selectedFile);
+      // formData.append('fileName', this.documentsForm.value.fileName);
+      // formData.append('fileDescription', this.documentsForm.value.fileDescription);
+      // formData.append('fileSize', this.documentsForm.value.fileSize);
+      // formData.append('fileType', this.documentsForm.value.fileType);
 
-      this.uploadedDocuments.push(formData)
+      //this.uploadedDocuments.push(formData)
       // Simulate upload or send to backend
       //this.uploadFile(formData);
 
       // Add file to the table
+      // this.uploadedFiles.push({
+      //   fileName: this.documentsForm.value.fileName,
+      //   fileDescription: this.documentsForm.value.fileDescription,
+      //   fileSize: this.documentsForm.value.fileSize,
+      //   fileType: this.documentsForm.value.fileType
+      // });
       this.uploadedFiles.push({
-        fileName: this.documentsForm.value.fileName,
-        fileDescription: this.documentsForm.value.fileDescription,
-        fileSize: this.documentsForm.value.fileSize,
-        fileType: this.documentsForm.value.fileType
-      });
-
+          name: this.documentsForm.value.fileName,
+          path: this.documentsForm.value.fileName,
+          customerId:this.customerId
+          //fileSize: this.documentsForm.value.fileSize,
+          //fileType: this.documentsForm.value.fileType
+        });
+        
       this.documentsForm.reset(); // Clear the form
       this.selectedFile = null; // Reset selected file
     }
   }
 
-  clearForm(){
-
+  clearUploadForm(){
+    this.documentsForm.reset();
   }
 
   loadCustomerData(id: string) {
@@ -421,6 +449,8 @@ export class DetailsComponent {
   loadEmployementData(id:string){
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       const signalData = data;
+      this.dataSource.data = signalData?.relations;
+      this.bankDataSource.data = signalData?.bank_details;
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
@@ -434,17 +464,19 @@ export class DetailsComponent {
           income_type: signalData?.employment?.income_type,
           occupation_category: signalData?.employment?.occupation_category,
           position: signalData?.employment?.position,
-          remark: signalData?.employment?.employment_remarks,
-          comp_tel_code: signalData?.employment?.tel_code,
-          comp_tel_no: signalData?.employment?.telephone_no,
+          employment_remarks: signalData?.employment?.employment_remarks,
+          telecode: signalData?.employment?.tel_code,
+          telephone_no: signalData?.employment?.telephone_no,
         });
-
+        console.log(this.customerEmployemntForm,'ssform')
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
       } else {
         this.isEditMode = false;
       }
     });
   }
+
+  
 
   fetchCountries(): void {
     this.dataService.getCountry(this.customerForm.get('perm_country')?.value, this.customerForm.get('perm_state')?.value).subscribe(data => {
@@ -532,15 +564,28 @@ export class DetailsComponent {
   }
   }
 
-  onBankEdit(data:any){
-    console.log(data)
+  onBankEdit(record: any): void {
+    // Set the form to edit mode
+    console.log(record,this.bankRecords,'ssrecord');
+    this.isBankEditMode = true;
+    this.bankEditIndex = this.bankDataSource.data.indexOf(record); // Store the index of the record being edited
+
+    // Patch the values into the form
+    this.bankingForm.patchValue(record);
+  }
+  onBankDelete(record: any): void {
+    // Remove the record from the array
+    const index = this.bankDataSource.data.indexOf(record);
+    if (index >= 0) {
+      this.bankDataSource.data.splice(index, 1);
+      this.bankDataSource.data = [...this.bankDataSource.data]; // Update the data source
+    }
+  }
+  onFileDelete(record:any){
+    console.log(record)
   }
 
-  onBankDelete(data:any){
-
-  }
-
-  onMasterSubmit(){
+  async onMasterSubmit(){
     const submissionData: any = {
       name: this.customerForm.get('name')?.value,
       ic: this.customerForm.get('ic')?.value,
@@ -561,14 +606,18 @@ export class DetailsComponent {
           state_id: this.customerAddressForm.get('perm_state')?.value,
           city_id: this.customerAddressForm.get('perm_city')?.value,
         },
-        {
-          address_lines: this.customerAddressForm.get('corr_address_line')?.value,
-          postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
-          country_id: this.customerAddressForm.get('corr_country')?.value,
-          state_id: this.customerAddressForm.get('corr_state')?.value,
-          city_id: this.customerAddressForm.get('corr_city')?.value,
-        }
-      ]
+        ...(this.customerAddressForm.get('cus_same_as_permanent')?.value
+          ? [
+              {
+                address_lines: this.customerAddressForm.get('corr_address_line')?.value,
+                postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
+                country_id: this.customerAddressForm.get('corr_country')?.value,
+                state_id: this.customerAddressForm.get('corr_state')?.value,
+                city_id: this.customerAddressForm.get('corr_city')?.value,
+              },
+            ]
+          : []),
+      ].filter((address) => !!address.address_lines), // Remove empty objects
     };
     
     // Add employmentData only if there are values in the form
@@ -597,7 +646,7 @@ export class DetailsComponent {
       submissionData.relations = this.dataSource.data;
     }
     if (this.bankRecords && this.bankRecords.length > 0) {
-        submissionData.bankDetails = this.bankRecords.value;
+        submissionData.bank_details = this.bankRecords;
     }
     // if(this.uploadedFiles && this.uploadedFiles.length >0){
     //   submissionData.dcoument = this.uploadedDocuments
@@ -608,7 +657,7 @@ export class DetailsComponent {
     }
 
     console.log(submissionData,'master submit');
-    this.dataService.addCustomer(submissionData).subscribe(response => {
+   await this.dataService.addCustomer(submissionData).subscribe(response => {
       this.snackBar.open('Record Saved', 'Close', {
         duration: 3000, // Duration in milliseconds
         horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
@@ -616,6 +665,9 @@ export class DetailsComponent {
       });
       this.router.navigate(['/listing']);
     });
+    await this.dataService.uploadFiles(this.uploadedFiles[0]).subscribe(response=>{
+      console.log(response)
+    })
   }
 
 }

@@ -75,4 +75,8 @@ export class DataService {
   saveLoan(loanData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/add`, loanData);
   }
+
+  uploadFiles(payload:any):Observable<any>{
+    return this.http.post(`${this.apiUrl}/customer/add-document`, payload);
+  }
 }
