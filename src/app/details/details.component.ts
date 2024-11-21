@@ -149,9 +149,7 @@ export class DetailsComponent {
       employee_no: new FormControl('', ),
       income_date: new FormControl('', ),
       income_type: new FormControl('', ),
-      // employment_name: new FormControl('', ),
       occupation_category: new FormControl('', ),
-
       position: new FormControl('', ),
       employment_remarks: new FormControl('', ),
       telecode: new FormControl('', ),
@@ -427,18 +425,18 @@ export class DetailsComponent {
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
         this.customerEmployemntForm.patchValue({
-          annual_income: signalData?.company[0]?.annual_income,
-          department: signalData?.company[0]?.department,
-          employee_no: signalData?.company[0]?.employee_no,
-          employee_type: signalData?.company[0]?.employee_type,
-          income_date: signalData?.company[0]?.income_date,
-          income_type: signalData?.company[0]?.income_type,
-          // employment_name: signalData?.company[0]?.name,
-          occupation_category: signalData?.company[0]?.occupation_category,
-          position: signalData?.company[0]?.position,
-          remark: signalData?.company[0]?.remark,
-          comp_tel_code: signalData?.company[0]?.tel_code,
-          comp_tel_no: signalData?.company[0]?.tel_no,
+          annual_income: signalData?.employment?.annual_income,
+          department: signalData?.employment?.department,
+          business_type: signalData?.employment?.business_type,
+          employee_no: signalData?.employment?.employee_no,
+          employee_type: signalData?.employment?.employee_type,
+          income_date: signalData?.employment?.income_date,
+          income_type: signalData?.employment?.income_type,
+          occupation_category: signalData?.employment?.occupation_category,
+          position: signalData?.employment?.position,
+          remark: signalData?.employment?.employment_remarks,
+          comp_tel_code: signalData?.employment?.tel_code,
+          comp_tel_no: signalData?.employment?.telephone_no,
         });
 
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
@@ -576,7 +574,7 @@ export class DetailsComponent {
     // Add employmentData only if there are values in the form
     if (Object.values(this.customerEmployemntForm.value).some(value => value !== null && value !==undefined && value !== "")) {
       console.log(this.customerEmployemntForm,'valuesss');
-      submissionData.company = {
+      submissionData.employment = {
         annual_income: this.customerEmployemntForm.get('annual_income')?.value,
         business_type: this.customerEmployemntForm.get('business_type')?.value,
         department: this.customerEmployemntForm.get('department')?.value,
@@ -586,17 +584,17 @@ export class DetailsComponent {
         // employment_name: this.customerEmployemntForm.get('employment_name')?.value,
         occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
         position: this.customerEmployemntForm.get('position')?.value,
-        // employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
+        employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
         tel_code: this.customerEmployemntForm.get('telecode')?.value,
         employee_type: this.customerEmployemntForm.get('employee_type')?.value,
-        // telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
+        telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
       };
     }
     
     // Add customerRelationshipData only if there are values in the form
     if (Object.values(this.customerRelationshipForm.value).some(value => value !== null && value !== "")) {
       console.log(this.customerRelationshipForm,'valuesss 111')
-      submissionData.customer_relation = [{
+      submissionData.relations = [{
         name: this.customerRelationshipForm.get('relationship_name')?.value,
         ic: this.customerRelationshipForm.get('relationship_ic')?.value,
         passport: this.customerRelationshipForm.get('relationship_passport')?.value,
@@ -627,8 +625,8 @@ export class DetailsComponent {
     // }
     
     if (this.isEditMode) {
-           submissionData.id = this.customerId;
-      }
+      submissionData.id = this.customerId;
+    }
 
     console.log(submissionData,'master submit');
     this.dataService.addCustomer(submissionData).subscribe(response => {
