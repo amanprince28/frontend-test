@@ -592,30 +592,9 @@ export class DetailsComponent {
     }
     
     // Add customerRelationshipData only if there are values in the form
-    if (Object.values(this.customerRelationshipForm.value).some(value => value !== null && value !== "")) {
+    if (this.dataSource.data.length>0){
       console.log(this.customerRelationshipForm,'valuesss 111')
-      submissionData.relations = [{
-        name: this.customerRelationshipForm.get('relationship_name')?.value,
-        ic: this.customerRelationshipForm.get('relationship_ic')?.value,
-        passport: this.customerRelationshipForm.get('relationship_passport')?.value,
-        gender: this.customerRelationshipForm.get('relationship_gender')?.value,
-        mobile_no: this.customerRelationshipForm.get('perm_country')?.value,
-        relationship: this.customerRelationshipForm.get('relationship')?.value,
-        customer_address: [
-             {
-              address_lines: this.customerRelationshipForm.get('perm_address_line')?.value,
-              country_id: this.customerRelationshipForm.get('perm_country')?.value,
-              state_id: this.customerRelationshipForm.get('perm_state')?.value,
-              city_id: this.customerRelationshipForm.get('perm_city')?.value,
-            },
-            {
-              address_lines: this.customerRelationshipForm.get('corr_address_line')?.value,
-              country_id: this.customerRelationshipForm.get('corr_country')?.value,
-              state_id: this.customerRelationshipForm.get('corr_state')?.value,
-              city_id: this.customerRelationshipForm.get('corr_city')?.value,
-            }
-        ]
-      }];
+      submissionData.customer_relation = this.dataSource.data;
     }
     if (this.bankRecords && this.bankRecords.length > 0) {
         submissionData.bankDetails = this.bankRecords.value;
