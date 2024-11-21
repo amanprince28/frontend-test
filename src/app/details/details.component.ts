@@ -113,8 +113,8 @@ export class DetailsComponent {
       corr_country: new FormControl('', Validators.required),
       corr_state: new FormControl('', Validators.required),
       corr_city: new FormControl('', Validators.required),
-      cus_mobile :new FormControl('', Validators.required),
-      cus_tel_no:new FormControl('', Validators.required),
+      // cus_mobile :new FormControl('', Validators.required),
+      // cus_tel_no:new FormControl('', Validators.required),
       staying_since:new FormControl('', Validators.required),
     });
 
