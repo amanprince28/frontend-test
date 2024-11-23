@@ -14,11 +14,13 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatSnackBarModule],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatSnackBarModule,MatDatepickerModule,MatNativeDateModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
@@ -400,6 +402,7 @@ export class DetailsComponent {
       this.customerFullData = data;
       console.log('--- loadCustomerData --- ', this.signalData)
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+        const customerCorrAddress = this.signalData?.customer_address?.length > 1 ? this.signalData.customer_address[1] : [];
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
         console.log('--- customerPermanentAddress --- ', customerPermanentAddress)
         this.customerForm.patchValue({
@@ -422,6 +425,13 @@ export class DetailsComponent {
           perm_country: customerPermanentAddress?.country_id,
           perm_state: customerPermanentAddress?.state_id,
           perm_city: customerPermanentAddress?.city_id,
+
+          corr_postal_code: customerCorrAddress?.postal_code,
+          corr_address_line: customerCorrAddress?.address_lines,
+          corr_country: customerCorrAddress?.country_id,
+          corr_state: customerCorrAddress?.state_id,
+          corr_city: customerCorrAddress?.city_id,
+
         });
 
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);

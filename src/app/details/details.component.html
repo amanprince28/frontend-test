@@ -145,9 +145,16 @@
                 <input matInput placeholder="Enter Mobile" formControlName="cus_mobile">
               </mat-form-field> -->
 
-              <mat-form-field appearance="outline" class="one-fifth-width">
+              <!-- <mat-form-field appearance="outline" class="one-fifth-width">
                 <mat-label>Staying Since</mat-label>
                 <input matInput type="date" formControlName="staying_since">
+              </mat-form-field> -->
+
+              <mat-form-field appearance="outline" class="one-fifth-width">
+                <mat-label>Staying Since</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="staying_since">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
           
@@ -249,9 +256,15 @@
               </mat-form-field>
             </div>
             <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+              <!-- <mat-form-field class="example-full-width">
                 <mat-label>Income Date</mat-label>
                 <input matInput formControlName="income_date" placeholder="Income Date" />
+              </mat-form-field> -->
+              <mat-form-field appearance="outline">
+                <mat-label>Income Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="income_date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-sm-3">
