@@ -25,7 +25,7 @@ export class UserDetailsComponent {
   isEditMode: boolean = false;
   details: any = {};
   form!: FormGroup;
-  customerForm!: FormGroup;
+  userForm!: FormGroup;
   customerRelationshipForm!: FormGroup;
   customerEmployemntForm!: FormGroup
   countries: any[] = [];
@@ -51,7 +51,7 @@ export class UserDetailsComponent {
 
   ngOnInit() {
     // Initialize form controls
-    this.customerForm = new FormGroup({
+    this.userForm = new FormGroup({
       // Customer Information
       name: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
@@ -59,9 +59,9 @@ export class UserDetailsComponent {
       role: new FormControl('', [Validators.required,]),
     })
     this.role = [
-      { value: 'Admin', viewValue: 'Admin' },
-      { value: 'Lead', viewValue: 'Lead' },
-      { value: 'Agent', viewValue: 'Agent' }
+      { value: 'ADMIN', viewValue: 'ADMIN' },
+      { value: 'LEAD', viewValue: 'LEAD' },
+      { value: 'AGENT', viewValue: 'AGENT' }
     ];
 
     // Customer Relationship
@@ -74,7 +74,7 @@ export class UserDetailsComponent {
         if(params['action']==='edit')
         this.isEditMode = true;
         if(params['action']==='view'){
-          this.customerForm.disable();
+          this.userForm.disable();
         }
       } else {
         this.isEditMode = false;
@@ -95,9 +95,9 @@ export class UserDetailsComponent {
       // if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
       //   const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
-        this.customerForm.patchValue({
-          name: this.signalData?.username,
-          password: this.signalData?.ic,
+        this.userForm.patchValue({
+          name: this.signalData?.name,
+          password: this.signalData?.password,
           email: this.signalData?.email,
           role: this.signalData?.role,
         })
@@ -112,19 +112,19 @@ export class UserDetailsComponent {
   onCustomerSubmit() {
     console.log('onCustomerSubmit')
     const submissionData: any = {
-      //name: this.customerForm.get('name')?.value,
-      password: this.customerForm.get('password')?.value,
-      email: this.customerForm.get('email')?.value,
-      username:this.customerForm.get('email')?.value,
-      role: this.customerForm.get('role')?.value,
+      //name: this.userForm.get('name')?.value,
+      password: this.userForm.get('password')?.value,
+      email: this.userForm.get('email')?.value,
+      username:this.userForm.get('email')?.value,
+      role: this.userForm.get('role')?.value,
     };
 
     if (this.isEditMode) {
       submissionData.id = this.customerId;
     }
 
-    if (this.customerForm.invalid) {
-      this.customerForm.markAllAsTouched();
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
       return;
     }
 
@@ -134,7 +134,7 @@ export class UserDetailsComponent {
     });
   }
   onCustomerCancel(){
-    this.customerForm.reset();
+    this.userForm.reset();
     this.router.navigate(['/users']);
   }
 }
