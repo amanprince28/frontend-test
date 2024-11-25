@@ -43,7 +43,7 @@ export class DetailsComponent {
   signalData: any;
   customerFullData: any;
   customerId!: string;
-  displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines','actions'];
+  displayedColumnsForRelationshipForm: string[] = ['name', 'ic','actions'];
   displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo','remarks', 'actions'];
 
   race:any[]=[];
@@ -54,6 +54,9 @@ export class DetailsComponent {
   isBankEditMode: boolean=false;
   isCustRelationEditMode: boolean=false;
   isCustRelationEditIndex: number=0;
+  selectedFiles: any[]=[];
+  fileEditIndex: number=0;
+  fileEditStatus: boolean=false;
 ;
   bankDataSource=new MatTableDataSource<any>([]);;
 
@@ -87,7 +90,8 @@ export class DetailsComponent {
     this.race = [
       'Chinese',
       'Malay',
-      'Indian'
+      'Indian',
+      'Other'
     ];
     this.customerForm = new FormGroup({
       // Customer Information
@@ -99,11 +103,15 @@ export class DetailsComponent {
       marital_status: new FormControl('single', Validators.required), // Default value
       no_of_child: new FormControl(0, Validators.required), // Default value
       mobile_no: new FormControl(null, Validators.required),
-      tel_code: new FormControl('+1', Validators.required), // Default value
+      //tel_code: new FormControl('+1', Validators.required), // Default value
       tel_no: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
       car_plate: new FormControl(null, Validators.required),
       relationship: new FormControl(null, Validators.required),
+      //tel_no: new FormControl('', Validators.required),
+      fblink: new FormControl(''),
+      //car_plate: new FormControl(''),
+      customerStatus: new FormControl('', Validators.required),
      
     }, { validators: this.eitherFieldRequiredValidator } )
     // Customer Address
@@ -121,45 +129,61 @@ export class DetailsComponent {
       corr_city: new FormControl(null, Validators.required),
       // cus_mobile :new FormControl(null, Validators.required),
       // cus_tel_no:new FormControl(null, Validators.required),
-      staying_since:new FormControl(null, Validators.required),
     });
     
     // Customer Relationship
     this.customerRelationshipForm = new FormGroup({
       
+      // relationship_name: new FormControl(),
+      // relationship_ic: new FormControl(),
+      // relationship_mobile_no: new FormControl(),
+      // relationship_passport: new FormControl(),
+      // relationship_gender: new FormControl(), // Default value
+      // relationship: new FormControl(),
+      // same_as_permanent: new FormControl(),
+      // perm_address_line: new FormControl(),
+      // perm_postal_code: new FormControl(),
+      // perm_country: new FormControl(),
+      // perm_state: new FormControl(),
+      // perm_city: new FormControl(),
+      // corr_address_line: new FormControl(),
+      // corr_country: new FormControl(),
+      // corr_state: new FormControl(),
+      // corr_city: new FormControl(),
+      // corr_rel_postal_code : new FormControl()
       relationship_name: new FormControl(),
       relationship_ic: new FormControl(),
       relationship_mobile_no: new FormControl(),
-      relationship_passport: new FormControl(),
-      relationship_gender: new FormControl(), // Default value
+      //relationship_passport: new FormControl(''),
+      //relationship_gender: new FormControl('',), // Default value
       relationship: new FormControl(),
-      same_as_permanent: new FormControl(),
-      perm_address_line: new FormControl(),
-      perm_postal_code: new FormControl(),
-      perm_country: new FormControl(),
-      perm_state: new FormControl(),
-      perm_city: new FormControl(),
-      corr_address_line: new FormControl(),
-      corr_country: new FormControl(),
-      corr_state: new FormControl(),
-      corr_city: new FormControl(),
-      corr_rel_postal_code : new FormControl()
+      //same_as_permanent: new FormControl(),
+      // perm_address_line: new FormControl('', ),
+      // perm_postal_code: new FormControl('',),
+      // perm_country: new FormControl('',),
+      // perm_state: new FormControl('',),
+      // perm_city: new FormControl('', ),
+      // corr_address_line: new FormControl(''),
+      // corr_country: new FormControl(''),
+      // corr_state: new FormControl(''),
+      // corr_city: new FormControl(''),
+      // corr_rel_postal_code : new FormControl('')
     });
     // Employment Details
 
     this.customerEmployemntForm = new FormGroup({
       annual_income: new FormControl(), // Default value
-      business_type: new FormControl(),
-      department: new FormControl(),
+      business_type: new FormControl( ),
+      department: new FormControl( ),
       employee_no: new FormControl(),
       income_date: new FormControl(),
-      income_type: new FormControl(),
+      //income_type: new FormControl('', ),
       occupation_category: new FormControl(),
       position: new FormControl(),
       employment_remarks: new FormControl(),
-      telecode: new FormControl(),
+      //telecode: new FormControl('', ),
       telephone_no: new FormControl(),
-      employee_type: new FormControl(), // Default value
+      //employee_type: new FormControl(''), // Default value
     });
     // Banking Form
   
@@ -219,8 +243,8 @@ export class DetailsComponent {
     const customer_relation = {
       name: this.customerRelationshipForm.get('relationship_name')?.value,
       ic: this.customerRelationshipForm.get('relationship_ic')?.value,
-      passport: this.customerRelationshipForm.get('relationship_passport')?.value,
-      gender: this.customerRelationshipForm.get('relationship_gender')?.value,
+      //passport: this.customerRelationshipForm.get('relationship_passport')?.value,
+      //gender: this.customerRelationshipForm.get('relationship_gender')?.value,
       mobile_no: this.customerRelationshipForm.get('relationship_mobile_no')?.value,
       relationship: this.customerRelationshipForm.get('relationship')?.value,
       customer_address: [
@@ -263,8 +287,6 @@ export class DetailsComponent {
     }
 
   }
-  
-  
 
   eitherFieldRequiredValidator(form: AbstractControl): { [key: string]: boolean } | null {
     const ic = form.get('ic')?.value;
@@ -298,8 +320,8 @@ export class DetailsComponent {
       relationship_name: row?.name || null,
       relationship_ic: row?.ic || null,
       relationship_mobile_no: row?.mobile_no || null,
-      relationship_passport: row?.passport || null,
-      relationship_gender: row?.gender || null,  
+      //relationship_passport: row?.passport || null,
+      //relationship_gender: row?.gender || null,  
       relationship: row?.relationship || null,  
       perm_postal_code: row?.customer_address[0]?.postal_code || null,
       corr_rel_postal_code: row?.customer_address[0]?.postal_code || null,
@@ -307,6 +329,19 @@ export class DetailsComponent {
       perm_city: row?.customer_address[0]?.city_id || null,
       perm_state: row?.customer_address[0]?.state_id || null,
       perm_country: row?.customer_address[0]?.country_id || null
+
+      // relationship_name: row?.name || '',
+      // relationship_ic: row?.ic || '',
+      // relationship_mobile_no: row?.mobile_no || '',
+      // //relationship_passport: row?.passport || '',
+      // //relationship_gender: row?.gender || '',  
+      // relationship: row?.relationship || '',  
+      // perm_postal_code: row?.customer_address[0]?.postal_code || '',
+      // corr_rel_postal_code: row?.customer_address[0]?.postal_code || '',
+      // perm_address_line: row?.customer_address[0]?.address_lines || '',
+      // perm_city: row?.customer_address[0]?.city_id || '',
+      // perm_state: row?.customer_address[0]?.state_id || '',
+      // perm_country: row?.customer_address[0]?.country_id || ''
     });
 
   }
@@ -321,11 +356,11 @@ export class DetailsComponent {
         this.isBankEditMode = false; // Reset edit mode
       } else {
         // Add a new record in insert mode
-        this.bankRecords.push(bankRecord);
+        this.bankDataSource.data.push(bankRecord);
       }
 
       // Update the data source for the table
-      this.bankDataSource.data = [...this.bankDataSource.data];
+      this.bankDataSource.data = this.bankDataSource.data;
 
       // Reset the form
       this.bankingForm.reset();
@@ -336,58 +371,83 @@ export class DetailsComponent {
     this.router.navigate(['/listing']);
   }
   
-  onFileEdit(record:any){
+  onFileEdit(record:any,index:number){
     console.log(record)
-  }
-
-  onDocumentSubmit(){
-
+    this.fileEditIndex = index;
+    this.fileEditStatus = true;
+    this.documentsForm.patchValue({
+      fileName: record.fileName,
+      fileDescription: record.fileDescription
+    });
   }
 
   onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-
+    const files = event.target.files; // Get the selected files
+    if (files.length > 0) {
+      // If multiple files are selected, store them in the selectedFiles array
+        this.selectedFiles = Array.from(files); // Convert FileList to Array for easier manipulation
+  
+      // You may want to update the form for each file's information (for example, first file's details)
+      // Here, I update the form with the details of the first file, as an example.
+      const firstFile = files[0];
+  
       this.documentsForm.patchValue({
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-        fileDescription: this.documentsForm.value.fileDescription
+        fileName: firstFile.name,
+        fileSize: firstFile.size,
+        fileType: firstFile.type,
+        fileDescription: this.documentsForm.value.fileDescription || '' // Keep the existing description or reset
       });
     }
   }
+  
 
   addDocumentRecord(): void {
-    if (this.documentsForm.valid && this.selectedFile) {
-      // const formData = new FormData();
-      // formData.append('file', this.selectedFile);
-      // formData.append('fileName', this.documentsForm.value.fileName);
-      // formData.append('fileDescription', this.documentsForm.value.fileDescription);
-      // formData.append('fileSize', this.documentsForm.value.fileSize);
-      // formData.append('fileType', this.documentsForm.value.fileType);
-
-      //this.uploadedDocuments.push(formData)
-      // Simulate upload or send to backend
-      //this.uploadFile(formData);
-
-      // Add file to the table
-      // this.uploadedFiles.push({
-      //   fileName: this.documentsForm.value.fileName,
-      //   fileDescription: this.documentsForm.value.fileDescription,
-      //   fileSize: this.documentsForm.value.fileSize,
-      //   fileType: this.documentsForm.value.fileType
-      // });
-      this.uploadedFiles.push({
-          name: this.documentsForm.value.fileName,
-          path: this.documentsForm.value.fileName,
-          customerId:this.customerId
-          //fileSize: this.documentsForm.value.fileSize,
-          //fileType: this.documentsForm.value.fileType
+    if (this.documentsForm.valid && this.selectedFiles) {
+      const formData = new FormData();
+  
+      // Loop through each selected file and append to formData
+      Array.from(this.selectedFiles).forEach(file => {
+        formData.append('file', file);
+        formData.append('fileName', file.name);
+        formData.append('fileDescription', this.documentsForm.value.fileDescription || 'No description');
+        formData.append('fileSize', file.size.toString());
+        formData.append('fileType', file.type);
+      });
+  
+      // Optionally, upload the files to the backend
+      // this.uploadFile(formData);
+  
+      // Check if we are editing an existing file or adding a new one
+      if (this.fileEditStatus) {
+        // Edit existing file
+        const updatedFile = {
+          fileName: this.documentsForm.value.fileName,
+          fileDescription: this.documentsForm.value.fileDescription || 'No description',
+          fileSize: this.selectedFiles[0].size,
+          fileType: this.selectedFiles[0].type
+        };
+  
+        // Update the file in the uploaded files list at the specified index
+        this.uploadedFiles[this.fileEditIndex] = updatedFile;
+  
+        // Reset edit status and index
+        this.fileEditStatus = false;
+        this.fileEditIndex = 0;
+      } else {
+        // Add new file
+        Array.from(this.selectedFiles).forEach(file => {
+          this.uploadedFiles.push({
+            fileName: file.name,
+            fileDescription: this.documentsForm.value.fileDescription || 'No description',
+            fileSize: file.size,
+            fileType: file.type
+          });
         });
-        
-      this.documentsForm.reset(); // Clear the form
-      this.selectedFile = null; // Reset selected file
+      }
+  
+      // Clear the form and reset selected files
+      this.documentsForm.reset();
+      this.selectedFiles = []; // Reset selected files
     }
   }
 
@@ -417,6 +477,8 @@ export class DetailsComponent {
           tel_no: data.tel_no,
           email: data.email,
           car_plate: data.car_plate,
+          customerStatus: data.customerStatus,
+
         })
         this.customerAddressForm.patchValue({
           same_as_permanent: customerPermanentAddress?.is_permanent,
@@ -469,13 +531,13 @@ export class DetailsComponent {
           department: signalData?.employment?.department,
           business_type: signalData?.employment?.business_type,
           employee_no: signalData?.employment?.employee_no,
-          employee_type: signalData?.employment?.employee_type,
+          //employee_type: signalData?.employment?.employee_type,
           income_date: signalData?.employment?.income_date,
-          income_type: signalData?.employment?.income_type,
+          //income_type: signalData?.employment?.income_type,
           occupation_category: signalData?.employment?.occupation_category,
           position: signalData?.employment?.position,
           employment_remarks: signalData?.employment?.employment_remarks,
-          telecode: signalData?.employment?.tel_code,
+          //telecode: signalData?.employment?.tel_code,
           telephone_no: signalData?.employment?.telephone_no,
         });
         console.log(this.customerEmployemntForm,'ssform')
@@ -574,24 +636,22 @@ export class DetailsComponent {
   }
   }
 
-  onBankEdit(record: any): void {
+  onBankEdit(record: any,index:number): void {
     // Set the form to edit mode
-    console.log(record,this.bankRecords,'ssrecord');
     this.isBankEditMode = true;
     this.bankEditIndex = this.bankDataSource.data.indexOf(record); // Store the index of the record being edited
-
     // Patch the values into the form
     this.bankingForm.patchValue(record);
   }
-  onBankDelete(record: any): void {
+  onBankDelete(record: any,index:number): void {
     // Remove the record from the array
-    const index = this.bankDataSource.data.indexOf(record);
+    // const index = this.bankDataSource.data.indexOf(record);
     if (index >= 0) {
       this.bankDataSource.data.splice(index, 1);
       this.bankDataSource.data = [...this.bankDataSource.data]; // Update the data source
     }
   }
-  onFileDelete(record:any){
+  onFileDelete(record:any,index:number){
     console.log(record)
   }
 
@@ -607,6 +667,7 @@ export class DetailsComponent {
       tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
+      customerStatus:this.customerForm.get('customerStatus')?.value,
       customer_address: [
         {
           address_lines: this.customerAddressForm.get('perm_address_line')?.value,
@@ -639,13 +700,13 @@ export class DetailsComponent {
         department: this.customerEmployemntForm.get('department')?.value,
         employee_no: this.customerEmployemntForm.get('employee_no')?.value,
         income_date: this.customerEmployemntForm.get('income_date')?.value,
-        income_type: this.customerEmployemntForm.get('income_type')?.value,
+        //income_type: this.customerEmployemntForm.get('income_type')?.value,
         // employment_name: this.customerEmployemntForm.get('employment_name')?.value,
         occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
         position: this.customerEmployemntForm.get('position')?.value,
         employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
-        tel_code: this.customerEmployemntForm.get('telecode')?.value,
-        employee_type: this.customerEmployemntForm.get('employee_type')?.value,
+        //tel_code: this.customerEmployemntForm.get('telecode')?.value,
+        //employee_type: this.customerEmployemntForm.get('employee_type')?.value,
         telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
       };
     }

@@ -32,7 +32,7 @@ export class LoanAddEditComponent implements OnInit{
   agentIddropdown=[{'id':1,'name':'agent 1'},{'id':2,'name':'agent 2'}]
   agentLead=[{'id':1,'name':'Lead 1'},{'id':2,'name':'Lead 2'}]
   dateUnit=[{'id':1,'unit':'Days'},{'id':2,'unit':'Week'},{'id':3,'unit':'Month'},{'id':4,'unit':'Year'}]
-  loanPackage=[{'id':1,'details':'Package 1'},{'id':2,'details':'Package 2'},{'id':3,'details':'Package 3'},{'id':4,'details':'Package 4'}]
+  // loanPackage=[{'id':1,'details':'Package 1'},{'id':2,'details':'Package 2'},{'id':3,'details':'Package 3'},{'id':4,'details':'Package 4'}]
   // datePeriod=[{'id':1,'month':' 1'},{'id':2,'month':'2'}]
   customerId: any;
   agentSearchQuery: string = '';
@@ -63,7 +63,7 @@ export class LoanAddEditComponent implements OnInit{
     });
 
     this.loanDetailsForm = new FormGroup({
-      loanPackage: new FormControl('', Validators.required),
+      // loanPackage: new FormControl('', Validators.required),
       repaymentDate: new FormControl(new Date()),
       datePeriod: new FormControl('', Validators.required),
       unitofDate: new FormControl('', Validators.required),
@@ -108,7 +108,7 @@ export class LoanAddEditComponent implements OnInit{
     })
 
     this.loanDetailsForm.patchValue({
-      loanPackage: row.loanPackage,
+      // loanPackage: row.loanPackage,
       repaymentDate: row.repaymentDate,
       datePeriod: row.datePeriod,
       principalAmount:row.principalAmount,

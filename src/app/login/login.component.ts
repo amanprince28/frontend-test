@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-login',
@@ -23,9 +24,9 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder,private router:Router) {
+  constructor(private fb: FormBuilder,private router:Router,private dataService:DataService) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
@@ -33,10 +34,12 @@ export class LoginComponent {
   onSubmit(): void {
     if (this.loginForm.valid) {
       const credentials = this.loginForm.value;
-    
-      if(credentials.username =='a@a.com' && credentials.password ==="123456"){
-        this.router.navigateByUrl("/listing");
-      }
+
+      this.dataService.login(credentials).subscribe((resp)=>{
+        if(resp.accessToken!=null){
+            this.router.navigateByUrl("/listing")
+        }
+      })
       // Implement login logic
     } else {
       console.log('Form is invalid');

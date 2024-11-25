@@ -83,12 +83,8 @@
       <form [formGroup]="loanDetailsForm">
         <div class="fields-row">
           <mat-form-field appearance="outline">
-            <mat-label>Loan Package</mat-label>
-            <mat-select formControlName="loanPackage" required>
-              <mat-option *ngFor="let package of loanPackage" [value]="package.id">
-                {{ package.details }}
-              </mat-option>
-            </mat-select>
+            <mat-label>Principal Amount</mat-label>
+            <input formControlName="principalAmount" matInput type="number">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Repayment Date</mat-label>
@@ -110,9 +106,9 @@
           </mat-form-field>
         </div>
         <div class="fields-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Principal Amount</mat-label>
-            <input formControlName="principalAmount" matInput type="number">
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Interest (%)</mat-label>
+            <input formControlName="interest" matInput type="number">
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Deposit Amount</mat-label>
@@ -128,10 +124,6 @@
           </mat-form-field>
         </div>
         <div class="fields-row">
-          <mat-form-field appearance="outline" class="quarter-width">
-            <mat-label>Interest (%)</mat-label>
-            <input formControlName="interest" matInput type="number">
-          </mat-form-field>
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loanRemark" matInput>

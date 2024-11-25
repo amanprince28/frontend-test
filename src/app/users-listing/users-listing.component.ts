@@ -29,7 +29,7 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
   styleUrl: './users-listing.component.scss'
 })
 export class UsersListingComponent implements OnInit{
-  displayedColumns: string[] = ['name', 'email', 'role','actions'];
+  displayedColumns: string[] = ['name', 'email', 'role','status','actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchForm = new FormGroup({

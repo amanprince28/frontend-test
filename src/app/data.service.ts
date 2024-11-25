@@ -79,4 +79,8 @@ export class DataService {
   uploadFiles(payload:any):Observable<any>{
     return this.http.post(`${this.apiUrl}/customer/add-document`, payload);
   }
+
+  login(payload:any):Observable<any>{
+    return this.http.post(`${this.apiUrl}/auth/login`, payload);
+  }
 }
