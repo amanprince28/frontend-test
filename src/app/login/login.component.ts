@@ -36,7 +36,8 @@ export class LoginComponent {
       const credentials = this.loginForm.value;
 
       this.dataService.login(credentials).subscribe((resp)=>{
-        if(resp.accessToken!=null){
+        console.log(resp);
+        if(resp.access_token!=null){
             this.router.navigateByUrl("/listing")
         }
       })
