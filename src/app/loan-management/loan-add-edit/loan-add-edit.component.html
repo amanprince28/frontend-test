@@ -9,7 +9,7 @@
         <div class="search-bar">
           <mat-form-field appearance="outline" class="search-field small-search">
             <mat-label>Search Agent</mat-label>
-            <input matInput formControlName="agentSearchQuery" placeholder="Enter agent name or ID">
+            <input matInput [formControlName]="agentSearchQuery" placeholder="Enter agent name or ID">
           </mat-form-field>
           <button mat-icon-button color="primary" (click)="searchAgentDetails()">
             <mat-icon>search</mat-icon>

@@ -35,7 +35,9 @@ export class DetailsComponent {
   bankingForm!: FormGroup;
   bankRecords: any[]=[];
   documentsForm!:FormGroup;
+  remarksForm!:FormGroup;
   uploadedFiles:any[] = [];
+  remarksTable:any[]=[];
   displayedColumns: string[] = ['fileName', 'fileDescription','fileSize','fileType','actions'];
   countries: any[] = [];
   states: any[] = [];
@@ -45,7 +47,7 @@ export class DetailsComponent {
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic','actions'];
   displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo','remarks', 'actions'];
-
+  displayedColumnsRemark:string[]=['remarks','actions']
   race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -57,8 +59,11 @@ export class DetailsComponent {
   selectedFiles: any[]=[];
   fileEditIndex: number=0;
   fileEditStatus: boolean=false;
+  isRemarkEditMode: boolean=false;
+  remarkEditIndex: number=0;
 ;
   bankDataSource=new MatTableDataSource<any>([]);;
+  remarkDataSource=new MatTableDataSource<any>([]);;
 
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
@@ -186,7 +191,9 @@ export class DetailsComponent {
       //employee_type: new FormControl(''), // Default value
     });
     // Banking Form
-  
+    this.remarksForm = new FormGroup({
+      remark: new FormControl(null)
+    })
     // dcoument form
     this.documentsForm= new FormGroup({
       fileName : new FormControl(),
@@ -299,8 +306,6 @@ export class DetailsComponent {
 
   ngAfterViewInit(): void { 
     this.dataSource.paginator = this.paginator;
-    
-
   }
 
   numericOnly(event:any): void {
@@ -345,6 +350,42 @@ export class DetailsComponent {
     });
 
   }
+
+  onRemarksSubmit(): void{
+    if(this.remarksForm.valid){
+      const remarksRecotd = this.remarksForm.value;
+
+      if (this.isRemarkEditMode) {
+        // Update the record in edit mode
+        this.remarkDataSource.data[this.bankEditIndex] = remarksRecotd;
+        this.isRemarkEditMode = false; // Reset edit mode
+      } else {
+        // Add a new record in insert mode
+        this.remarkDataSource.data.push(remarksRecotd);
+      }
+      // Update the data source for the table
+      this.remarkDataSource.data = this.remarkDataSource.data;
+
+      // Reset the form
+      this.remarksForm.reset();
+    }
+    }
+
+    onRemarksEdit(record: any,index:number): void {
+      // Set the form to edit mode
+      this.isRemarkEditMode = true;
+      this.remarkEditIndex = index // Store the index of the record being edited
+      // Patch the values into the form
+      this.remarksForm.patchValue(record);
+    }
+    onRemarksDelete(record: any,index:number): void {
+      // Remove the record from the array
+      // const index = this.bankDataSource.data.indexOf(record);
+      if (index >= 0) {
+        this.remarkDataSource.data.splice(index, 1);
+        this.remarkDataSource.data = [...this.remarkDataSource.data]; // Update the data source
+      }
+    }
 
   onBankingSubmit(): void {
     if (this.bankingForm.valid) {

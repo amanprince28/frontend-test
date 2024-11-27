@@ -584,6 +584,55 @@
               </div> -->
             </div>
           </div>
+        
+        </mat-tab>
+
+        <mat-tab label="Remarks">
+          <form [formGroup]="remarksForm" class="m-2">
+            <h6>Remarks Forms</h6>
+            <div class="row m-3">
+              <div class="col-sm-3">
+                <mat-form-field class="example-full-width">
+                  <mat-label>Remarks</mat-label>
+                  <textarea matInput formControlName="remark" placeholder="Enter Remarks"></textarea>
+                </mat-form-field>
+              </div>
+   
+              <div class="col-sm-3 d-flex justify-content-end">
+                <button mat-raised-button type="submit" color="primary" [disabled]="remarksForm.invalid" (click)="onRemarksSubmit()">Insert</button>
+              </div>
+              <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="remarkDataSource" class="mat-elevation-z8">
+                  <!-- Name Column -->
+              
+                  <ng-container matColumnDef="remarks">
+                    <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                    <td mat-cell *matCellDef="let element">{{ element.remark }}</td>
+                  </ng-container>
+              
+                  <!-- Actions Column -->
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Actions</th>
+                    <td mat-cell *matCellDef="let record; let i = index">
+                      <button mat-button color="accent" (click)="onRemarksEdit(record, i)">Edit</button>
+                      <button mat-button color="warn" (click)="onRemarksDelete(record, i)">Delete</button>
+                    </td>
+                  </ng-container>
+              
+                  <!-- Table Rows -->
+                  <tr mat-header-row *matHeaderRowDef="displayedColumnsRemark"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumnsRemark;"></tr>
+                </table>
+              
+                <mat-paginator
+                  [pageSizeOptions]="[5, 10, 20]"
+                  showFirstLastButtons
+                  aria-label="Select page of periodic elements"
+                >
+                </mat-paginator>
+              </div>
+            </div>
+          </form>
         </mat-tab>
         
 

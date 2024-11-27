@@ -6,10 +6,9 @@
     <!-- <h5>Filter</h5> -->
     <div class="search-filter-create">
       <mat-form-field class="search-input" appearance="outline">
-        <!-- <mat-label>Allow user to search with Registration No, Chase No, etc.</mat-label> -->
-        <input matInput formControlName="search" placeholder="Eg. value" />
+        <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keyup)="filterTable()"/>
       </mat-form-field>
-      <button mat-stroked-button color="primary">Filter</button>
+      <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
       <!-- <button mat-stroked-button color="accent">Export</button> -->
       <button mat-raised-button color="primary" (click)="onAddEdit()">Add Loan</button>
     </div>

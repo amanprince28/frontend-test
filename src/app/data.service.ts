@@ -29,10 +29,6 @@ export class DataService {
     return this.http.get<any[]>(this.user, { params });
   }
 
-  getCustomerById(id: string): Observable<any> {
-    return this.http.get<any[]>(`${this.customer}/${id}`);
-  }
-
   getUserById(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.user}/${id}`);
   }
@@ -82,5 +78,15 @@ export class DataService {
 
   login(payload:any):Observable<any>{
     return this.http.post(`${this.apiUrl}/auth/login`, payload);
+  }
+
+  getCustomerById(key: string): Observable<any> {
+    const url = `${this.customer}/getCustomer/${key}`;
+    return this.http.get<any>(url);
+  }
+  
+  findAgentAndLeads(key: string): Observable<any> {
+    const url = `${this.user}/getAgentAndLeads/${key}`;
+    return this.http.get<any>(url);
   }
 }

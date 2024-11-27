@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -21,7 +21,8 @@ import { Observable } from 'rxjs';
     MatInputModule,
     ReactiveFormsModule,
     HttpClientModule, // Ensure HttpClientModule is imported here
-    MatPaginatorModule
+    MatPaginatorModule,
+    FormsModule
   ],
   providers: [DataService], // Ensure DataService is provided here
   templateUrl: './listing.component.html',
@@ -31,7 +32,7 @@ export class ListingComponent implements OnInit {
   displayedColumns: string[] = ['name', 'ic', 'passport', 'actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
-  searchForm!: FormGroup;
+  searchQuery: any;
 
   constructor(
     private fb: FormBuilder,
@@ -41,10 +42,6 @@ export class ListingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchForm = this.fb.group({
-      search: [''], // Initialize the 'search' field
-    });
-
     this.fetchData(); // Initial data fetch
   }
 
@@ -63,24 +60,32 @@ export class ListingComponent implements OnInit {
   }
 
   filterTable(): void {
-    const searchValue = this.searchForm.value.search;
-    console.log(searchValue, 'Search Value');
-
-    const skip = this.paginator.pageIndex * this.paginator.pageSize;
-    const take = this.paginator.pageSize;
- 
-    const payload = {
-      search: searchValue || '',
-      skip,
-      take,
-    };
-
-    this.dataService.getCustomer(payload).subscribe((response: any) => {
-      console.log(response);
-      this.dataSource.data = response.data; // Update table with filtered results
-      this.paginator.length = response.totalCount; // Update total record count
-    });
+    if (this.searchQuery != null || this.searchQuery != undefined) {
+      this.dataSource.filter = this.searchQuery as string;
+      return;
+    }
+    this.dataSource.filter = '';
   }
+
+  // filterTable(): void {
+  //   const searchValue = this.searchForm.value.search;
+  //   console.log(searchValue, 'Search Value');
+
+  //   const skip = this.paginator.pageIndex * this.paginator.pageSize;
+  //   const take = this.paginator.pageSize;
+ 
+  //   const payload = {
+  //     search: searchValue || '',
+  //     skip,
+  //     take,
+  //   };
+
+  //   this.dataService.getCustomer(payload).subscribe((response: any) => {
+  //     console.log(response);
+  //     this.dataSource.data = response.data; // Update table with filtered results
+  //     this.paginator.length = response.totalCount; // Update total record count
+  //   });
+  // }
 
   onRowClick(row: any, action: string): void {
     if (!row.id) {

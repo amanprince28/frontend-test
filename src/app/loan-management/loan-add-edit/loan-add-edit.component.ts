@@ -35,7 +35,7 @@ export class LoanAddEditComponent implements OnInit{
   // loanPackage=[{'id':1,'details':'Package 1'},{'id':2,'details':'Package 2'},{'id':3,'details':'Package 3'},{'id':4,'details':'Package 4'}]
   // datePeriod=[{'id':1,'month':' 1'},{'id':2,'month':'2'}]
   customerId: any;
-  agentSearchQuery: string = '';
+  agentSearchQuery: any;
   customerSearchQuery: string = '';
 
   constructor(private router:Router,private dataService:DataService,private route: ActivatedRoute,){
@@ -48,14 +48,14 @@ export class LoanAddEditComponent implements OnInit{
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
-      agentSearchQuery:  new FormControl(''),
+      agentSearchQuery:  new FormControl(null),
       agentName: new FormControl('', Validators.required),
       agentId: new FormControl('', Validators.required),
       agentLead: new FormControl('', Validators.required),
     });
 
     this.customerDetailsForm = new FormGroup({
-      customerSearchQuery: new FormControl(''),
+      customerSearchQuery: new FormControl(null),
       customerId: new FormControl('', Validators.required),
       customerName: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.required),
@@ -158,65 +158,41 @@ export class LoanAddEditComponent implements OnInit{
     this.formValid = true; // Example
   }
 
-  searchAgentDetails() {
-    // Perform search based on agentSearchQuery - replace with actual service call
-    const agentData = this.mockAgentSearch(this.agentSearchQuery);
 
-    if (agentData) {
-      this.agentDetailsForm.patchValue({
-        agentName: agentData.agentName,
-        agentId: agentData.agentId,
-        agentLead: agentData.agentLead
-      });
-    }
+  searchAgentDetails() {
+    // Replace mock search with actual API call when available
+    const agentPayload = this.agentDetailsForm.get('agentSearchQuery')?.value;
+    this.dataService.findAgentAndLeads(agentPayload).subscribe({
+      next: (agentData:any) => {
+        this.agentDetailsForm.patchValue({
+          agentName: agentData.agentName,
+          agentId: agentData.agentId,
+          agentLead: agentData.agentLead,
+        });
+      },
+      error: (error:any) => {
+        console.error('Agent search error:', error);
+      },
+    });
   }
 
   searchCustomerDetails() {
-    // Perform search based on customerSearchQuery - replace with actual service call
-    const customerData = this.mockCustomerSearch(this.customerSearchQuery);
-
-    if (customerData) {
-      this.customerDetailsForm.patchValue({
-        customerId: customerData.customerId,
-        customerName: customerData.customerName,
-        mobile: customerData.mobile,
-        customerAddress: customerData.customerAddress
-      });
-    }
+    // Replace mock search with actual API call when available
+    const customerPayload = this.customerDetailsForm.get('customerSearchQuery')?.value;
+    this.dataService.getCustomerById(customerPayload).subscribe({
+      next: (customerData:any) => {
+        this.customerDetailsForm.patchValue({
+          customerId: customerData.customerId,
+          customerName: customerData.customerName,
+          mobile: customerData.mobile,
+          customerAddress: customerData.customerAddress,
+        });
+      },
+      error: (error:any) => {
+        console.error('Customer search error:', error);
+      },
+    });
   }
-
-  // searchAgentDetails() {
-  //   // Replace mock search with actual API call when available
-  //   this.dataService.searchAgent(this.agentSearchQuery).subscribe({
-  //     next: (agentData) => {
-  //       this.agentDetailsForm.patchValue({
-  //         agentName: agentData.agentName,
-  //         agentId: agentData.agentId,
-  //         agentLead: agentData.agentLead,
-  //       });
-  //     },
-  //     error: (error) => {
-  //       console.error('Agent search error:', error);
-  //     },
-  //   });
-  // }
-
-  // searchCustomerDetails() {
-  //   // Replace mock search with actual API call when available
-  //   this.dataService.searchCustomer(this.customerSearchQuery).subscribe({
-  //     next: (customerData) => {
-  //       this.customerDetailsForm.patchValue({
-  //         customerId: customerData.customerId,
-  //         customerName: customerData.customerName,
-  //         mobile: customerData.mobile,
-  //         customerAddress: customerData.customerAddress,
-  //       });
-  //     },
-  //     error: (error) => {
-  //       console.error('Customer search error:', error);
-  //     },
-  //   });
-  // }
 
   private mockAgentSearch(query: string) {
     // Return mock data based on query
