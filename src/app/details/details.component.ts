@@ -45,7 +45,7 @@ export class DetailsComponent {
   signalData: any;
   customerFullData: any;
   customerId!: string;
-  displayedColumnsForRelationshipForm: string[] = ['name', 'ic','actions'];
+  displayedColumnsForRelationshipForm: string[] = ['name', 'ic','mobile','relationship','actions'];
   displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo','remarks', 'actions'];
   displayedColumnsRemark:string[]=['remarks','actions']
   race:any[]=[];
@@ -310,19 +310,6 @@ export class DetailsComponent {
       perm_city: row?.customer_address[0]?.city_id || null,
       perm_state: row?.customer_address[0]?.state_id || null,
       perm_country: row?.customer_address[0]?.country_id || null
-
-      // relationship_name: row?.name || '',
-      // relationship_ic: row?.ic || '',
-      // relationship_mobile_no: row?.mobile_no || '',
-      // //relationship_passport: row?.passport || '',
-      // //relationship_gender: row?.gender || '',  
-      // relationship: row?.relationship || '',  
-      // perm_postal_code: row?.customer_address[0]?.postal_code || '',
-      // corr_rel_postal_code: row?.customer_address[0]?.postal_code || '',
-      // perm_address_line: row?.customer_address[0]?.address_lines || '',
-      // perm_city: row?.customer_address[0]?.city_id || '',
-      // perm_state: row?.customer_address[0]?.state_id || '',
-      // perm_country: row?.customer_address[0]?.country_id || ''
     });
 
   }
