@@ -196,8 +196,8 @@ export class DetailsComponent {
       this.customerId = params['id'];
       if (this.customerId && params) {
         this.loadCustomerData(this.customerId);
-        this.loadCustomerRaltionshipData(this.customerId);
-        this.loadEmployementData(this.customerId);
+        //this.loadCustomerRaltionshipData(this.customerId);
+        //this.loadEmployementData(this.customerId);
         if(params['action']==='edit'){
           this.isEditMode = true;
         }else{
@@ -341,14 +341,14 @@ export class DetailsComponent {
     }
     }
 
-    onRemarksEdit(record: any,index:number): void {
+  onRemarksEdit(record: any,index:number): void {
       // Set the form to edit mode
       this.isRemarkEditMode = true;
       this.remarkEditIndex = index // Store the index of the record being edited
       // Patch the values into the form
       this.remarksForm.patchValue(record);
     }
-    onRemarksDelete(record: any,index:number): void {
+  onRemarksDelete(record: any,index:number): void {
       // Remove the record from the array
       // const index = this.bankDataSource.data.indexOf(record);
       if (index >= 0) {
@@ -467,15 +467,16 @@ export class DetailsComponent {
   }
 
   loadCustomerData(id: string) {
-    console.log('--- loadCustomerData id --- ', id)
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
       this.signalData = data;
       this.customerFullData = data;
-      console.log('--- loadCustomerData --- ', this.signalData)
+      this.dataSource.data = this.signalData?.relations;
+      this.bankDataSource.data = this.signalData?.bank_details;
+      this.remarkDataSource.data = this.signalData?.remarks
+      this.dataSource.data = this.signalData?.relations;
       if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
         const customerCorrAddress = this.signalData?.customer_address?.length > 1 ? this.signalData.customer_address[1] : [];
         const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-        console.log('--- customerPermanentAddress --- ', customerPermanentAddress)
         this.customerForm.patchValue({
           name: data.name,
           ic: data.ic,
@@ -507,6 +508,21 @@ export class DetailsComponent {
 
         });
 
+        this.customerEmployemntForm.patchValue({
+          annual_income: this.signalData?.employment?.annual_income,
+          department: this.signalData?.employment?.department,
+          business_type: this.signalData?.employment?.business_type,
+          employee_no: this.signalData?.employment?.employee_no,
+          //employee_type: signalData?.employment?.employee_type,
+          income_date: this.signalData?.employment?.income_date,
+          //income_type: signalData?.employment?.income_type,
+          occupation_category: this.signalData?.employment?.occupation_category,
+          position: this.signalData?.employment?.position,
+          employment_remarks: this.signalData?.employment?.employment_remarks,
+          //telecode: signalData?.employment?.tel_code,
+          telephone_no: this.signalData?.employment?.telephone_no,
+        });
+
         this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
       } else {
         this.isEditMode = false;
@@ -514,20 +530,20 @@ export class DetailsComponent {
     });
   }
 
-  loadCustomerRaltionshipData(id:string) {
-    this.dataService.getCustomerById(this.customerId).subscribe(data => {
-      const signalData = data;
-      this.dataSource.data = signalData.customer_relation;
-      // console.log(this.dataSource.data,'ss');
-      if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-        const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
+  // loadCustomerRaltionshipData(id:string) {
+  //   this.dataService.getCustomerById(this.customerId).subscribe(data => {
+  //     const signalData = data;
+  //     this.dataSource.data = signalData.customer_relation;
+  //     // console.log(this.dataSource.data,'ss');
+  //     if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
+  //       const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
 
-        this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
-      } else {
-        this.isEditMode = false;
-      }
-    });
-  }
+  //       this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
+  //     } else {
+  //       this.isEditMode = false;
+  //     }
+  //   });
+  // }
 
   loadEmployementData(id:string){
     this.dataService.getCustomerById(this.customerId).subscribe(data => {
@@ -724,11 +740,13 @@ export class DetailsComponent {
     
     // Add customerRelationshipData only if there are values in the form
     if (this.dataSource.data.length>0){
-      console.log(this.customerRelationshipForm,'valuesss 111')
       submissionData.relations = this.dataSource.data;
     }
-    if (this.bankRecords && this.bankRecords.length > 0) {
-        submissionData.bank_details = this.bankRecords;
+    if (this.bankDataSource.data && this.bankDataSource.data.length > 0) {
+        submissionData.bank_details = this.bankDataSource.data;
+    }
+    if(this.remarkDataSource.data && this.remarkDataSource.data.length>0){
+      submissionData.remarks = this.remarkDataSource.data
     }
     
     if (this.isEditMode) {
