@@ -149,9 +149,9 @@ export class LoanAddEditComponent implements OnInit {
     this.dataService.findAgentAndLeads(agentPayload).subscribe({
       next: (agentData: any) => {
         this.agentDetailsForm.patchValue({
-          agentName: agentData.agentName,
-          agentId: agentData.agentId,
-          agentLead: agentData.agentLead,
+          agentName: agentData[0].name,
+          agentId: agentData[0].agentId,
+          agentLead: agentData[0].agentLead,
         });
       },
       error: (error: any) => {
@@ -165,9 +165,9 @@ export class LoanAddEditComponent implements OnInit {
     this.dataService.getCustomerSearch(customerPayload).subscribe({
       next: (customerData: any) => {
         this.customerDetailsForm.patchValue({
-          customerId: customerData.customerId,
-          customerName: customerData.customerName,
-          mobile: customerData.mobile,
+          customerId: customerData[0].id,
+          customerName: customerData[0].name,
+          mobile: customerData[0].tel_no,
           customerAddress: customerData.customerAddress,
         });
       },

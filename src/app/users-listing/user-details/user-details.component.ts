@@ -112,7 +112,7 @@ export class UserDetailsComponent {
   onCustomerSubmit() {
     console.log('onCustomerSubmit')
     const submissionData: any = {
-      //name: this.userForm.get('name')?.value,
+      name: this.userForm.get('name')?.value,
       password: this.userForm.get('password')?.value,
       email: this.userForm.get('email')?.value,
       username:this.userForm.get('email')?.value,
