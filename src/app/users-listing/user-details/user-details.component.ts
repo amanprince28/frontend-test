@@ -151,8 +151,10 @@ export class UserDetailsComponent implements OnInit {
       this.userForm.markAllAsTouched();
       return;
     }
+    console.log('Submission data:', submissionData);
     if (this.isEditMode) {
       submissionData.id = this.customerId;
+      delete submissionData.password;
       this.dataService.updateUser(submissionData).subscribe(response => {
         this.router.navigate(['/users']);
       });
