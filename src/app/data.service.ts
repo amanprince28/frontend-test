@@ -80,7 +80,11 @@ export class DataService {
     return this.http.post(`${this.apiUrl}/auth/login`, payload);
   }
 
-  getCustomerById(key: string): Observable<any> {
+  getCustomerById(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.customer}/${id}`);
+  }
+
+  getCustomerSearch(key: string): Observable<any> {
     const url = `${this.customer}/getCustomer/${key}`;
     return this.http.get<any>(url);
   }

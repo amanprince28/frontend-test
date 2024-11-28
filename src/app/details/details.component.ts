@@ -111,12 +111,12 @@ export class DetailsComponent {
       //tel_code: new FormControl('+1', Validators.required), // Default value
       tel_no: new FormControl(null, Validators.required),
       email: new FormControl(null, [Validators.required, Validators.email]),
-      car_plate: new FormControl(null, Validators.required),
+      car_plate: new FormControl(null),
       relationship: new FormControl(null, Validators.required),
       //tel_no: new FormControl('', Validators.required),
       fblink: new FormControl(''),
       //car_plate: new FormControl(''),
-      customerStatus: new FormControl('', Validators.required),
+      status: new FormControl('', Validators.required),
      
     }, { validators: this.eitherFieldRequiredValidator } )
     // Customer Address
@@ -139,40 +139,10 @@ export class DetailsComponent {
     // Customer Relationship
     this.customerRelationshipForm = new FormGroup({
       
-      // relationship_name: new FormControl(),
-      // relationship_ic: new FormControl(),
-      // relationship_mobile_no: new FormControl(),
-      // relationship_passport: new FormControl(),
-      // relationship_gender: new FormControl(), // Default value
-      // relationship: new FormControl(),
-      // same_as_permanent: new FormControl(),
-      // perm_address_line: new FormControl(),
-      // perm_postal_code: new FormControl(),
-      // perm_country: new FormControl(),
-      // perm_state: new FormControl(),
-      // perm_city: new FormControl(),
-      // corr_address_line: new FormControl(),
-      // corr_country: new FormControl(),
-      // corr_state: new FormControl(),
-      // corr_city: new FormControl(),
-      // corr_rel_postal_code : new FormControl()
       relationship_name: new FormControl(),
       relationship_ic: new FormControl(),
       relationship_mobile_no: new FormControl(),
-      //relationship_passport: new FormControl(''),
-      //relationship_gender: new FormControl('',), // Default value
       relationship: new FormControl(),
-      //same_as_permanent: new FormControl(),
-      // perm_address_line: new FormControl('', ),
-      // perm_postal_code: new FormControl('',),
-      // perm_country: new FormControl('',),
-      // perm_state: new FormControl('',),
-      // perm_city: new FormControl('', ),
-      // corr_address_line: new FormControl(''),
-      // corr_country: new FormControl(''),
-      // corr_state: new FormControl(''),
-      // corr_city: new FormControl(''),
-      // corr_rel_postal_code : new FormControl('')
     });
     // Employment Details
 
@@ -518,7 +488,7 @@ export class DetailsComponent {
           tel_no: data.tel_no,
           email: data.email,
           car_plate: data.car_plate,
-          customerStatus: data.customerStatus,
+          status: data.customerStatus,
 
         })
         this.customerAddressForm.patchValue({
@@ -708,7 +678,7 @@ export class DetailsComponent {
       tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
-      customerStatus:this.customerForm.get('customerStatus')?.value,
+      status:this.customerForm.get('customerStatus')?.value,
       customer_address: [
         {
           address_lines: this.customerAddressForm.get('perm_address_line')?.value,
