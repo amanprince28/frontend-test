@@ -17,6 +17,10 @@
   .full-width {
     flex: 1 1 100%;
   }
+
+  .half-width {
+    flex: 0 0 50%;
+  }
   
   .action-buttons {
     display: flex;

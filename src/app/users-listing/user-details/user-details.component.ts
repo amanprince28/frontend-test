@@ -17,29 +17,23 @@ import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 @Component({
   selector: 'app-user-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule, MatPaginatorModule, MatTableModule, MatCard, MatCardContent, MatCardTitle],
   templateUrl: './user-details.component.html',
-  styleUrl: './user-details.component.scss'
+  styleUrls: ['./user-details.component.scss']
 })
-export class UserDetailsComponent {
+export class UserDetailsComponent implements OnInit {
   isEditMode: boolean = false;
   details: any = {};
   form!: FormGroup;
   userForm!: FormGroup;
-  customerRelationshipForm!: FormGroup;
-  customerEmployemntForm!: FormGroup
-  countries: any[] = [];
-  states: any[] = [];
-  cities: any[] = [];
   signalData: any;
   customerId!: string;
-  role:any[]=[];
-  // displayedColumnsForRelationshipForm: string[] = ['name', 'ic', 'passport','address_lines'];
-  
+  role: any[] = [];
+  customerList: any[] = []; // List of customers for supervisor dropdown
+  selectedRole: string = ''; // Track the selected role
+  selectedSupervisor: string = ''; // Track the selected supervisor
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
-  dataSourceEmployment = new MatTableDataSource<any>([]);
-  customerRelationshipId: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -57,23 +51,24 @@ export class UserDetailsComponent {
       password: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
       role: new FormControl('', [Validators.required,]),
-    })
+      supervisor: new FormControl(''), // Supervisor dropdown control
+    });
+
     this.role = [
       { value: 'ADMIN', viewValue: 'ADMIN' },
       { value: 'LEAD', viewValue: 'LEAD' },
       { value: 'AGENT', viewValue: 'AGENT' }
     ];
 
-    // Customer Relationship
+    this.fetchSupervisors();
 
     // Initialize edit mode and load existing data if necessary
     this.route.params.subscribe(params => {
       this.customerId = params['id'];
       if (this.customerId) {
         this.loadUserData(this.customerId);
-        if(params['action']==='edit')
-        this.isEditMode = true;
-        if(params['action']==='view'){
+        if (params['action'] === 'edit') {this.isEditMode = true;}
+        if (params['action'] === 'view') {
           this.userForm.disable();
         }
       } else {
@@ -81,59 +76,94 @@ export class UserDetailsComponent {
       }
     });
 
+    // Subscribe to role changes to show the supervisor dropdown if needed
+    this.userForm.get('role')?.valueChanges.subscribe(role => {
+      this.selectedRole = role;
+      if (role === 'AGENT' || role === 'LEAD') {
+        this.fetchSupervisors(); // Fetch supervisors when Agent or Lead is selected
+      } else {
+        this.customerList = []; // Clear the supervisor list if not Agent or Lead
+      }
+    });
   }
 
-  ngAfterViewInit(): void { 
+  ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
   }
 
   loadUserData(id: string) {
-    console.log('eit')
-    this.dataService.getUserById(this.customerId).subscribe(data => {
+    console.log('Loading user data...');
+    
+    // Fetch the user data based on the ID
+    this.dataService.getUserById(id).subscribe(data => {
       this.signalData = data;
-      console.log('eit',)
-      // if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-      //   const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
+      console.log('Fetched user data:', this.signalData);
+      
+      // Set selectedRole based on the loaded data
+      this.selectedRole = this.signalData?.role;
+  
+      // Patch the user form with the loaded data
+      this.userForm.patchValue({
+        name: this.signalData?.name,
+        password: this.signalData?.password,
+        email: this.signalData?.email,
+        role: this.signalData?.role,
+      });
+  
+      // If role is AGENT or LEAD, patch supervisor field
+      if (this.signalData?.role === 'AGENT' || this.signalData?.role === 'LEAD') {
         this.userForm.patchValue({
-          name: this.signalData?.name,
-          password: this.signalData?.password,
-          email: this.signalData?.email,
-          role: this.signalData?.role,
-        })
-
-       
-      // } else {
-      //   this.isEditMode = false;
-      // }
+          supervisor: this.signalData?.supervisorId, // Assuming supervisor ID is stored in supervisorId field
+        });
+      } else {
+        // If role is not AGENT or LEAD, clear the supervisor field
+        this.userForm.patchValue({
+          supervisor: null
+        });
+      }
     });
   }
+  
 
+  fetchSupervisors(page: number = 0, limit: number = 5) {
+    const payload = { page, limit };
+    this.dataService.getUser(payload).subscribe(customers => {
+      this.customerList = customers.map((customer: any) => ({
+        id: customer.id,
+        value: customer.id,
+        viewValue: customer.name
+      }));
+      console.log(this.customerList, 'list');
+    });
+  }
+  
   onCustomerSubmit() {
-    console.log('onCustomerSubmit')
+    console.log('Form submission...');
     const submissionData: any = {
       name: this.userForm.get('name')?.value,
       password: this.userForm.get('password')?.value,
       email: this.userForm.get('email')?.value,
-      username:this.userForm.get('email')?.value,
       role: this.userForm.get('role')?.value,
+      supervisor: this.userForm.get('supervisor')?.value, // Include supervisor
     };
-
-    if (this.isEditMode) {
-      submissionData.id = this.customerId;
-    }
 
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
     }
-
-    console.log(submissionData)
+    if (this.isEditMode) {
+      submissionData.id = this.customerId;
+      this.dataService.updateUser(submissionData).subscribe(response => {
+        this.router.navigate(['/users']);
+      });
+    }else{
     this.dataService.addUser(submissionData).subscribe(response => {
       this.router.navigate(['/users']);
     });
   }
-  onCustomerCancel(){
+  }
+
+  onCustomerCancel() {
     this.userForm.reset();
     this.router.navigate(['/users']);
   }

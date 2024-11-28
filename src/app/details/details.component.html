@@ -602,7 +602,7 @@
                 <button mat-raised-button type="submit" color="primary" [disabled]="remarksForm.invalid" (click)="onRemarksSubmit()">Insert</button>
               </div>
               <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="remarkDataSource" class="mat-elevation-z8">
+                <table mat-table [dataSource]="remarkDataSource">
                   <!-- Name Column -->
               
                   <ng-container matColumnDef="remarks">

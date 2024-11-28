@@ -63,6 +63,13 @@ export class DataService {
     return this.http.post<any>(url, customer);
   }
 
+  updateUser(user: any): Observable<any> {
+    const url = this.apiUrl + '/user';
+    const userId = user.id;
+    const updateUrl = `${url}/${userId}`;
+    return this.http.put<any>(updateUrl, user);
+  }
+  
   updateCustomer(customer: any): Observable<any> {
     const url = this.apiUrl + '/customer';
     return this.http.post<any>(url + '/:id', customer);

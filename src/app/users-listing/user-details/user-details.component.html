@@ -1,46 +1,57 @@
-
 <div class="customer-form">
-    <mat-card>
-      <mat-card-title>User - Add</mat-card-title>
-      <mat-card-content>
-        <!-- Customer Details -->
-        <h3>User Details</h3>
-        <form [formGroup]="userForm">
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Name</mat-label>
-              <input matInput placeholder="Enter name" formControlName="name">
-            </mat-form-field>
-  
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" placeholder="Enter Email" formControlName="email">
-            </mat-form-field>
-          </div>
-  
-          <div class="form-row">
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Password</mat-label>
-              <input matInput placeholder="Enter Password" type="password" formControlName="password">
-            </mat-form-field>
-  
-            <mat-form-field appearance="outline" class="full-width">
-              <mat-label>Role</mat-label>
-              <mat-select formControlName="role">
-                <mat-option *ngFor="let role of role" [value]="role.value">
-                  {{ role.viewValue }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-        </form>
-  
-        <!-- Tabs for Other Sections -->
-  
-        <div class="action-buttons">
-          <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
-          <button mat-raised-button (click)="onCustomerCancel()">Cancel</button>
+  <mat-card>
+    <mat-card-title>User - Add</mat-card-title>
+    <mat-card-content>
+      <!-- Customer Details -->
+      <h3>User Details</h3>
+      <form [formGroup]="userForm">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Enter name" formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" placeholder="Enter Email" formControlName="email">
+          </mat-form-field>
         </div>
-      </mat-card-content>
-    </mat-card>
-  </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Enter Password" type="password" formControlName="password">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Role</mat-label>
+            <mat-select formControlName="role">
+              <mat-option *ngFor="let role of role" [value]="role.value">
+                {{ role.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Supervisor Dropdown (Only for Agent or Lead) -->
+        <div *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'" class="form-row">
+          <mat-form-field appearance="outline" class="half-width">
+            <mat-label>Supervisor</mat-label>
+            <mat-select formControlName="supervisor">
+              <mat-option *ngFor="let supervisor of customerList" [value]="supervisor.value">
+                {{ supervisor.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+      </form>
+
+      <!-- Tabs for Other Sections -->
+
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
+        <button mat-raised-button (click)="onCustomerCancel()">Cancel</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -64,7 +64,7 @@ export class UsersListingComponent implements OnInit{
     row.action = action;
     this.dataService.getUserById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
-      this.router.navigate(['/users-details', row.id]);
+      this.router.navigate(['/users-details', row]);
     });
   }
 
