@@ -113,7 +113,7 @@ export class UserDetailsComponent implements OnInit {
       // If role is AGENT or LEAD, patch supervisor field
       if (this.signalData?.role === 'AGENT' || this.signalData?.role === 'LEAD') {
         this.userForm.patchValue({
-          supervisor: this.signalData?.supervisorId, // Assuming supervisor ID is stored in supervisorId field
+          supervisor: this.signalData?.supervisor, // Assuming supervisor ID is stored in supervisorId field
         });
       } else {
         // If role is not AGENT or LEAD, clear the supervisor field
