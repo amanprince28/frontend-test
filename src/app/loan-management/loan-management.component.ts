@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-loan-management',
@@ -25,6 +26,7 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule
   ],
 })
 export class LoanManagementComponent {

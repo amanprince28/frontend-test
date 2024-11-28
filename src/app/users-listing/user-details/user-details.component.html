@@ -6,24 +6,24 @@
       <h3>User Details</h3>
       <form [formGroup]="userForm">
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Name</mat-label>
             <input matInput placeholder="Enter name" formControlName="name">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Email</mat-label>
             <input matInput type="email" placeholder="Enter Email" formControlName="email">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Enter Password" type="password" formControlName="password">
           </mat-form-field>
         </div>
 
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Password</mat-label>
-            <input matInput placeholder="Enter Password" type="password" formControlName="password">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
+          <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Role</mat-label>
             <mat-select formControlName="role">
               <mat-option *ngFor="let role of role" [value]="role.value">
@@ -31,10 +31,14 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-        </div>
+
+          <div class="quarter-width">
+            <mat-slide-toggle formControlName="status">Customer Status</mat-slide-toggle>
+          </div>
+        
         <!-- Supervisor Dropdown (Only for Agent or Lead) -->
-        <div *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'" class="form-row">
-          <mat-form-field appearance="outline" class="half-width">
+        <div *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'" class="quarter-width">
+          <mat-form-field appearance="outline" >
             <mat-label>Supervisor</mat-label>
             <mat-select formControlName="supervisor">
               <mat-option *ngFor="let supervisor of customerList" [value]="supervisor.value">
@@ -42,6 +46,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
         </div>
 
       </form>

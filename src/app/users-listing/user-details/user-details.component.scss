@@ -21,6 +21,10 @@
   .half-width {
     flex: 0 0 50%;
   }
+
+  .quarter-width {
+    flex: 0 0 32%;
+  }
   
   .action-buttons {
     display: flex;
@@ -34,4 +38,9 @@
     .full-width {
       flex: 1 1 calc(50% - 20px);
     }
+  }
+
+   mat-slide-toggle {
+    margin: 8px 0;
+    display: block;
   }

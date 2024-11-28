@@ -206,12 +206,6 @@
               </mat-form-field>
             </div>
           </form>
-          
-
-          <!-- <div class="action-buttons">
-            <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
-            <button mat-raised-button>Cancel</button>
-          </div> -->
         </mat-tab>
 
         <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="m-2" >
@@ -240,12 +234,7 @@
                 <input matInput formControlName="employee_no" placeholder="Employee No" />
               </mat-form-field>
             </div>
-            <!-- <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
-                <mat-label>Employee Type</mat-label>
-                <input matInput formControlName="employee_type" placeholder="Employee Type" />
-              </mat-form-field>
-            </div> -->
+           
             <div class="col-sm-3">
               <mat-form-field appearance="outline">
                 <mat-label>Income Date</mat-label>
@@ -254,18 +243,7 @@
                 <mat-datepicker #picker></mat-datepicker>
               </mat-form-field>
             </div>
-            <!-- <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
-                <mat-label>Income Type</mat-label>
-                <input matInput formControlName="income_type" placeholder="Income Type" />
-              </mat-form-field>
-            </div> -->
-            <!-- <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
-                <mat-label>Employment Name</mat-label>
-                <input matInput formControlName="employment_name" placeholder="Name" />
-              </mat-form-field>
-            </div> -->
+            
             <div class="col-sm-3">
               <mat-form-field class="example-full-width">
                 <mat-label>Occupation Category</mat-label>
@@ -284,12 +262,7 @@
                 <input matInput formControlName="employment_remarks" placeholder="Remarks" />
               </mat-form-field>
             </div>
-            <!-- <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
-                <mat-label>Telecode</mat-label>
-                <input matInput formControlName="telecode" placeholder="Telecode" />
-              </mat-form-field>
-            </div> -->
+          
             <div class="col-sm-3">
               <mat-form-field class="example-full-width">
                 <mat-label>Telephone No</mat-label>
@@ -297,11 +270,7 @@
               </mat-form-field>
             </div>
           </div>
-          <!-- <div class="action-buttons">
-            <div class="col-sm-12 d-flex flex-row-reverse">
-              <button mat-raised-button type="submit" color="primary">Submit</button>
-            </div>
-          </div> -->
+         
           </form></mat-tab>
         <mat-tab label="Family & Guarantor">
           <form [formGroup]="customerRelationshipForm" class="m-2">
@@ -325,21 +294,6 @@
                   <input matInput formControlName="relationship_mobile_no" placeholder="Mobile No" />
                 </mat-form-field>
               </div>
-              <!-- <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Passport</mat-label>
-                  <input matInput formControlName="relationship_passport" placeholder="Passport" />
-                </mat-form-field>
-              </div> -->
-              <!-- <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Gender</mat-label>
-                  <mat-select formControlName="relationship_gender">
-                    <mat-option value="male">Male</mat-option>
-                    <mat-option value="female">Female</mat-option>
-                  </mat-select>
-                </mat-form-field>
-              </div> -->
               <div class="col-sm-3">
                 
                   <mat-form-field class="example-full-width">
@@ -579,9 +533,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
         
-              <!-- <div class="save-button-container">
-                <button mat-raised-button color="accent" (click)="saveAllDocuments()">Save</button>
-              </div> -->
+            
             </div>
           </div>
         
@@ -590,8 +542,8 @@
         <mat-tab label="Remarks">
           <form [formGroup]="remarksForm" class="m-2">
             <h6>Remarks Forms</h6>
-            <div class="row m-3">
-              <div class="col-sm-3">
+            <div class="row m-9">
+              <div class="col-sm-9">
                 <mat-form-field class="example-full-width">
                   <mat-label>Remarks</mat-label>
                   <textarea matInput formControlName="remark" placeholder="Enter Remarks"></textarea>

@@ -86,12 +86,23 @@
             <mat-label>Principal Amount</mat-label>
             <input formControlName="principalAmount" matInput type="number">
           </mat-form-field>
+
           <mat-form-field appearance="outline">
-            <mat-label>Repayment Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="repaymentDate">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
+            <mat-label>Deposit Amount</mat-label>
+            <input formControlName="depositAmount" matInput type="number">
           </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Application Fees</mat-label>
+            <input formControlName="applicationFee" matInput type="number">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Upfront</mat-label>
+            <input formControlName="paymentUpfront" matInput type="number">
+          </mat-form-field>
+        </div>
+        <div class="fields-row">
           <mat-form-field appearance="outline">
             <mat-label>Unit Date Period</mat-label>
             <mat-select formControlName="unitofDate" required>
@@ -104,26 +115,32 @@
             <mat-label>Date Period</mat-label>
             <input formControlName="datePeriod" matInput type="number">
           </mat-form-field>
-        </div>
-        <div class="fields-row">
+
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Interest (%)</mat-label>
             <input formControlName="interest" matInput type="number">
           </mat-form-field>
+
           <mat-form-field appearance="outline">
-            <mat-label>Deposit Amount</mat-label>
-            <input formControlName="depositAmount" matInput type="number">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Application Fees</mat-label>
-            <input formControlName="applicationFee" matInput type="number">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Payment Upfront</mat-label>
-            <input formControlName="paymentUpfront" matInput type="number">
+            <mat-label>Repayment Date</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="repaymentDate">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
         </div>
         <div class="fields-row">
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Amount Given</mat-label>
+            <input formControlName="amountGiven" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Interest Amount</mat-label>
+            <input formControlName="interestAmount" matInput>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Payment Per Term</mat-label>
+            <input formControlName="paymentPerTerm" matInput>
+          </mat-form-field>
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loanRemark" matInput>

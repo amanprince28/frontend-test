@@ -57,6 +57,130 @@ export class LoanAddEditComponent implements OnInit {
         this.isEditMode = false;
       }
     });
+
+    this.loanDetailsForm.get('paymentUpfront')?.valueChanges.subscribe(value => {
+      // Get the current values from the form controls
+      const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
+      const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
+      const applicationFee = this.loanDetailsForm.get('applicationFee')?.value;
+      const paymentUpfront = this.loanDetailsForm.get('paymentUpfront')?.value;
+    
+      // Check if any of the values is null or undefined
+      if (
+        principalAmount == null || 
+        depositAmount == null || 
+        applicationFee == null || 
+        paymentUpfront == null
+      ) {
+        // If any value is null or undefined, reset amountGiven to null
+        this.loanDetailsForm.get('amountGiven')?.setValue(null);
+      } else {
+        // Calculate amountGiven if all values are defined
+        const amountGiven = principalAmount - (depositAmount + applicationFee + paymentUpfront);
+        this.loanDetailsForm.get('amountGiven')?.setValue(amountGiven);
+      }
+    });
+    
+    this.loanDetailsForm.get('interest')?.valueChanges.subscribe(value => {
+      // Get the current values from the form controls
+      const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
+      const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
+      const paymentTerm = this.loanDetailsForm.get('datePeriod')?.value;
+      const interest = this.loanDetailsForm.get('interest')?.value;
+    
+      // Check if any of the required values is null or undefined
+      if (
+        principalAmount == null || 
+        depositAmount == null || 
+        paymentTerm == null || 
+        interest == null
+      ) {
+        // If any value is null or undefined, reset the calculated fields
+        this.loanDetailsForm.get('interestAmount')?.setValue(null);
+        this.loanDetailsForm.get('paymentPerTerm')?.setValue(null);
+      } else {
+        // Calculate interestAmount and paymentPerTerm if all values are defined
+        const interestAmount = principalAmount * (interest / 100) * paymentTerm;
+        this.loanDetailsForm.get('interestAmount')?.setValue(interestAmount);
+    
+        const paymentPerTerm = (principalAmount + interestAmount) / paymentTerm;
+        this.loanDetailsForm.get('paymentPerTerm')?.setValue(paymentPerTerm);
+      }
+    });
+    
+    // Add a valueChanges listener for principalAmount, depositAmount, and applicationFee to ensure calculations are updated when they change
+    this.loanDetailsForm.get('principalAmount')?.valueChanges.subscribe(() => {
+      // Recalculate amountGiven if principalAmount changes
+      this.updateAmountGiven();
+    });
+    
+    this.loanDetailsForm.get('depositAmount')?.valueChanges.subscribe(() => {
+      // Recalculate amountGiven if depositAmount changes
+      this.updateAmountGiven();
+    });
+    
+    this.loanDetailsForm.get('applicationFee')?.valueChanges.subscribe(() => {
+      // Recalculate amountGiven if applicationFee changes
+      this.updateAmountGiven();
+    });
+
+    this.loanDetailsForm.get('interest')?.valueChanges.subscribe(() => {
+      // Recalculate amountGiven if applicationFee changes
+      this.updateInterestAndPaymentPerTerm();
+    });
+
+    this.loanDetailsForm.get('datePeriod')?.valueChanges.subscribe(() => {
+      // Recalculate amountGiven if applicationFee changes
+      this.updateInterestAndPaymentPerTerm();
+    });
+
+    
+  }
+
+  updateAmountGiven() {
+    const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
+    const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
+    const applicationFee = this.loanDetailsForm.get('applicationFee')?.value;
+    const paymentUpfront = this.loanDetailsForm.get('paymentUpfront')?.value;
+  
+    if (
+      principalAmount == null || 
+      depositAmount == null || 
+      applicationFee == null || 
+      paymentUpfront == null
+    ) {
+      // Reset amountGiven if any value is null or undefined
+      this.loanDetailsForm.get('amountGiven')?.setValue(null);
+    } else {
+      // Calculate amountGiven if all values are valid
+      const amountGiven = principalAmount - (depositAmount + applicationFee + paymentUpfront);
+      this.loanDetailsForm.get('amountGiven')?.setValue(amountGiven);
+    }
+  }
+
+  updateInterestAndPaymentPerTerm(){
+    const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
+      const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
+      const paymentTerm = this.loanDetailsForm.get('datePeriod')?.value;
+      const interest = this.loanDetailsForm.get('interest')?.value;
+
+      if (
+        principalAmount == null || 
+        depositAmount == null || 
+        paymentTerm == null || 
+        interest == null
+      ) {
+        // Reset amountGiven if any value is null or undefined
+        this.loanDetailsForm.get('interestAmount')?.setValue(null);
+        this.loanDetailsForm.get('paymentPerTerm')?.setValue(null);
+      } else {
+        // Calculate amountGiven if all values are valid
+        const interestAmount = principalAmount * (interest / 100) * paymentTerm;
+        this.loanDetailsForm.get('interestAmount')?.setValue(interestAmount);
+    
+        const paymentPerTerm = (principalAmount + interestAmount) / paymentTerm;
+        this.loanDetailsForm.get('paymentPerTerm')?.setValue(paymentPerTerm);
+      }
   }
 
   initializeForms() {
@@ -84,7 +208,10 @@ export class LoanAddEditComponent implements OnInit {
       applicationFee: new FormControl('', Validators.required),
       paymentUpfront: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
+      amountGiven:new FormControl({ value: '', disabled: true }),
+      paymentPerTerm:new FormControl({ value: '', disabled: true }),
       loanRemark: new FormControl(''),
+      interestAmount:new FormControl({ value: '', disabled: true }),
     });
   }
 
@@ -111,6 +238,9 @@ export class LoanAddEditComponent implements OnInit {
       paymentUpfront: row.paymentUpfront,
       interest: row.interest,
       loanRemark: row.loanRemark,
+      interestAmount:row.interestAmount,
+      amountGiven:row.amountGiven,
+      paymentPerTerm:row.paymentPerTerm
     });
   }
 

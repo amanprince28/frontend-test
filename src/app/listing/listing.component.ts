@@ -10,6 +10,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-listing',
@@ -22,7 +23,8 @@ import { Observable } from 'rxjs';
     ReactiveFormsModule,
     HttpClientModule, // Ensure HttpClientModule is imported here
     MatPaginatorModule,
-    FormsModule
+    FormsModule,
+    MatIconModule
   ],
   providers: [DataService], // Ensure DataService is provided here
   templateUrl: './listing.component.html',

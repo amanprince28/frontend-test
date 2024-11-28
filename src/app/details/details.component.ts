@@ -102,7 +102,7 @@ export class DetailsComponent {
     this.customerForm = new FormGroup({
       // Customer Information
       name: new FormControl(null, Validators.required),
-      ic: new FormControl(null),
+      ic: new FormControl(null,Validators.required),
       passport: new FormControl(null),
       race: new FormControl(null, Validators.required),
       gender: new FormControl('male', Validators.required), // Default value

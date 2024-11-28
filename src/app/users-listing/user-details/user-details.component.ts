@@ -19,6 +19,7 @@ import { DataService } from '../../data.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-user-details',
@@ -37,7 +38,7 @@ import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
     MatTableModule,
     MatCard,
     MatCardContent,
-    MatCardTitle,
+    MatCardTitle,MatSlideToggleModule
   ],
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
@@ -53,6 +54,7 @@ export class UserDetailsComponent implements OnInit {
   customerList: any[] = []; // List of customers for supervisor dropdown
   selectedRole: string = ''; // Track the selected role
   selectedSupervisor: string = ''; // Track the selected supervisor
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
 
@@ -67,12 +69,12 @@ export class UserDetailsComponent implements OnInit {
   ngOnInit() {
     // Initialize form controls
     this.userForm = new FormGroup({
-      // Customer Information
       name: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      role: new FormControl('', [Validators.required]),
+      password: new FormControl('', Validators.required),
+      role: new FormControl('', Validators.required),
       supervisor: new FormControl(''), // Supervisor dropdown control
+      status: new FormControl(true) // Initialize status as true (active by default)
     });
 
     this.role = [
@@ -110,22 +112,18 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-  }
-
   loadUserData(id: string) {
-
     // Fetch the user data based on the ID
     this.dataService.getUserById(id).subscribe((data) => {
       this.signalData = data;
       this.selectedRole = this.signalData?.role;
-      
+
       this.userForm.patchValue({
         name: this.signalData?.name,
-        password: this.signalData?.password,
         email: this.signalData?.email,
+        password: this.signalData?.password,
         role: this.signalData?.role,
+        status: this.signalData?.status // Bind the status properly
       });
 
       if (
@@ -148,7 +146,7 @@ export class UserDetailsComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((customers) => {
       // Filter and map only customers whose id does not match the supervisorId
-      this.customerList = customers 
+      this.customerList = customers
         .map((customer: any) => ({
           id: customer.id,
           value: customer.id,
@@ -163,9 +161,10 @@ export class UserDetailsComponent implements OnInit {
     // Prepare submission data
     const submissionData: any = {
       name: this.userForm.get('name')?.value,
-      password: this.userForm.get('password')?.value,
       email: this.userForm.get('email')?.value,
+      password: this.userForm.get('password')?.value,
       role: this.userForm.get('role')?.value,
+      status: this.userForm.get('status')?.value, // Ensure status is part of submission
     };
 
     // Add supervisor only if role is AGENT or LEAD
