@@ -61,6 +61,7 @@ export class DetailsComponent {
   fileEditStatus: boolean=false;
   isRemarkEditMode: boolean=false;
   remarkEditIndex: number=0;
+  isView: boolean = false;
 ;
   bankDataSource=new MatTableDataSource<any>([]);;
   remarkDataSource=new MatTableDataSource<any>([]);;
@@ -200,11 +201,16 @@ export class DetailsComponent {
         //this.loadEmployementData(this.customerId);
         if(params['action']==='edit'){
           this.isEditMode = true;
+          this.isView = false
         }else{
+          this.isView=true
           this.customerForm.disable();
           this.customerAddressForm.disable();
           this.customerEmployemntForm.disable();
           this.customerRelationshipForm.disable();
+          this.bankingForm.disable();
+          this.remarksForm.disable();
+          this.documentsForm.disable();
         }
         
       } else {

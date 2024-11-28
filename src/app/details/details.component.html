@@ -350,7 +350,7 @@
             </div>
             <div class="row">
               <div class="col-sm-12 d-flex flex-row-reverse">
-                <button mat-raised-button color="primary" type ="submit" (click)="onCustomerRelationSave()" >Insert</button>
+                <button mat-raised-button color="primary" type ="submit"  [disabled]="isView" (click)="onCustomerRelationSave()" >Insert</button>
                 
               </div>
             </div>  
@@ -449,7 +449,7 @@
                 </mat-form-field>
               </div>
               <div class="col-sm-3 d-flex justify-content-end">
-                <button mat-raised-button type="submit" color="primary" [disabled]="bankingForm.invalid" (click)="onBankingSubmit()">Insert</button>
+                <button mat-raised-button type="submit" color="primary" [disabled]="isView" (click)="onBankingSubmit()">Insert</button>
               </div>
             </div>
           </form>
@@ -535,7 +535,7 @@
               </mat-form-field>
             
               <div class="button-container">
-                <button mat-raised-button color="primary" (click)="addDocumentRecord()">Upload Files</button>
+                <button mat-raised-button color="primary" [disabled]="isView" (click)="addDocumentRecord()">Upload Files</button>
                 <button mat-button color="warn" (click)="clearUploadForm()">Clear</button>
               </div>
             </div>
@@ -599,7 +599,7 @@
               </div>
    
               <div class="col-sm-3 d-flex justify-content-end">
-                <button mat-raised-button type="submit" color="primary" [disabled]="remarksForm.invalid" (click)="onRemarksSubmit()">Insert</button>
+                <button mat-raised-button type="submit" color="primary" [disabled]="isView" (click)="onRemarksSubmit()">Insert</button>
               </div>
               <div class="mat-elevation-z8">
                 <table mat-table [dataSource]="remarkDataSource">
@@ -639,7 +639,7 @@
       </mat-tab-group>
 
       <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="onMasterSubmit()">Save</button>
+        <button mat-raised-button color="primary" [disabled]="isView" (click)="onMasterSubmit()">Save</button>
         <button mat-raised-button (click)="masterCancel()">Cancel</button>
       </div>
     </mat-card-content>
