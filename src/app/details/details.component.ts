@@ -415,7 +415,7 @@ export class DetailsComponent {
   addDocumentRecord(): void {
     if (this.documentsForm.valid && this.selectedFiles) {
       const formData = new FormData();
-  
+      
       // Loop through each selected file and append to formData
       Array.from(this.selectedFiles).forEach(file => {
         formData.append('file', file);
@@ -451,7 +451,8 @@ export class DetailsComponent {
             fileName: file.name,
             fileDescription: this.documentsForm.value.fileDescription || 'No description',
             fileSize: file.size,
-            fileType: file.type
+            fileType: file.type,
+            path:file.name
           });
         });
       }
@@ -489,7 +490,7 @@ export class DetailsComponent {
           tel_no: data.tel_no,
           email: data.email,
           car_plate: data.car_plate,
-          status: data.customerStatus,
+          status: data.status,
 
         })
         this.customerAddressForm.patchValue({
@@ -694,7 +695,7 @@ export class DetailsComponent {
       tel_no: this.customerForm.get('tel_no')?.value,
       email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
-      status:this.customerForm.get('customerStatus')?.value,
+      status:this.customerForm.get('status')?.value,
       customer_address: [
         {
           address_lines: this.customerAddressForm.get('perm_address_line')?.value,
@@ -762,11 +763,11 @@ export class DetailsComponent {
       });
       this.router.navigate(['/listing']);
     });
-    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
-      await this.dataService.uploadFiles(this.uploadedFiles[0]).subscribe(response=>{
-        console.log(response)
-      })
-    }
+    // if (this.uploadedFiles && this.uploadedFiles.length > 0) {
+    //   await this.dataService.uploadFiles(this.uploadedFiles[0]).subscribe(response=>{
+    //     console.log(response)
+    //   })
+    // }
   }
 
 }
