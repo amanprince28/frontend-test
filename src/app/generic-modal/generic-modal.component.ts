@@ -1,25 +1,27 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatCard } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';  
+import { MatPaginator,MatPaginatorModule } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-generic-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatTableModule, MatIconModule, MatCheckboxModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatTableModule, MatIconModule, MatCheckboxModule,MatPaginatorModule],
   templateUrl: './generic-modal.component.html',
   styleUrls: ['./generic-modal.component.scss']
 })
 export class GenericModalComponent {
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  dataSource = new MatTableDataSource<any>([]);
   searchControl = new FormControl('');
-  filteredData: any[] = [];
   displayedColumns: string[] = ['select', ...this.data.columns.map((col: any) => col.key)];
   selectedRow: any;
 
@@ -27,13 +29,20 @@ export class GenericModalComponent {
     private dialogRef: MatDialogRef<GenericModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
-    this.filteredData = data.items;
+    this.dataSource.data = data.items;
     this.displayedColumns = ['select', ...data.columns.map((col: any) => col.key)];
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    // this.paginator.page.subscribe(() => {
+    //   this.fetchData(this.paginator.pageIndex, this.paginator.pageSize);
+    // });
   }
 
   filterData() {
     const searchTerm = this.searchControl.value?.toLowerCase() || '';
-    this.filteredData = this.data.items.filter((item: any) =>
+    this.dataSource.data = this.data.items.filter((item: any) =>
       Object.values(item).some(val => 
         typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean' ? 
         val.toString().toLowerCase().includes(searchTerm) : false
