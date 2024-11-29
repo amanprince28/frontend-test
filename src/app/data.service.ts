@@ -100,4 +100,22 @@ export class DataService {
     const url = `${this.user}/getAgentAndLeads/${key}`;
     return this.http.get<any>(url);
   }
+
+  deleteUser(id: string): Observable<any> {
+    const url = `${this.user}/${id}`;
+    return this.http.delete<any>(url);
+  }
+
+  deleteCustomer(id: string): Observable<any> {
+    const url = `${this.customer}/${id}`;
+    return this.http.delete<any>(url);
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<any> {
+    const payload = {
+      currentPassword,
+      newPassword,
+    };
+    return this.http.post<any>(`${this.user}/change-password`, payload);
+  }
 }

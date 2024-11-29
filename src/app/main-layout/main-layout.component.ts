@@ -28,4 +28,8 @@ export class MainLayoutComponent {
     this.router.navigate(['/']);
   }
 
+  changePassword(){
+    this.router.navigate(['/change-password']);
+  }
+
 }

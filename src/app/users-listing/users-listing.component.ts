@@ -17,6 +17,7 @@ import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -36,7 +37,9 @@ export class UsersListingComponent implements OnInit{
   signalData = signal({});
   search = new FormControl();
 
-  constructor(private router: Router, private signalService: SignalService, private dataService: DataService) {}
+  constructor(private router: Router, private signalService: SignalService, private dataService: DataService,
+    private snackbar:MatSnackBar
+  ) {}
 
   ngOnInit(): void {
     this.fetchData();
@@ -81,5 +84,17 @@ export class UsersListingComponent implements OnInit{
 
   onAddClick(): void {
     this.router.navigate(['/users-details']);
+  }
+
+  onDelete(row: any): void {
+    this.dataService.deleteUser(row.id).subscribe(
+      () => {
+        this.snackbar.open('User deleted successfully', 'Close', { duration: 2000 });
+        this.fetchData(); // Reload the user list after deletion
+      },
+      (error:any) => {
+        this.snackbar.open('Error deleting user', 'Close', { duration: 2000 });
+      }
+    );
   }
 }

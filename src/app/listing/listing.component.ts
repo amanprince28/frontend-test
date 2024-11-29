@@ -11,6 +11,7 @@ import { DataService } from '../data.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-listing',
@@ -24,7 +25,8 @@ import { MatIconModule } from '@angular/material/icon';
     HttpClientModule, // Ensure HttpClientModule is imported here
     MatPaginatorModule,
     FormsModule,
-    MatIconModule
+    MatIconModule,
+    
   ],
   providers: [DataService], // Ensure DataService is provided here
   templateUrl: './listing.component.html',
@@ -40,7 +42,8 @@ export class ListingComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private signalService: SignalService,
-    private dataService: DataService
+    private dataService: DataService,
+    private snackbar:MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -103,4 +106,16 @@ export class ListingComponent implements OnInit {
   onAddClick(): void {
     this.router.navigate(['/details']);
   }
+
+  onDelete(row: any): void {
+      this.dataService.deleteCustomer(row.id).subscribe(
+        () => {
+          this.snackbar.open('User deleted successfully', 'Close', { duration: 2000 });
+          this.fetchData(); // Reload the user list after deletion
+        },
+        (error:any) => {
+          this.snackbar.open('Error deleting user', 'Close', { duration: 2000 });
+        }
+      );
+    }
 }

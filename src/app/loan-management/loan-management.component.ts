@@ -11,6 +11,8 @@ import { SignalService } from '../signal.service';
 import { DataService } from '../data.service';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-loan-management',
@@ -26,7 +28,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
 })
 export class LoanManagementComponent {
@@ -46,7 +48,8 @@ export class LoanManagementComponent {
   constructor(
     private router: Router,
     private signalService: SignalService,
-    private dataService: DataService
+    private dataService: DataService,
+    private snackbar:MatSnackBar
   ) {}
 
   loanData = [
@@ -97,5 +100,17 @@ export class LoanManagementComponent {
       return;
     }
     this.dataSource.filter = '';
+  }
+
+  onDelete(row: any): void {
+    this.dataService.deleteUser(row.id).subscribe(
+      () => {
+        this.snackbar.open('User deleted successfully', 'Close', { duration: 2000 });
+        this.fetchData(); // Reload the user list after deletion
+      },
+      (error:any) => {
+        this.snackbar.open('Error deleting user', 'Close', { duration: 2000 });
+      }
+    );
   }
 }
