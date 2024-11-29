@@ -38,6 +38,7 @@ export class LoginComponent {
       this.dataService.login(credentials).subscribe((resp)=>{
         console.log(resp);
         if(resp.access_token!=null){
+            localStorage.setItem('user-details',JSON.stringify(resp));
             this.router.navigateByUrl("/listing")
         }
       })

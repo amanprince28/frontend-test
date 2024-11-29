@@ -1,0 +1,45 @@
+<div class="modal-header">
+  <h2>{{ data.title }}</h2>
+  <button mat-icon-button (click)="onClose()">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<div class="modal-body">
+  <!-- Search bar and button row -->
+  <div class="search-row">
+    <mat-form-field appearance="fill" class="search-bar">
+      <mat-label>{{ data.searchPlaceholder }}</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="{{ data.searchPlaceholder }}" />
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="filterData()">Search</button>
+  </div>
+
+  <mat-table [dataSource]="filteredData" class="mat-elevation-z8">
+    <!-- Checkbox Column for Single Select -->
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef> Select </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox 
+          (click)="$event.stopPropagation()" 
+          (change)="onRowSelect(row)" 
+          [checked]="isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <!-- Dynamic Columns -->
+    <ng-container *ngFor="let column of data.columns" [matColumnDef]="column.key">
+      <mat-header-cell *matHeaderCellDef>{{ column.header }}</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{ element[column.key] }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowSelect(row)"></mat-row>
+  </mat-table>
+</div>
+
+<div class="modal-footer">
+  <button mat-raised-button color="primary" (click)="onConfirm()">OK</button>
+  <button mat-button (click)="onClose()">Cancel</button>
+</div>

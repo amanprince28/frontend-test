@@ -6,22 +6,23 @@
       <h5>Agent Details</h5>
       <form [formGroup]="agentDetailsForm">
         <!-- Search Bar for Agent Details -->
-        <div class="search-bar">
-          <mat-form-field appearance="outline" class="search-field small-search">
+        <!-- <div class="search-bar">
+          <mat-form-field appearance="fill" class="search-field small-search">
             <mat-label>Search Agent</mat-label>
             <input matInput formControlName="agentSearchQuery" placeholder="Enter agent name or ID">
           </mat-form-field>
           <button mat-icon-button color="primary" (click)="searchAgentDetails()">
             <mat-icon>search</mat-icon>
           </button>
-        </div>
+        </div> -->
         <!-- Agent Details Fields -->
         <div class="fields-row">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Agent Name</mat-label>
             <input formControlName="agentName" matInput required>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-icon (click)="openAgentSearch()">search</mat-icon>
+          <mat-form-field appearance="fill">
             <mat-label>Agent ID</mat-label>
             <mat-select formControlName="agentId" required>
               <mat-option *ngFor="let agent of agentIddropdown" [value]="agent.id">
@@ -29,7 +30,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Agent Lead</mat-label>
             <mat-select formControlName="agentLead" required>
               <mat-option *ngFor="let agent of agentLead" [value]="agent.id">
@@ -46,30 +47,31 @@
       <h5>Customer Details</h5>
       <form [formGroup]="customerDetailsForm">
         <!-- Search Bar for Customer Details -->
-        <div class="search-bar">
-          <mat-form-field appearance="outline" class="search-field small-search">
+        <!-- <div class="search-bar">
+          <mat-form-field appearance="fill" class="search-field small-search">
             <mat-label>Search Customer</mat-label>
             <input matInput formControlName="customerSearchQuery" placeholder="Enter customer name or ID">
           </mat-form-field>
           <button mat-icon-button color="primary" (click)="searchCustomerDetails()">
             <mat-icon>search</mat-icon>
           </button>
-        </div>
+        </div> -->
         <!-- Customer Details Fields -->
         <div class="fields-row">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Customer ID</mat-label>
             <input formControlName="customerId" matInput required>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-icon (click)="openCustomerSearch()">search</mat-icon>
+          <mat-form-field appearance="fill">
             <mat-label>Customer Name</mat-label>
             <input formControlName="customerName" matInput required>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Mobile</mat-label>
             <input formControlName="mobile" matInput type="tel" required>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Customer Address</mat-label>
             <input formControlName="customerAddress" matInput required>
           </mat-form-field>
@@ -82,28 +84,28 @@
       <h5>Loan Details</h5>
       <form [formGroup]="loanDetailsForm">
         <div class="fields-row">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Principal Amount</mat-label>
             <input formControlName="principalAmount" matInput type="number">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Deposit Amount</mat-label>
             <input formControlName="depositAmount" matInput type="number">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Application Fees</mat-label>
             <input formControlName="applicationFee" matInput type="number">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Payment Upfront</mat-label>
             <input formControlName="paymentUpfront" matInput type="number">
           </mat-form-field>
         </div>
         <div class="fields-row">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Unit Date Period</mat-label>
             <mat-select formControlName="unitofDate" required>
               <mat-option *ngFor="let unit of dateUnit" [value]="unit.id">
@@ -111,17 +113,17 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Date Period</mat-label>
             <input formControlName="datePeriod" matInput type="number">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Interest (%)</mat-label>
             <input formControlName="interest" matInput type="number">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="fill">
             <mat-label>Repayment Date</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="repaymentDate">
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -129,19 +131,19 @@
           </mat-form-field>
         </div>
         <div class="fields-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Amount Given</mat-label>
             <input formControlName="amountGiven" matInput>
           </mat-form-field>
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Interest Amount</mat-label>
             <input formControlName="interestAmount" matInput>
           </mat-form-field>
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Payment Per Term</mat-label>
             <input formControlName="paymentPerTerm" matInput>
           </mat-form-field>
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loanRemark" matInput>
           </mat-form-field>

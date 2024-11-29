@@ -35,16 +35,18 @@
 
     <button mat-button [matMenuTriggerFor]="profileMenu" style="color:black" class="profile-button">
       <mat-icon>account_circle</mat-icon>
-      Profile
+      {{userDetails.name}}
     </button>
     <mat-menu #profileMenu="matMenu">
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Logout
-      </button>
+     
       <button mat-menu-item (click)="changePassword()">
         <mat-icon>User</mat-icon>
         Change Password
+      </button>
+
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
       </button>
     </mat-menu>
   </mat-toolbar>

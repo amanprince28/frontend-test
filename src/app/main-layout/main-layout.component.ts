@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -13,12 +13,19 @@ import { MatMenuModule } from '@angular/material/menu';
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss'] // Make sure the CSS file is created if needed
 })
-export class MainLayoutComponent {
+export class MainLayoutComponent implements OnInit {
   title = 'frontend-test';
   showFiller = false;
+  userDetails: any
+
 
   constructor(private router:Router){}
 
+
+  ngOnInit(): void {
+    this.userDetails = localStorage.getItem('user-details');
+    console.log(this.userDetails,'ss')
+  }
 
   goToSettings() {
     this.router.navigate(['/settings']);
