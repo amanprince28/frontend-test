@@ -1,59 +1,58 @@
 .loan-add-container {
-    padding: 16px;
-  
-    h2 {
-      color: #545a72;
-    }
-  
-    .card {
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-  
-    .section {
-      margin-bottom: 20px;
-    }
-  
-    .fields-row {
-      display: flex;
-      gap: 16px;
-      justify-content: space-between;
-  
-      mat-form-field {
-        flex: 1;
-      }
-    }
-  
-    .action-buttons {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 20px;
-    }
+  padding: 16px;
 
-    .clickable-icon {
-      cursor: pointer;
-      color: #1976d2; // Blue color for the clickable icon
-    }
-    
+  h2 {
+    color: #545a72;
   }
 
-  .search-bar {
+  .card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .section {
+    margin-bottom: 20px;
+  }
+
+  .fields-row {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+
+  .action-buttons {
     display: flex;
     align-items: center;
-    gap: 8px; /* Space between search field and button */
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
   }
-  
-  .search-field.small-search {
-    width: 25%; /* Set search field to 25% width */
+
+  .clickable-icon {
+    cursor: pointer;
+    color: #1976d2; // Blue color for the clickable icon
   }
-  
-  button {
-    height: 40px; /* Adjust button height if necessary */
-  }
-  
-  
-  ::ng-deep .mat-form-field-appearance-outline.mat-form-field-disabled, ::ng-deep .mat-form-field-outline {
-    opacity: 0;
-    }
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between search field and button */
+}
+
+.search-field.small-search {
+  width: 25%; /* Set search field to 25% width */
+}
+
+button {
+  height: 40px; /* Adjust button height if necessary */
+}
+
+::ng-deep .custom-dialog-container {
+  border-radius: 20px !important;
+  overflow: hidden;
+}

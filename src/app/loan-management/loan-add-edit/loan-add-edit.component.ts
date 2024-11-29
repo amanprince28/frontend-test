@@ -376,8 +376,9 @@ export class LoanAddEditComponent implements OnInit {
     columns: any[]
   ) {
     const dialogRef = this.dialog.open(GenericModalComponent, {
-      width: '600px',
+      width: '70%',
       data: { title, searchPlaceholder, items, columns },
+      panelClass: 'custom-dialog-container',
     });
 
     dialogRef.afterClosed().subscribe((result) => {
