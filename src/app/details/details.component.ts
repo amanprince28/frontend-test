@@ -16,11 +16,12 @@ import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatSnackBarModule,MatDatepickerModule,MatNativeDateModule],
+  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatSnackBarModule,MatDatepickerModule,MatNativeDateModule,MatIconModule],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
