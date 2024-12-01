@@ -9,10 +9,21 @@
   <!-- Search bar and button row -->
   <div class="search-row">
     <mat-form-field appearance="fill" class="search-bar">
-      <mat-label>{{ data.searchPlaceholder }}</mat-label>
-      <input matInput [formControl]="searchControl" placeholder="{{ data.searchPlaceholder }}" />
+      <mat-label>Search By</mat-label>
+      <mat-select [(value)]="selectedKey" placeholder="Select Field">
+        <mat-option *ngFor="let field of searchFields" [value]="field.key">
+          {{ field.label }}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="search-bar" *ngIf="selectedKey">
+      <mat-label>Enter {{ selectedKey | titlecase }}</mat-label>
+      <input matInput [formControl]="searchControl" placeholder="Enter value" />
+    </mat-form-field>
+    
     <button mat-raised-button color="primary" (click)="filterData()">Search</button>
+    
   </div>
 
   <mat-table [dataSource]="dataSource" class="mat-elevation-z8">

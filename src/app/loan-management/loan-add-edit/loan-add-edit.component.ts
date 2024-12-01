@@ -47,8 +47,6 @@ import { GenericModalComponent } from '../../generic-modal/generic-modal.compone
     MatPaginatorModule,
     MatTableModule,
     MatCard,
-    MatCardContent,
-    MatCardTitle,
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -256,14 +254,12 @@ export class LoanAddEditComponent implements OnInit {
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
-      agentSearchQuery: new FormControl(null),
       agentName: new FormControl('', Validators.required),
       agentId: new FormControl('', Validators.required),
       agentLead: new FormControl('', Validators.required),
     });
 
     this.customerDetailsForm = new FormGroup({
-      customerSearchQuery: new FormControl(null),
       customerId: new FormControl('', Validators.required),
       customerName: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.required),
@@ -316,18 +312,21 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   saveLoan() {
-    if (
-      this.agentDetailsForm.valid &&
-      this.customerDetailsForm.valid &&
-      this.loanDetailsForm.valid
-    ) {
+    // if (
+    //   this.agentDetailsForm.valid &&
+    //   this.customerDetailsForm.valid &&
+    //   this.loanDetailsForm.valid
+    // ) {
       const loanData = {
-        ...this.agentDetailsForm.value,
-        ...this.customerDetailsForm.value,
-        ...this.loanDetailsForm.value,
+        customerId: this.agentDetailsForm.get('agentId')?.value,  
+        supervisor: this.customerDetailsForm.get('customerId')?.value,  
+        ...this.loanDetailsForm.value, 
       };
 
-      this.dataService.saveLoan(loanData).subscribe({
+      console.log(loanData,'loan data')
+
+
+      this.dataService.addLoan(loanData).subscribe({
         next: (response: any) => {
           // Add success message or routing if necessary
           this.router.navigate(['/loans']);
@@ -336,10 +335,8 @@ export class LoanAddEditComponent implements OnInit {
           console.error('Error:', error);
         },
       });
-    } else {
-      // You can add a form validation message here if the form is not valid
-      console.log('Form is not valid');
-    }
+    
+      
   }
 
   cancel() {
@@ -393,6 +390,7 @@ export class LoanAddEditComponent implements OnInit {
           });
         } else {
           this.agentDetailsForm.patchValue({
+            agentId:result.id,
             agentName: result.name,
             email: result.email,
             role: result.role,

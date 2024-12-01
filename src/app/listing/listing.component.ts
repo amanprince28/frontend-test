@@ -65,32 +65,19 @@ export class ListingComponent implements OnInit {
   }
 
   filterTable(): void {
-    if (this.searchQuery != null || this.searchQuery != undefined) {
-      this.dataSource.filter = this.searchQuery as string;
-      return;
-    }
-    this.dataSource.filter = '';
+    const searchValue = this.searchQuery
+    console.log(searchValue, 'Search Value');
+    this.dataService.getCustomerSearch(searchValue).subscribe((response: any) => {
+      console.log(response);
+      if(response.length>0){
+      this.dataSource.data = response; // Update table with filtered results
+      this.paginator.length = response.totalCount; 
+      }// Update total record count
+      else{
+        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+      }
+    });
   }
-
-  // filterTable(): void {
-  //   const searchValue = this.searchForm.value.search;
-  //   console.log(searchValue, 'Search Value');
-
-  //   const skip = this.paginator.pageIndex * this.paginator.pageSize;
-  //   const take = this.paginator.pageSize;
- 
-  //   const payload = {
-  //     search: searchValue || '',
-  //     skip,
-  //     take,
-  //   };
-
-  //   this.dataService.getCustomer(payload).subscribe((response: any) => {
-  //     console.log(response);
-  //     this.dataSource.data = response.data; // Update table with filtered results
-  //     this.paginator.length = response.totalCount; // Update total record count
-  //   });
-  // }
 
   onRowClick(row: any, action: string): void {
     if (!row.id) {

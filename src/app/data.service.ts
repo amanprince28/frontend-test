@@ -10,6 +10,8 @@ export class DataService {
   private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
+  private loan = this.apiUrl + '/loan';
+
 
   constructor(private http: HttpClient, private signalService: SignalService) {} // Circular dependency
 
@@ -21,9 +23,27 @@ export class DataService {
     return this.http.get<any[]>(this.customer, { params });
   }
 
+  findCustomer(payload: any): Observable<any> {
+    const params = new HttpParams()
+    .set('page', payload.page.toString())
+    .set('limit', payload.limit.toString())
+    .set('filter', payload.filter.toString());
+    console.log('Fetching data -----', params); 
+    return this.http.get<any[]>(this.customer, { params });
+  }
+
   getUser(payload: any): Observable<any> {
     const params = new HttpParams()
     .set('page', payload.page.toString())
+    .set('limit', payload.limit.toString());
+    console.log('Fetching data -----', params); 
+    return this.http.get<any[]>(this.user, { params });
+  }
+
+  findUser(payload: any): Observable<any> {
+    const params = new HttpParams()
+    .set('page', payload.page.toString())
+    .set('filter', payload.page.toString())
     .set('limit', payload.limit.toString());
     console.log('Fetching data -----', params); 
     return this.http.get<any[]>(this.user, { params });
@@ -63,6 +83,13 @@ export class DataService {
     return this.http.post<any>(url, customer);
   }
 
+  addLoan(loan: any): Observable<any> {
+    const url = this.apiUrl + '/loan';
+    return this.http.post<any>(url, loan);
+  }
+
+
+
   updateUser(user: any): Observable<any> {
     const url = this.apiUrl + '/user';
     const userId = user.id;
@@ -91,13 +118,13 @@ export class DataService {
     return this.http.get<any[]>(`${this.customer}/${id}`);
   }
 
-  getCustomerSearch(key: string): Observable<any> {
-    const url = `${this.customer}/getCustomer/${key}`;
+  getCustomerSearch(payload: any): Observable<any> {
+    const url = `${this.customer}/getCustomer/${payload}`;
     return this.http.get<any>(url);
   }
   
-  findAgentAndLeads(key: string): Observable<any> {
-    const url = `${this.user}/getAgentAndLeads/${key}`;
+  findAgentAndLeads(payload: any): Observable<any> {
+    const url = `${this.user}/getAgentAndLeads/${payload}`;
     return this.http.get<any>(url);
   }
 
@@ -116,6 +143,6 @@ export class DataService {
       currentPassword,
       newPassword,
     };
-    return this.http.post<any>(`${this.user}/change-password`, payload);
+    return this.http.put(`${this.apiUrl}/auth/change-password`, payload);
   }
 }

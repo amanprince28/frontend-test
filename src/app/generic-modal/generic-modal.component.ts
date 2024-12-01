@@ -10,11 +10,13 @@ import { MatCard } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';  
 import { MatPaginator,MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-generic-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatTableModule, MatIconModule, MatCheckboxModule,MatPaginatorModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatTableModule, MatIconModule, MatCheckboxModule,MatPaginatorModule,MatSelectModule],
   templateUrl: './generic-modal.component.html',
   styleUrls: ['./generic-modal.component.scss']
 })
@@ -24,12 +26,22 @@ export class GenericModalComponent {
   searchControl = new FormControl('');
   displayedColumns: string[] = ['select', ...this.data.columns.map((col: any) => col.key)];
   selectedRow: any;
+  searchFields = [
+    { key: 'name', label: 'Name' },
+    { key: 'ic', label: 'IC' },
+  ];
+
+  selectedKey: string | null = null;
+  title: any;
 
   constructor(
     private dialogRef: MatDialogRef<GenericModalComponent>,
+    private dataService:DataService,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.dataSource.data = data.items;
+    this.title = data.title;
+    console.log(this.title,'title');
     this.displayedColumns = ['select', ...data.columns.map((col: any) => col.key)];
   }
 
@@ -40,14 +52,35 @@ export class GenericModalComponent {
     // });
   }
 
-  filterData() {
-    const searchTerm = this.searchControl.value?.toLowerCase() || '';
-    this.dataSource.data = this.data.items.filter((item: any) =>
-      Object.values(item).some(val => 
-        typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean' ? 
-        val.toString().toLowerCase().includes(searchTerm) : false
-      )
-    );
+   filterData() {
+    const searchKey = this.selectedKey;
+    const searchValue = this.searchControl.value;
+
+    if (searchKey && searchValue) {
+      const filterParams = { [searchKey]: searchValue };
+
+      // Call your API with filterParams
+      console.log('Filtering data with:', filterParams);
+
+      if(this.title == "Agent Search"){
+      this.dataService.findAgentAndLeads(searchValue).subscribe((response) => {
+        console.log(response);
+        this.dataSource.data = response;
+        this.searchControl.reset();
+        this.searchControl.reset();
+      });
+    }
+    if(this.title=="Customer Search"){
+      this.dataService.getCustomerSearch(searchValue).subscribe((response) => {
+        console.log(response);
+        this.dataSource.data = response;
+        this.searchControl.reset();
+        this.searchControl.reset();
+      });
+    }
+    } else {
+      console.warn('Please select a field and enter a value to search.');
+    }
   }
 
   selectRow(row: any) {

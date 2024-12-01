@@ -73,13 +73,17 @@ export class UsersListingComponent implements OnInit{
 
   // For filtering the table
   filterTable(): void {
-    
-    if (this.searchQuery!=null || this.searchQuery !=undefined) {
-     
-      this.dataSource.filter = this.searchQuery as string;
-      return;
-    }
-    this.dataSource.filter = '';
+    const searchValue = this.searchQuery
+    console.log(searchValue, 'Search Value');
+    this.dataService.findAgentAndLeads(searchValue).subscribe((response: any) => {
+      console.log(response);
+      if(response.length>0){
+      this.dataSource.data = response; 
+      this.paginator.length = response.totalCount; 
+      }else{
+        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+      }
+    });
   }
 
   onAddClick(): void {
