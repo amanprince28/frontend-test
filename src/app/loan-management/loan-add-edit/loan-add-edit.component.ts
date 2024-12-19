@@ -318,8 +318,8 @@ export class LoanAddEditComponent implements OnInit {
     //   this.loanDetailsForm.valid
     // ) {
       const loanData = {
-        customerId: this.agentDetailsForm.get('agentId')?.value,  
-        supervisor: this.customerDetailsForm.get('customerId')?.value,  
+        supervisor: this.agentDetailsForm.get('agentId')?.value,  
+        customerId: this.customerDetailsForm.get('customerId')?.value,  
         ...this.loanDetailsForm.value, 
       };
 
