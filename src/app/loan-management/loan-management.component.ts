@@ -1,4 +1,4 @@
-import { Component, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -31,8 +31,9 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatIconModule,
   ],
 })
-export class LoanManagementComponent {
+export class LoanManagementComponent implements OnInit {
   displayedColumns: string[] = [
+    'application_fee',
     'agentName',
     'customerName',
     'customerId',
@@ -52,15 +53,19 @@ export class LoanManagementComponent {
     private snackbar:MatSnackBar
   ) {}
 
-  loanData = [
-    {
-      agentName: 'Agent Vinod',
-      customerName: 'Ali Bin Abu',
-      customerId: '1234567890',
-      loanPackage: '6 Months',
-      principleAmount: '1000',
-    },
-  ];
+  // loanData = [
+  //   {
+  //     agentName: 'Agent Vinod',
+  //     customerName: 'Ali Bin Abu',
+  //     customerId: '1234567890',
+  //     loanPackage: '6 Months',
+  //     principleAmount: '1000',
+  //   },
+  // ];
+
+  ngOnInit(): void {
+    this.fetchData();
+  }
 
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
@@ -71,9 +76,9 @@ export class LoanManagementComponent {
 
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
-    this.dataService.getCustomer(payload).subscribe((response: any) => {
+    this.dataService.getLoan(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = this.loanData;
+      this.dataSource.data = response
     });
   }
 

@@ -23,6 +23,15 @@ export class DataService {
     return this.http.get<any[]>(this.customer, { params });
   }
 
+  getLoan(payload: any): Observable<any> {
+    const params = new HttpParams()
+    .set('page', payload.page.toString())
+    .set('limit', payload.limit.toString());
+    console.log('Fetching data -----', params); 
+    return this.http.get<any[]>(this.loan, { params });
+  }
+
+
   findCustomer(payload: any): Observable<any> {
     const params = new HttpParams()
     .set('page', payload.page.toString())

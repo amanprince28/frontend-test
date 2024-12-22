@@ -281,42 +281,37 @@ export class LoanAddEditComponent implements OnInit {
       interestAmount: new FormControl({ value: '', disabled: true }),
     });
   }
-
   loadAllData(row: any) {
     this.agentDetailsForm.patchValue({
-      agentId: row.agentId,
+      agentId: row.supervisor,
       agentName: row.agentName,
       agentLead: row.agentLead,
     });
 
     this.customerDetailsForm.patchValue({
-      customerId: row.customerId,
+      customerId: row.customer_id,
       customerName: row.customerName,
       mobile: row.mobile,
       customerAddress: row.customerAddress,
     });
 
     this.loanDetailsForm.patchValue({
-      repaymentDate: row.repaymentDate,
-      datePeriod: row.datePeriod,
-      principalAmount: row.principalAmount,
-      depositAmount: row.depositAmount,
-      applicationFee: row.applicationFee,
-      paymentUpfront: row.paymentUpfront,
+      repaymentDate: row.repayment_date,
+      datePeriod: row.date_period,
+      principalAmount: row.principal_amount,
+      depositAmount: row.deposit_amount,
+      applicationFee: row.application_fee,
+      paymentUpfront: row.payment_up_front,
       interest: row.interest,
-      loanRemark: row.loanRemark,
-      interestAmount: row.interestAmount,
+      loanRemark: row.loan_remark,
+      interestAmount: row.interest_amount,
       amountGiven: row.amountGiven,
       paymentPerTerm: row.paymentPerTerm,
+      unitofDate:row.unit_of_date
     });
   }
 
   saveLoan() {
-    // if (
-    //   this.agentDetailsForm.valid &&
-    //   this.customerDetailsForm.valid &&
-    //   this.loanDetailsForm.valid
-    // ) {
       const loanData = {
         supervisor: this.agentDetailsForm.get('agentId')?.value,  
         customerId: this.customerDetailsForm.get('customerId')?.value,  
@@ -325,15 +320,8 @@ export class LoanAddEditComponent implements OnInit {
 
       console.log(loanData,'loan data')
 
-
-      this.dataService.addLoan(loanData).subscribe({
-        next: (response: any) => {
-          // Add success message or routing if necessary
-          this.router.navigate(['/loans']);
-        },
-        error: (error: any) => {
-          console.error('Error:', error);
-        },
+      this.dataService.addLoan(loanData).subscribe((response) => {
+        this.router.navigate(['/loan']);
       });
     
       
