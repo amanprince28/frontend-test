@@ -57,6 +57,7 @@ export class UserDetailsComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
+  superVisorList: any[]=[];
 
   constructor(
     private route: ActivatedRoute,
@@ -104,8 +105,13 @@ export class UserDetailsComponent implements OnInit {
     // Subscribe to role changes to show the supervisor dropdown if needed
     this.userForm.get('role')?.valueChanges.subscribe((role) => {
       this.selectedRole = role;
-      if (role === 'AGENT' || role === 'LEAD') {
+      if (role === 'AGENT') {
         this.fetchSupervisors(); // Fetch supervisors when Agent or Lead is selected
+        this.superVisorList = this.customerList.filter((el) => el.role === 'LEAD');
+      }
+      if(role === 'LEAD'){
+        this.fetchSupervisors(); // Fetch supervisors when Agent or Lead is selected
+        this.superVisorList = this.customerList.filter((el) => el.role === 'ADMIN');
       } else {
         this.customerList = []; // Clear the supervisor list if not Agent or Lead
       }
@@ -151,6 +157,7 @@ export class UserDetailsComponent implements OnInit {
           id: customer.id,
           value: customer.id,
           viewValue: customer.name,
+          role:customer.role
         }));
 
       console.log(this.customerList, 'filtered customer list');

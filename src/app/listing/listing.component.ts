@@ -12,6 +12,8 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-listing',
@@ -43,7 +45,8 @@ export class ListingComponent implements OnInit {
     private router: Router,
     private signalService: SignalService,
     private dataService: DataService,
-    private snackbar:MatSnackBar
+    private snackbar:MatSnackBar,
+    private dialog:MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -95,14 +98,24 @@ export class ListingComponent implements OnInit {
   }
 
   onDelete(row: any): void {
-      this.dataService.deleteCustomer(row.id).subscribe(
-        () => {
-          this.snackbar.open('User deleted successfully', 'Close', { duration: 2000 });
-          this.fetchData(); // Reload the user list after deletion
-        },
-        (error:any) => {
-          this.snackbar.open('Error deleting user', 'Close', { duration: 2000 });
-        }
-      );
-    }
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: { message: 'Are you sure you want to delete this user?' },
+      width: '400px',
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // Call the delete API
+        this.dataService.deleteCustomer(row.id).subscribe(
+          () => {
+            this.snackbar.open('Customer deleted successfully', 'Close', { duration: 2000 });
+            this.fetchData(); // Reload data after deletion
+          },
+          (error: any) => {
+            this.snackbar.open('Error deleting Customer', 'Close', { duration: 2000 });
+          }
+        );
+      }
+    });
+}
 }

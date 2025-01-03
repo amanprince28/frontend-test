@@ -32,20 +32,22 @@
             </mat-select>
           </mat-form-field>
 
-          <div class="quarter-width">
-            <mat-slide-toggle formControlName="status">Customer Status</mat-slide-toggle>
-          </div>
+          
         
         <!-- Supervisor Dropdown (Only for Agent or Lead) -->
         <div *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'" class="quarter-width">
           <mat-form-field appearance="outline" >
             <mat-label>Supervisor</mat-label>
             <mat-select formControlName="supervisor">
-              <mat-option *ngFor="let supervisor of customerList" [value]="supervisor.value">
+              <mat-option *ngFor="let supervisor of superVisorList" [value]="supervisor.value">
                 {{ supervisor.viewValue }}
               </mat-option>
             </mat-select>
           </mat-form-field>
+        </div>
+
+        <div class="quarter-width">
+          <mat-slide-toggle formControlName="status">Customer Status</mat-slide-toggle>
         </div>
         </div>
 

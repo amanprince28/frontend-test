@@ -17,6 +17,7 @@ export class MainLayoutComponent implements OnInit {
   title = 'frontend-test';
   showFiller = false;
   userDetails: any
+  userName: any;
 
 
   constructor(private router:Router){}
@@ -24,6 +25,8 @@ export class MainLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userName = this.userDetails?.name ?? '';
     console.log(this.userDetails,'ss')
   }
 

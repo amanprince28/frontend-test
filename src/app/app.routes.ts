@@ -8,6 +8,7 @@ import { UserDetailsComponent } from './users-listing/user-details/user-details.
 import { LoanManagementComponent } from './loan-management/loan-management.component';
 import { LoanAddEditComponent } from './loan-management/loan-add-edit/loan-add-edit.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
+import { CustomerCheckComponent } from './customer-check/customer-check.component';
 
 
 export const routes: Routes = [
@@ -24,7 +25,8 @@ export const routes: Routes = [
       { path: 'details', component: DetailsComponent }, // Route for adding new details
       {path:'loan',component:LoanManagementComponent},
       {path:'loan-add',component:LoanAddEditComponent},
-      {path:'change-password',component:PasswordChangeComponent}
+      {path:'change-password',component:PasswordChangeComponent},
+      {path:'customer-check',component:CustomerCheckComponent}
     ]
   }
 ];

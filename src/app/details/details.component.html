@@ -472,7 +472,7 @@
         <mat-tab label="Documents">
           <div [formGroup]="documentsForm" class="documents-tab">
             <!-- Upload Section -->
-            <div class="upload-container">
+            <!-- <div class="upload-container">
               <label for="fileUpload" class="upload-label">Upload Files or Drag & Drop</label>
               <input
                 type="file"
@@ -491,11 +491,44 @@
                 <button mat-raised-button color="primary" [disabled]="isView" (click)="addDocumentRecord()">Upload Files</button>
                 <button mat-button color="warn" (click)="clearUploadForm()">Clear</button>
               </div>
+            </div> -->
+
+            <div class="upload-container">
+              <label for="fileUpload" class="upload-label">Upload Files or Drag & Drop</label>
+              <input
+                type="file"
+                formControlName="fileUpload"
+                id="fileUpload"
+                (change)="onFileChange($event)"
+                multiple
+              />
+            
+              <mat-form-field class="file-name-field">
+                <mat-label>File Description</mat-label>
+                <input type="text" matInput formControlName="fileDescription" />
+              </mat-form-field>
+            
+              <div *ngIf="fileEditStatus" class="file-edit-info">
+                <p>Editing File: {{ selectedFiles[0]?.name }}</p>
+              </div>
+            
+              <div class="button-container">
+                <button
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="isView"
+                  (click)="addDocumentRecord()"
+                >
+                  {{ fileEditStatus ? 'Update File' : 'Upload Files' }}
+                </button>
+                <button mat-button color="warn" (click)="clearUploadForm()">Clear</button>
+              </div>
             </div>
+            
         
             <!-- Table Section -->
             <div class="table-container" *ngIf="uploadedFiles.length > 0">
-              <table mat-table [dataSource]="uploadedFiles" class="mat-elevation-z8">
+              <table mat-table [dataSource]="uploadedDocumentSource" class="mat-elevation-z8">
                 <!-- File Name Column -->
                 <ng-container matColumnDef="fileName">
                   <th mat-header-cell *matHeaderCellDef>File Name</th>

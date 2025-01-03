@@ -142,6 +142,11 @@ export class DataService {
     return this.http.delete<any>(url);
   }
 
+  deleteLoan(id: string): Observable<any> {
+    const url = `${this.loan}/${id}`;
+    return this.http.delete<any>(url);
+  }
+
   deleteCustomer(id: string): Observable<any> {
     const url = `${this.customer}/${id}`;
     return this.http.delete<any>(url);

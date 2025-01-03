@@ -22,17 +22,15 @@ import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation
 import { MatDialog } from '@angular/material/dialog';
 
 
-
 @Component({
-  selector: 'app-users-listing',
+  selector: 'app-customer-check',
   standalone: true,
   imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatIconModule,MatDatepickerModule,MatNativeDateModule],
-  providers: [DataService], 
-  templateUrl: './users-listing.component.html',
-  styleUrl: './users-listing.component.scss'
+  templateUrl: './customer-check.component.html',
+  styleUrl: './customer-check.component.scss'
 })
-export class UsersListingComponent implements OnInit{
-  displayedColumns: string[] = ['name', 'email', 'role','status','actions'];
+export class CustomerCheckComponent {
+  displayedColumns: string[] = ['agent', 'ongoing', 'completed','badDebt','lastPaymentDate','nextPaymentDate'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchForm!: FormGroup;
@@ -59,7 +57,40 @@ export class UsersListingComponent implements OnInit{
     const payload = { page, limit};
     this.dataService.getUser(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response;
+      this.dataSource.data = [
+        {
+          agent: 'John Doe',
+          ongoing: 5,
+          completed: 10,
+          badDebt: 2,
+          lastPaymentDate: '2024-12-20',
+          nextPaymentDate: '2025-01-15',
+        },
+        {
+          agent: 'Jane Smith',
+          ongoing: 3,
+          completed: 8,
+          badDebt: 1,
+          lastPaymentDate: '2024-12-18',
+          nextPaymentDate: '2025-01-10',
+        },
+        {
+          agent: 'Alice Brown',
+          ongoing: 7,
+          completed: 12,
+          badDebt: 0,
+          lastPaymentDate: '2024-12-25',
+          nextPaymentDate: '2025-01-20',
+        },
+        {
+          agent: 'Bob Johnson',
+          ongoing: 2,
+          completed: 15,
+          badDebt: 3,
+          lastPaymentDate: '2024-12-22',
+          nextPaymentDate: '2025-01-12',
+        },
+      ];
     });
   }
 

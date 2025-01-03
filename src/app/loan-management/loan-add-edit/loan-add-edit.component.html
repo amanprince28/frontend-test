@@ -30,14 +30,14 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <!-- <mat-form-field appearance="fill">
             <mat-label>Agent Lead</mat-label>
             <mat-select formControlName="agentLead" required>
               <mat-option *ngFor="let agent of agentLead" [value]="agent.id">
                 {{ agent.name }}
               </mat-option>
             </mat-select>
-          </mat-form-field>
+          </mat-form-field> -->
         </div>
       </form>
     </div>
@@ -59,7 +59,7 @@
         <!-- Customer Details Fields -->
         <div class="fields-row">
           <mat-form-field appearance="fill">
-            <mat-label>Customer ID</mat-label>
+            <mat-label>Customer IC/Passport</mat-label>
             <input formControlName="customerId" matInput required>
           </mat-form-field>
           <mat-icon (click)="openCustomerSearch()">search</mat-icon>
@@ -71,10 +71,10 @@
             <mat-label>Mobile</mat-label>
             <input formControlName="mobile" matInput type="tel" required>
           </mat-form-field>
-          <mat-form-field appearance="fill">
+          <!-- <mat-form-field appearance="fill">
             <mat-label>Customer Address</mat-label>
             <input formControlName="customerAddress" matInput required>
-          </mat-form-field>
+          </mat-form-field> -->
         </div>
       </form>
     </div>

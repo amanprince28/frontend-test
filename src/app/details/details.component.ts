@@ -70,7 +70,7 @@ export class DetailsComponent {
   dataSourceEmployment = new MatTableDataSource<any>([]);
   customerRelationshipId: any;
   selectedFile: any;
-  uploadedDocuments: any[]=[];
+  uploadedDocumentSource=new MatTableDataSource<any>([]);
 
   constructor(
     private route: ActivatedRoute,
@@ -376,86 +376,163 @@ export class DetailsComponent {
     this.router.navigate(['/listing']);
   }
   
-  onFileEdit(record:any,index:number){
-    console.log(record)
-    this.fileEditIndex = index;
-    this.fileEditStatus = true;
+  // onFileEdit(record:any,index:number){
+  //   this.selectedFiles = record;
+  //   console.log(record)
+  //   this.fileEditIndex = index;
+  //   this.fileEditStatus = true;
+  //   this.documentsForm.patchValue({
+  //     fileName: record.fileName,
+  //     fileDescription: record.fileDescription,
+  //     fileUpload:record.fileName,
+  //     size:record.fileSize
+  //   });
+  // }
+
+  // onFileChange(event: any): void {
+  //   const files = event.target.files; // Get the selected files
+  //   if (files.length > 0) {
+  //     // If multiple files are selected, store them in the selectedFiles array
+  //       this.selectedFiles = Array.from(files); // Convert FileList to Array for easier manipulation
+  
+  //     // You may want to update the form for each file's information (for example, first file's details)
+  //     // Here, I update the form with the details of the first file, as an example.
+  //     const firstFile = files[0];
+  
+  //     this.documentsForm.patchValue({
+  //       fileName: firstFile.name,
+  //       fileSize: firstFile.size,
+  //       fileType: firstFile.type,
+  //       fileDescription: this.documentsForm.value.fileDescription || '' // Keep the existing description or reset
+  //     });
+  //   }
+  // }
+  
+
+  // addDocumentRecord(): void {
+  //   if (this.documentsForm.valid && this.selectedFiles) {
+  //     const formData = new FormData();
+      
+  //     // Loop through each selected file and append to formData
+  //     Array.from(this.selectedFiles).forEach(file => {
+  //       formData.append('file', file);
+  //       formData.append('fileName', file.name);
+  //       formData.append('fileDescription', this.documentsForm.value.fileDescription || 'No description');
+  //       formData.append('fileSize', file.size.toString());
+  //       formData.append('fileType', file.type);
+  //     });
+  
+  //     // Optionally, upload the files to the backend
+  //     // this.uploadFile(formData);
+  
+  //     // Check if we are editing an existing file or adding a new one
+  //     if (this.fileEditStatus) {
+  //       // Edit existing file
+  //       const updatedFile = {
+  //         fileName: this.documentsForm.value.fileName,
+  //         fileDescription: this.documentsForm.value.fileDescription || 'No description',
+  //         fileSize: this.selectedFiles[0].size,
+  //         fileType: this.selectedFiles[0].type
+  //       };
+  
+  //       // Update the file in the uploaded files list at the specified index
+  //       this.uploadedFiles[this.fileEditIndex] = updatedFile;
+  //       this.uploadedDocumentSource.data = this.uploadedFiles
+  //       // Reset edit status and index
+  //       this.fileEditStatus = false;
+  //       this.fileEditIndex = 0;
+  //     } else {
+  //       // Add new file
+  //       Array.from(this.selectedFiles).forEach(file => {
+  //         this.uploadedFiles.push({
+  //           fileName: file.name,
+  //           fileDescription: this.documentsForm.value.fileDescription || 'No description',
+  //           fileSize: file.size,
+  //           fileType: file.type,
+  //           path:file.name
+  //         });
+  //       });
+  //       this.uploadedDocumentSource.data = this.uploadedFiles;
+  //     }
+  
+  //     // Clear the form and reset selected files
+  //     this.documentsForm.reset();
+  //     this.selectedFiles = []; // Reset selected files
+  //   }
+  // }
+
+  onFileEdit(record: any, index: number): void {
+  this.fileEditIndex = index;
+  this.fileEditStatus = true;
+
+  // Update selected file information
+  this.selectedFiles = [
+    {
+      name: record.fileName,
+      size: record.fileSize,
+      type: record.fileType,
+    },
+  ];
+
+  // Patch the form with file details
+  this.documentsForm.patchValue({
+    fileDescription: record.fileDescription || '',
+  });
+}
+
+onFileChange(event: any): void {
+  const files = event.target.files;
+
+  if (files.length > 0) {
+    this.selectedFiles = Array.from(files);
+
+    const firstFile = this.selectedFiles[0];
     this.documentsForm.patchValue({
-      fileName: record.fileName,
-      fileDescription: record.fileDescription
+      fileDescription: this.documentsForm.value.fileDescription || '',
     });
   }
+}
 
-  onFileChange(event: any): void {
-    const files = event.target.files; // Get the selected files
-    if (files.length > 0) {
-      // If multiple files are selected, store them in the selectedFiles array
-        this.selectedFiles = Array.from(files); // Convert FileList to Array for easier manipulation
-  
-      // You may want to update the form for each file's information (for example, first file's details)
-      // Here, I update the form with the details of the first file, as an example.
-      const firstFile = files[0];
-  
-      this.documentsForm.patchValue({
-        fileName: firstFile.name,
-        fileSize: firstFile.size,
-        fileType: firstFile.type,
-        fileDescription: this.documentsForm.value.fileDescription || '' // Keep the existing description or reset
-      });
-    }
-  }
-  
+addDocumentRecord(): void {
+  if (this.documentsForm.valid && this.selectedFiles.length > 0) {
+    if (this.fileEditStatus) {
+      // Update existing file
+      const updatedFile = {
+        fileName: this.selectedFiles[0].name,
+        fileDescription: this.documentsForm.value.fileDescription || 'No description',
+        fileSize: this.selectedFiles[0].size,
+        fileType: this.selectedFiles[0].type,
+      };
 
-  addDocumentRecord(): void {
-    if (this.documentsForm.valid && this.selectedFiles) {
-      const formData = new FormData();
-      
-      // Loop through each selected file and append to formData
-      Array.from(this.selectedFiles).forEach(file => {
-        formData.append('file', file);
-        formData.append('fileName', file.name);
-        formData.append('fileDescription', this.documentsForm.value.fileDescription || 'No description');
-        formData.append('fileSize', file.size.toString());
-        formData.append('fileType', file.type);
-      });
-  
-      // Optionally, upload the files to the backend
-      // this.uploadFile(formData);
-  
-      // Check if we are editing an existing file or adding a new one
-      if (this.fileEditStatus) {
-        // Edit existing file
-        const updatedFile = {
-          fileName: this.documentsForm.value.fileName,
+      this.uploadedFiles[this.fileEditIndex] = updatedFile;
+      this.uploadedDocumentSource.data = [...this.uploadedFiles];
+
+      this.fileEditStatus = false;
+      this.fileEditIndex = -1;
+    } else {
+      // Add new files
+      this.selectedFiles.forEach((file) => {
+        this.uploadedFiles.push({
+          fileName: file.name,
           fileDescription: this.documentsForm.value.fileDescription || 'No description',
-          fileSize: this.selectedFiles[0].size,
-          fileType: this.selectedFiles[0].type
-        };
-  
-        // Update the file in the uploaded files list at the specified index
-        this.uploadedFiles[this.fileEditIndex] = updatedFile;
-  
-        // Reset edit status and index
-        this.fileEditStatus = false;
-        this.fileEditIndex = 0;
-      } else {
-        // Add new file
-        Array.from(this.selectedFiles).forEach(file => {
-          this.uploadedFiles.push({
-            fileName: file.name,
-            fileDescription: this.documentsForm.value.fileDescription || 'No description',
-            fileSize: file.size,
-            fileType: file.type,
-            path:file.name
-          });
+          fileSize: file.size,
+          fileType: file.type,
         });
-      }
-  
-      // Clear the form and reset selected files
-      this.documentsForm.reset();
-      this.selectedFiles = []; // Reset selected files
+      });
+      this.uploadedDocumentSource.data = [...this.uploadedFiles];
     }
+
+    this.clearUploadForm();
   }
+}
+
+// clearUploadForm(): void {
+//   this.documentsForm.reset();
+//   this.selectedFiles = [];
+//   this.fileEditStatus = false;
+//   this.fileEditIndex = -1;
+// }
+
 
   clearUploadForm(){
     this.documentsForm.reset();

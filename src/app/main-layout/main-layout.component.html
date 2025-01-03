@@ -20,6 +20,11 @@
       <mat-icon>money</mat-icon>
       Loan
     </a>
+
+    <a class="menu-item" [routerLink]="['customer-check']" routerLinkActive="router-link-active">
+      <mat-icon>group</mat-icon>
+      Customer Check
+    </a>
   </mat-drawer>
   <mat-toolbar class="toolbar blue-background">
     <button
@@ -35,7 +40,7 @@
 
     <button mat-button [matMenuTriggerFor]="profileMenu" style="color:black" class="profile-button">
       <mat-icon>account_circle</mat-icon>
-      {{userDetails.name}}
+      {{userName}}
     </button>
     <mat-menu #profileMenu="matMenu">
      
