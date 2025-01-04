@@ -48,7 +48,7 @@ export class DetailsComponent {
   customerId!: string;
   displayedColumnsForRelationshipForm: string[] = ['name', 'ic','mobile','relationship','actions'];
   displayedColumnsBank: string[] = ['bankName', 'accountNo', 'bankHolder', 'bankCard', 'pinNo','remarks', 'actions'];
-  displayedColumnsRemark:string[]=['remarks','actions']
+  displayedColumnsRemark:string[]=['remarks','createdBy','actions']
   race:any[]=[];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -375,39 +375,6 @@ export class DetailsComponent {
   masterCancel(){
     this.router.navigate(['/listing']);
   }
-  
-  // onFileEdit(record:any,index:number){
-  //   this.selectedFiles = record;
-  //   console.log(record)
-  //   this.fileEditIndex = index;
-  //   this.fileEditStatus = true;
-  //   this.documentsForm.patchValue({
-  //     fileName: record.fileName,
-  //     fileDescription: record.fileDescription,
-  //     fileUpload:record.fileName,
-  //     size:record.fileSize
-  //   });
-  // }
-
-  // onFileChange(event: any): void {
-  //   const files = event.target.files; // Get the selected files
-  //   if (files.length > 0) {
-  //     // If multiple files are selected, store them in the selectedFiles array
-  //       this.selectedFiles = Array.from(files); // Convert FileList to Array for easier manipulation
-  
-  //     // You may want to update the form for each file's information (for example, first file's details)
-  //     // Here, I update the form with the details of the first file, as an example.
-  //     const firstFile = files[0];
-  
-  //     this.documentsForm.patchValue({
-  //       fileName: firstFile.name,
-  //       fileSize: firstFile.size,
-  //       fileType: firstFile.type,
-  //       fileDescription: this.documentsForm.value.fileDescription || '' // Keep the existing description or reset
-  //     });
-  //   }
-  // }
-  
 
   // addDocumentRecord(): void {
   //   if (this.documentsForm.valid && this.selectedFiles) {
@@ -525,13 +492,6 @@ addDocumentRecord(): void {
     this.clearUploadForm();
   }
 }
-
-// clearUploadForm(): void {
-//   this.documentsForm.reset();
-//   this.selectedFiles = [];
-//   this.fileEditStatus = false;
-//   this.fileEditIndex = -1;
-// }
 
 
   clearUploadForm(){
@@ -755,90 +715,94 @@ addDocumentRecord(): void {
   }
 
   async onMasterSubmit(){
-    const submissionData: any = {
-      name: this.customerForm.get('name')?.value,
-      ic: this.customerForm.get('ic')?.value,
-      passport: this.customerForm.get('passport')?.value,
-      gender: this.customerForm.get('gender')?.value,
-      marital_status: this.customerForm.get('marital_status')?.value,
-      no_of_child: this.customerForm.get('no_of_child')?.value,
-      mobile_no: this.customerForm.get('mobile_no')?.value,
-      tel_no: this.customerForm.get('tel_no')?.value,
-      email: this.customerForm.get('email')?.value,
-      car_plate: this.customerForm.get('car_plate')?.value,
-      status:this.customerForm.get('status')?.value,
-      customer_address: [
-        {
-          address_lines: this.customerAddressForm.get('perm_address_line')?.value,
-          postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
-          is_permanent: !!this.customerAddressForm.get('perm_address_line')?.value,
-          country_id: this.customerAddressForm.get('perm_country')?.value,
-          state_id: this.customerAddressForm.get('perm_state')?.value,
-          city_id: this.customerAddressForm.get('perm_city')?.value,
-        },
-        ...(this.customerAddressForm.get('corr_address_line')?.value
-          ? [
-              {
-                address_lines: this.customerAddressForm.get('corr_address_line')?.value,
-                postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
-                country_id: this.customerAddressForm.get('corr_country')?.value,
-                state_id: this.customerAddressForm.get('corr_state')?.value,
-                city_id: this.customerAddressForm.get('corr_city')?.value,
-              },
-            ]
-          : []),
-      ].filter((address) => !!address.address_lines), // Remove empty objects
-    };
+    // const submissionData: any = {
+    //   name: this.customerForm.get('name')?.value,
+    //   ic: this.customerForm.get('ic')?.value,
+    //   passport: this.customerForm.get('passport')?.value,
+    //   gender: this.customerForm.get('gender')?.value,
+    //   marital_status: this.customerForm.get('marital_status')?.value,
+    //   no_of_child: this.customerForm.get('no_of_child')?.value,
+    //   mobile_no: this.customerForm.get('mobile_no')?.value,
+    //   tel_no: this.customerForm.get('tel_no')?.value,
+    //   email: this.customerForm.get('email')?.value,
+    //   car_plate: this.customerForm.get('car_plate')?.value,
+    //   status:this.customerForm.get('status')?.value,
+    //   customer_address: [
+    //     {
+    //       address_lines: this.customerAddressForm.get('perm_address_line')?.value,
+    //       postal_code: this.customerAddressForm.get('perm_postal_code')?.value,
+    //       is_permanent: !!this.customerAddressForm.get('perm_address_line')?.value,
+    //       country_id: this.customerAddressForm.get('perm_country')?.value,
+    //       state_id: this.customerAddressForm.get('perm_state')?.value,
+    //       city_id: this.customerAddressForm.get('perm_city')?.value,
+    //     },
+    //     ...(this.customerAddressForm.get('corr_address_line')?.value
+    //       ? [
+    //           {
+    //             address_lines: this.customerAddressForm.get('corr_address_line')?.value,
+    //             postal_code: this.customerAddressForm.get('corr_postal_code')?.value,
+    //             country_id: this.customerAddressForm.get('corr_country')?.value,
+    //             state_id: this.customerAddressForm.get('corr_state')?.value,
+    //             city_id: this.customerAddressForm.get('corr_city')?.value,
+    //           },
+    //         ]
+    //       : []),
+    //   ].filter((address) => !!address.address_lines), // Remove empty objects
+    // };
     
-    // Add employmentData only if there are values in the form
-    if (Object.values(this.customerEmployemntForm.value).some(value => value !== null && value !==undefined && value !== "")) {
-      console.log(this.customerEmployemntForm,'valuesss');
-      submissionData.employment = {
-        annual_income: this.customerEmployemntForm.get('annual_income')?.value,
-        business_type: this.customerEmployemntForm.get('business_type')?.value,
-        department: this.customerEmployemntForm.get('department')?.value,
-        employee_no: this.customerEmployemntForm.get('employee_no')?.value,
-        income_date: this.customerEmployemntForm.get('income_date')?.value,
-        //income_type: this.customerEmployemntForm.get('income_type')?.value,
-        // employment_name: this.customerEmployemntForm.get('employment_name')?.value,
-        occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
-        position: this.customerEmployemntForm.get('position')?.value,
-        employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
-        //tel_code: this.customerEmployemntForm.get('telecode')?.value,
-        //employee_type: this.customerEmployemntForm.get('employee_type')?.value,
-        telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
-      };
-    }
-    
-    // Add customerRelationshipData only if there are values in the form
-    if (this.dataSource.data.length>0){
-      submissionData.relations = this.dataSource.data;
-    }
-    if (this.bankDataSource.data && this.bankDataSource.data.length > 0) {
-        submissionData.bank_details = this.bankDataSource.data;
-    }
-    if(this.remarkDataSource.data && this.remarkDataSource.data.length>0){
-      submissionData.remarks = this.remarkDataSource.data
-    }
-    
-    if (this.isEditMode) {
-      submissionData.id = this.customerId;
-    }
-
-    console.log(submissionData,'master submit');
-   await this.dataService.addCustomer(submissionData).subscribe(response => {
-      this.snackBar.open('Record Saved', 'Close', {
-        duration: 3000, // Duration in milliseconds
-        horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        verticalPosition: 'bottom', // Position: 'top', 'bottom'
-      });
-      this.router.navigate(['/listing']);
-    });
-    // if (this.uploadedFiles && this.uploadedFiles.length > 0) {
-    //   await this.dataService.uploadFiles(this.uploadedFiles[0]).subscribe(response=>{
-    //     console.log(response)
-    //   })
+    // // Add employmentData only if there are values in the form
+    // if (Object.values(this.customerEmployemntForm.value).some(value => value !== null && value !==undefined && value !== "")) {
+    //   console.log(this.customerEmployemntForm,'valuesss');
+    //   submissionData.employment = {
+    //     annual_income: this.customerEmployemntForm.get('annual_income')?.value,
+    //     business_type: this.customerEmployemntForm.get('business_type')?.value,
+    //     department: this.customerEmployemntForm.get('department')?.value,
+    //     employee_no: this.customerEmployemntForm.get('employee_no')?.value,
+    //     income_date: this.customerEmployemntForm.get('income_date')?.value,
+    //     //income_type: this.customerEmployemntForm.get('income_type')?.value,
+    //     // employment_name: this.customerEmployemntForm.get('employment_name')?.value,
+    //     occupation_category: this.customerEmployemntForm.get('occupation_category')?.value,
+    //     position: this.customerEmployemntForm.get('position')?.value,
+    //     employment_remarks: this.customerEmployemntForm.get('employment_remarks')?.value,
+    //     //tel_code: this.customerEmployemntForm.get('telecode')?.value,
+    //     //employee_type: this.customerEmployemntForm.get('employee_type')?.value,
+    //     telephone_no: this.customerEmployemntForm.get('telephone_no')?.value,
+    //   };
     // }
+    
+    // // Add customerRelationshipData only if there are values in the form
+    // if (this.dataSource.data.length>0){
+    //   submissionData.relations = this.dataSource.data;
+    // }
+    // if (this.bankDataSource.data && this.bankDataSource.data.length > 0) {
+    //     submissionData.bank_details = this.bankDataSource.data;
+    // }
+    // if(this.remarkDataSource.data && this.remarkDataSource.data.length>0){
+    //   submissionData.remarks = this.remarkDataSource.data
+    // }
+    
+    // if (this.isEditMode) {
+    //   submissionData.id = this.customerId;
+    // }
+
+  //   console.log(submissionData,'master submit');
+  //  await this.dataService.addCustomer(submissionData).subscribe(response => {
+  //     this.snackBar.open('Record Saved', 'Close', {
+  //       duration: 3000, // Duration in milliseconds
+  //       horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+  //       verticalPosition: 'bottom', // Position: 'top', 'bottom'
+  //     });
+  //     this.router.navigate(['/listing']);
+  //   });
+    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
+      const data = {'id':this.customerId,
+                    'filesData':this.uploadedFiles
+      }
+      console.log(data,'data');
+      await this.dataService.uploadFiles(data).subscribe(response=>{
+        console.log(response)
+      })
+    }
   }
 
 }
