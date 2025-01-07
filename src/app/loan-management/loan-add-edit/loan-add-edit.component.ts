@@ -276,10 +276,10 @@ export class LoanAddEditComponent implements OnInit {
       applicationFee: new FormControl('', Validators.required),
       paymentUpfront: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
-      amountGiven: new FormControl({ value: '', disabled: true }),
-      paymentPerTerm: new FormControl({ value: '', disabled: true }),
+      amountGiven: new FormControl({  disabled: true }),
+      paymentPerTerm: new FormControl({  disabled: true }),
       loanRemark: new FormControl(''),
-      interestAmount: new FormControl({ value: '', disabled: true }),
+      interestAmount: new FormControl({  disabled: true }),
     });
   }
   loadAllData(row: any) {
@@ -307,8 +307,8 @@ export class LoanAddEditComponent implements OnInit {
       interest: row.interest,
       loanRemark: row.loan_remark,
       interestAmount: row.interest_amount,
-      amountGiven: row.amountGiven,
-      paymentPerTerm: row.paymentPerTerm,
+      amountGiven: row.amount_given,
+      paymentPerTerm: row.payment_per_term,
       unitofDate:row.unit_of_date
     });
   }
@@ -377,7 +377,7 @@ export class LoanAddEditComponent implements OnInit {
           this.customerDetailsForm.patchValue({
             customerId: result.id,
             customerName: result.name,
-            mobile: result.tel_no,
+            mobile: result.mobile_no,
             customerAddress: result.customerAddress,
           });
         } else {

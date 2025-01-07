@@ -34,12 +34,12 @@
 
         <ng-container matColumnDef="amountGiven">
           <th mat-header-cell *matHeaderCellDef>Amount Given</th>
-          <td mat-cell *matCellDef="let element">{{ element.amountGiven }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.amount_given }}</td>
         </ng-container>
 
         <ng-container matColumnDef="paymentTerm">
           <th mat-header-cell *matHeaderCellDef>Payment Term</th>
-          <td mat-cell *matCellDef="let element">{{ element.paymentTerm }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.date_period + " " + element.unit_of_date }}</td>
         </ng-container>
 
         <ng-container matColumnDef="interest">
@@ -49,7 +49,7 @@
 
         <ng-container matColumnDef="paymentPerTerm">
           <th mat-header-cell *matHeaderCellDef>Payment Per Term</th>
-          <td mat-cell *matCellDef="let element">{{ element.paymentPerTerm }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.payment_per_term }}</td>
         </ng-container>
 
         <!-- Action Column for Edit and View -->
