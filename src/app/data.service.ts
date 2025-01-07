@@ -127,6 +127,10 @@ export class DataService {
     return this.http.get<any[]>(`${this.customer}/${id}`);
   }
 
+  getDocumentById(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.apiUrl}/customer/getDocument/${id}`);
+  }
+
   getCustomerSearch(payload: any): Observable<any> {
     const url = `${this.customer}/getCustomer/${payload}`;
     return this.http.get<any>(url);

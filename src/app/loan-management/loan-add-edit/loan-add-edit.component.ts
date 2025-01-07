@@ -77,6 +77,7 @@ export class LoanAddEditComponent implements OnInit {
 
   userData: any;
   customerData: any;
+  loan_id: any;
 
   constructor(
     private router: Router,
@@ -282,6 +283,7 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
   loadAllData(row: any) {
+    this.loan_id=row.id;
     this.agentDetailsForm.patchValue({
       agentId: row.supervisor,
       agentName: row.agentName,
@@ -317,7 +319,9 @@ export class LoanAddEditComponent implements OnInit {
         customerId: this.customerDetailsForm.get('customerId')?.value,  
         ...this.loanDetailsForm.value, 
       };
-
+      if(this.isEditMode){
+        loanData.id=this.loan_id;
+      }
       console.log(loanData,'loan data')
 
       this.dataService.addLoan(loanData).subscribe((response) => {
@@ -388,37 +392,5 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
 
-  // searchAgentDetails() {
-  //   const agentPayload = this.agentDetailsForm.get('agentSearchQuery')?.value;
-  //   this.dataService.findAgentAndLeads(agentPayload).subscribe({
-  //     next: (agentData: any) => {
-  //       this.agentDetailsForm.patchValue({
-  //         agentName: agentData[0].name,
-  //         agentId: agentData[0].agentId,
-  //         agentLead: agentData[0].agentLead,
-  //       });
-  //     },
-  //     error: (error: any) => {
-  //       console.error('Agent search error:', error);
-  //     },
-  //   });
-  // }
-
-  // searchCustomerDetails() {
-  //   console.log('clciked')
-  //   // const customerPayload = this.customerDetailsForm.get('customerSearchQuery')?.value;
-  //   // this.dataService.getCustomerSearch(customerPayload).subscribe({
-  //   //   next: (customerData: any) => {
-  //   //     this.customerDetailsForm.patchValue({
-  //   //       customerId: customerData[0].id,
-  //   //       customerName: customerData[0].name,
-  //   //       mobile: customerData[0].tel_no,
-  //   //       customerAddress: customerData.customerAddress,
-  //   //     });
-  //   //   },
-  //   //   error: (error: any) => {
-  //   //     console.error('Customer search error:', error);
-  //   //   },
-  //   // });
-  // }
+  
 }

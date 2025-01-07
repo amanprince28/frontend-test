@@ -91,6 +91,9 @@ export class LoanManagementComponent implements OnInit {
   }
 
   onRowClick(row: any, action: string): void {
+    if (!row.id) {
+      return;
+    }
     console.log(row, 'row');
 
     // Add the action to the row object
