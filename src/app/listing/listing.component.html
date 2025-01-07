@@ -35,13 +35,13 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>Actions</th>
         <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')">
+          <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')" [disabled]="userRole === 'AGENT'">
             <mat-icon>edit</mat-icon>
           </button>
           <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')">
             <mat-icon>visibility</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="onDelete(element)">
+          <button mat-icon-button color="warn" (click)="onDelete(element)" [disabled]="userRole === 'AGENT'">
             <mat-icon>delete</mat-icon>
           </button>
         </td>

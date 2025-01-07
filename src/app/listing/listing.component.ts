@@ -39,6 +39,8 @@ export class ListingComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchQuery: any;
+  userDetails: any;
+  userRole: any;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +52,9 @@ export class ListingComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userRole = this.userDetails?.role ?? '';
     this.fetchData(); // Initial data fetch
   }
 

@@ -56,7 +56,7 @@
       <!-- Tabs for Other Sections -->
 
       <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="onCustomerSubmit()">Save</button>
+        <button mat-raised-button color="primary" (click)="onCustomerSubmit()" [disabled]="userRole === 'AGENT'">Save</button>
         <button mat-raised-button (click)="onCustomerCancel()">Cancel</button>
       </div>
     </mat-card-content>

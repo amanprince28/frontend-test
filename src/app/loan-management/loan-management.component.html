@@ -44,7 +44,7 @@
 
         <ng-container matColumnDef="interest">
           <th mat-header-cell *matHeaderCellDef> Interest</th>
-          <td mat-cell *matCellDef="let element">{{ element.interest }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.interest + " % " }}</td>
         </ng-container>
 
         <ng-container matColumnDef="paymentPerTerm">
@@ -56,13 +56,29 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element">
-            <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')">
+            <!-- Edit Button -->
+            <button 
+              mat-icon-button 
+              color="primary" 
+              (click)="onRowClick(element, 'edit')" 
+              [disabled]="userRole === 'AGENT'">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')">
+          
+            <!-- View Button (Always Enabled) -->
+            <button 
+              mat-icon-button 
+              color="accent" 
+              (click)="onRowClick(element, 'view')">
               <mat-icon>visibility</mat-icon>
             </button>
-            <button mat-icon-button color="warn" (click)="onDelete(element)">
+          
+            <!-- Delete Button -->
+            <button 
+              mat-icon-button 
+              color="warn" 
+              (click)="onDelete(element)" 
+              [disabled]="userRole === 'AGENT'">
               <mat-icon>delete</mat-icon>
             </button>
           </td>

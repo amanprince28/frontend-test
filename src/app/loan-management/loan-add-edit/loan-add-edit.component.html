@@ -24,11 +24,12 @@
           <mat-icon (click)="openAgentSearch()">search</mat-icon>
           <mat-form-field appearance="fill">
             <mat-label>Agent ID</mat-label>
-            <mat-select formControlName="agentId" required>
+            <input formControlName="agentId" matInput required>
+            <!-- <mat-select formControlName="agentId" required>
               <mat-option *ngFor="let agent of agentIddropdown" [value]="agent.id">
                 {{ agent.name }}
               </mat-option>
-            </mat-select>
+            </mat-select> -->
           </mat-form-field>
           <!-- <mat-form-field appearance="fill">
             <mat-label>Agent Lead</mat-label>
@@ -155,6 +156,6 @@
   <!-- Footer Buttons -->
   <div class="action-buttons">
     <button mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="saveLoan()">Save</button>
+    <button mat-raised-button color="primary" (click)="saveLoan()" [disabled]="userRole === 'AGENT'">>Save</button>
   </div>
 </div>

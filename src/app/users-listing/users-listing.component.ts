@@ -39,12 +39,17 @@ export class UsersListingComponent implements OnInit{
   searchQuery:any;
   signalData = signal({});
   search = new FormControl();
+  userDetails: any ;
+  userRole: any;
 
   constructor(private dialog: MatDialog,private router: Router, private signalService: SignalService, private dataService: DataService,
     private snackbar:MatSnackBar
   ) {}
 
   ngOnInit(): void {
+    this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userRole = this.userDetails?.role ?? '';
     this.fetchData();
   }
 

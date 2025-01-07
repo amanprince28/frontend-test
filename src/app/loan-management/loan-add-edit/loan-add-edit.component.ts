@@ -78,6 +78,8 @@ export class LoanAddEditComponent implements OnInit {
   userData: any;
   customerData: any;
   loan_id: any;
+  userDetails: any;
+  userRole: any;
 
   constructor(
     private router: Router,
@@ -88,9 +90,12 @@ export class LoanAddEditComponent implements OnInit {
 
   ngOnInit() {
     this.initializeForms();
-
+    this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userRole = this.userDetails?.role ?? '';
     this.fetchUserData();
     this.fetchCustomer();
+
 
     this.route.params.subscribe((params) => {
       if (params['action'] === 'edit' || params['action'] === 'view') {

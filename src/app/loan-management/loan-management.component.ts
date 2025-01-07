@@ -48,6 +48,8 @@ export class LoanManagementComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   searchQuery: any;
   signalData = signal({});
+  userDetails: any
+  userRole: any;
 
   constructor(
     private router: Router,
@@ -68,14 +70,19 @@ export class LoanManagementComponent implements OnInit {
   // ];
 
   ngOnInit(): void {
+    this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userRole = this.userDetails?.role ?? '';
     this.fetchData();
   }
 
   ngAfterViewInit(): void {
+    
     this.dataSource.paginator = this.paginator;
     this.paginator.page.subscribe(() => {
       this.fetchData(this.paginator.pageIndex, this.paginator.pageSize);
     });
+
   }
 
   fetchData(page: number = 0, limit: number = 5): void {

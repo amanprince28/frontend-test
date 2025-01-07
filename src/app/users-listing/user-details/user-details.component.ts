@@ -58,6 +58,8 @@ export class UserDetailsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   superVisorList: any[]=[];
+  userDetails: any;
+  userRole: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,6 +71,9 @@ export class UserDetailsComponent implements OnInit {
 
   ngOnInit() {
     // Initialize form controls
+    this.userDetails = localStorage.getItem('user-details');
+    this.userDetails = JSON.parse(this.userDetails)
+    this.userRole = this.userDetails?.role ?? '';
     this.userForm = new FormGroup({
       name: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
