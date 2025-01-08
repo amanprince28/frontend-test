@@ -7,7 +7,7 @@
       <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery"/>
     </mat-form-field>
     <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
-    <button mat-raised-button color="primary" (click)="onAddClick()">Add Customer</button>
+    <button mat-raised-button color="primary" (click)="onAddClick()" [disabled]="userRole === 'AGENT'">Add Customer</button>
   </div>
 
   <div class="mat-elevation-z8">

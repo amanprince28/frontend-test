@@ -199,7 +199,7 @@ export class LoanAddEditComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
       console.log(response);
-      this.userData = response;
+      this.userData = response.filter((el: any) => el?.role === 'AGENT');
     });
   }
 
@@ -281,10 +281,10 @@ export class LoanAddEditComponent implements OnInit {
       applicationFee: new FormControl('', Validators.required),
       paymentUpfront: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
-      amountGiven: new FormControl({  disabled: true }),
-      paymentPerTerm: new FormControl({  disabled: true }),
+      amountGiven: new FormControl({ value:'', disabled: true }),
+      paymentPerTerm: new FormControl({ value:'', disabled: true }),
       loanRemark: new FormControl(''),
-      interestAmount: new FormControl({  disabled: true }),
+      interestAmount: new FormControl({ value:'',  disabled: true }),
     });
   }
   loadAllData(row: any) {
@@ -380,7 +380,7 @@ export class LoanAddEditComponent implements OnInit {
         console.log('Selected:', result);
         if (title == 'Customer Search') {
           this.customerDetailsForm.patchValue({
-            customerId: result.id,
+            customerId: result.ic?result.ic:result.passport,
             customerName: result.name,
             mobile: result.mobile_no,
             customerAddress: result.customerAddress,

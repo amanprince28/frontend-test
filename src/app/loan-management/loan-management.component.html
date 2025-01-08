@@ -10,7 +10,7 @@
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
       <!-- <button mat-stroked-button color="accent">Export</button> -->
-      <button mat-raised-button color="primary" (click)="onAddEdit()">Add Loan</button>
+      <button mat-raised-button color="primary" (click)="onAddEdit()" [disabled]="userRole === 'AGENT'">Add Loan</button>
     </div>
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
@@ -29,12 +29,12 @@
 
         <ng-container matColumnDef="principleAmount">
           <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
-          <td mat-cell *matCellDef="let element">{{ element.principal_amount }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.principal_amount + " RM"}}</td>
         </ng-container>
 
         <ng-container matColumnDef="amountGiven">
           <th mat-header-cell *matHeaderCellDef>Amount Given</th>
-          <td mat-cell *matCellDef="let element">{{ element.amount_given }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.amount_given +" RM" }}</td>
         </ng-container>
 
         <ng-container matColumnDef="paymentTerm">
@@ -49,7 +49,7 @@
 
         <ng-container matColumnDef="paymentPerTerm">
           <th mat-header-cell *matHeaderCellDef>Payment Per Term</th>
-          <td mat-cell *matCellDef="let element">{{ element.payment_per_term }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.payment_per_term +" RM" }}</td>
         </ng-container>
 
         <!-- Action Column for Edit and View -->

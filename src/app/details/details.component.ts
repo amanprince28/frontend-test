@@ -530,6 +530,8 @@ export class DetailsComponent {
   }
 
   clearUploadForm() {
+    this.fileEditStatus=false;
+    this.selectedFiles[0]=null;
     this.documentsForm.reset();
   }
 

@@ -64,7 +64,6 @@ export class GenericModalComponent {
 
       if(this.title == "Agent Search"){
       this.dataService.findAgentAndLeads(searchValue).subscribe((response) => {
-        console.log(response);
         this.dataSource.data = response;
         this.searchControl.reset();
         this.searchControl.reset();

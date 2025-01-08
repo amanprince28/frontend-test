@@ -86,13 +86,13 @@ mat-menu-item mat-icon {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
-  margin-bottom: 20px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
   border-bottom: 1px solid #e0e0e0;
 }
 
 .menu-logo {
-  width: 50px; /* Fixed width */
-  height: 20px; /* Fixed height */
+  width: 75px; /* Fixed width */
+  height: 50px; /* Fixed height */
   object-fit: contain; /* Ensure the logo scales nicely within the container */
 }
