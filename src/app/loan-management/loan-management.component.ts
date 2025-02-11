@@ -35,6 +35,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class LoanManagementComponent implements OnInit {
   displayedColumns: string[] = [
+    'loanId',
     'customerName',
     'agentName',
     'principleAmount',

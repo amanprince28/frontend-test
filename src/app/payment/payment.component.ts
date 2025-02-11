@@ -43,7 +43,16 @@ export class PaymentComponent implements OnInit {
   installmentForm!: FormGroup;
   paymentStatus:any;
   status:any;
+  installmentData:any
+  loanDetailsForm!: FormGroup;
   ngOnInit(): void {
+
+    this.loanDetailsForm = new FormGroup({
+      principalAmount: new FormControl(''),
+      customerName: new FormControl(''),
+      agentName: new FormControl(''),
+      leadName: new FormControl(''),
+    });
 
     this.installmentForm = new FormGroup({
       installmentDate: new FormControl(null ),
@@ -82,30 +91,6 @@ export class PaymentComponent implements OnInit {
     'actions'
   ];
   loanSharingData: any[] = [];
-
-   installmentData = [
-    {
-      installmentDate: '2025-02-01',
-      dueAmount: 1000,
-      expectedAmount: 800,
-      status: 'Pending',
-      actions: 'View/Edit/Delete'
-    },
-    {
-      installmentDate: '2025-03-01',
-      dueAmount: 1200,
-      expectedAmount: 1000,
-      status: 'Completed',
-      actions: 'View/Edit/Delete'
-    },
-    {
-      installmentDate: '2025-04-01',
-      dueAmount: 1500,
-      expectedAmount: 1500,
-      status: 'Overdue',
-      actions: 'View/Edit/Delete'
-    }
-  ];
   
   // Dummy data for payments table
    paymentData = [
@@ -146,8 +131,19 @@ export class PaymentComponent implements OnInit {
   filterTable(): void {
     const searchValue = this.searchQuery
     console.log(searchValue, 'Search Value');
-    this.dataService.findAgentAndLeads(searchValue).subscribe((response: any) => {
+    this.dataService.getLoanById(searchValue).subscribe((response: any) => {
       console.log(response);
+      if(response && response.installment){
+
+        this.loanDetailsForm.patchValue({
+          principalAmount: response.principal_amount || '',
+          customerName: response.customer.name || '',
+          agentName: response.agentName || '',
+          leadName: response.leadName || '',
+        });
+
+      this.installmentData = response.installment
+      }
       // if(response.length>0){
       // this.dataSource.data = response; 
       // this.paginator.length = response.totalCount; 
@@ -180,7 +176,9 @@ export class PaymentComponent implements OnInit {
 
   onEdit(record:any,i:any){
     console.log(record);
-    this.paymentForm.patchValue(record);
+    this.installmentForm.patchValue({
+      installmentDate:new Date(record.installmentDate)
+    });
   }
   onDelete(i:any){
 

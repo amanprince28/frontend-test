@@ -20,24 +20,25 @@
   <mat-card>
     <mat-card-title>Loan Details</mat-card-title>
     <mat-card-content>
-      <form class="loan-details-form" >
+      <form [formGroup]="loanDetailsForm" class="loan-details-form">
         <mat-form-field appearance="outline" class="quarter-width">
           <mat-label>Principal Amount</mat-label>
-          <input matInput />
+          <input matInput formControlName="principalAmount" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Customer Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="customerName" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Agent Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="agentName" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Lead Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="leadName" />
         </mat-form-field>
       </form>
+  
       <mat-tab-group class="form-separate">
         <!-- Installment Listing -->
         <mat-tab label="Installment Listing">
@@ -77,15 +78,15 @@
             <table mat-table [dataSource]="installmentData" class="mat-elevation-z8">
               <ng-container matColumnDef="installmentDate">
                 <th mat-header-cell *matHeaderCellDef>Installment Date</th>
-                <td mat-cell *matCellDef="let element">{{ element.installmentDate | date }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.installment_date | date }}</td>
               </ng-container>
               <ng-container matColumnDef="dueAmount">
                 <th mat-header-cell *matHeaderCellDef>Due Amount</th>
-                <td mat-cell *matCellDef="let element">{{ element.dueAmount }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.due_amount }}</td>
               </ng-container>
               <ng-container matColumnDef="expectedAmount">
                 <th mat-header-cell *matHeaderCellDef>Expected Amount</th>
-                <td mat-cell *matCellDef="let element">{{ element.expectedAmount }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.receiving_date }}</td>
               </ng-container>
               <ng-container matColumnDef="status">
                 <th mat-header-cell *matHeaderCellDef>Status</th>

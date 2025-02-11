@@ -97,6 +97,9 @@ export class DataService {
     return this.http.post<any>(url, loan);
   }
 
+  getLoanById(id: string): Observable<any> {
+    return this.http.get<any[]>(`${this.apiUrl}/loan/${id}`);
+  }
 
 
   updateUser(user: any): Observable<any> {
@@ -163,4 +166,6 @@ export class DataService {
     };
     return this.http.put(`${this.apiUrl}/auth/change-password`, payload);
   }
+
+
 }

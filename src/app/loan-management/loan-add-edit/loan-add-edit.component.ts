@@ -325,7 +325,7 @@ export class LoanAddEditComponent implements OnInit {
       amount_given: row.amount_given,
       payment_per_term: row.payment_per_term,
       unit_of_date: row.unit_of_date,
-      repayment_terms: row.repayment_terms,
+      repayment_term: row.repayment_term,
     });
   }
 
@@ -333,6 +333,9 @@ export class LoanAddEditComponent implements OnInit {
     const loanData = {
       supervisor: this.agentDetailsForm.get('agentId')?.value,
       customer_id: this.customerDetailsForm.get('customerId')?.value,
+      payment_per_term:this.loanDetailsForm.getRawValue().payment_per_term,
+      amount_given:this.loanDetailsForm.getRawValue().amount_given,
+      interest_amount:this.loanDetailsForm.getRawValue().interest_amount,
       ...this.loanDetailsForm.value,
     };
     if (this.isEditMode) {
