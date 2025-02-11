@@ -323,7 +323,8 @@ export class LoanAddEditComponent implements OnInit {
       interestAmount: row.interest_amount,
       amountGiven: row.amount_given,
       paymentPerTerm: row.payment_per_term,
-      unitofDate:row.unit_of_date
+      unitofDate:row.unit_of_date,
+      repaymentTerms:row.repaymentTerms
     });
   }
 
