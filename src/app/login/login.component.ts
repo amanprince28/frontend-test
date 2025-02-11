@@ -32,19 +32,19 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
-    // if (this.loginForm.valid) {
-    //   const credentials = this.loginForm.value;
+    if (this.loginForm.valid) {
+       const credentials = this.loginForm.value;
 
-    //   this.dataService.login(credentials).subscribe((resp)=>{
-    //     console.log(resp);
-    //     if(resp.access_token!=null){
-    //         localStorage.setItem('user-details',JSON.stringify(resp));
+      this.dataService.login(credentials).subscribe((resp)=>{
+        console.log(resp);
+        if(resp.access_token!=null){
+            localStorage.setItem('user-details',JSON.stringify(resp));
             this.router.navigateByUrl("/listing")
-    //     }
-    //   })
-    //   // Implement login logic
-    // } else {
-    //   console.log('Form is invalid');
-    // }
+        }
+      })
+      // Implement login logic
+    } else {
+      console.log('Form is invalid');
+    }
   }
 }

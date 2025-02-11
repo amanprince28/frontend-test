@@ -5,43 +5,58 @@
 
   <div class="search-filter-create">
     <mat-form-field class="search-input" appearance="outline">
-      <input matInput [(ngModel)]="searchQuery" placeholder="Loan ID" name="searchQuery" />
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Loan ID"
+        name="searchQuery"
+      />
     </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
+    <button mat-stroked-button color="primary" (click)="filterTable()">
+      Filter
+    </button>
   </div>
 
   <mat-card>
     <mat-card-title>Loan Details</mat-card-title>
     <mat-card-content>
-        <form class="loan-details-form">
-          <mat-form-field appearance="outline" class="quarter-width">
-            <mat-label>Principal Amount</mat-label>
-            <input matInput />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Customer Name</mat-label>
-            <input matInput />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Agent Name</mat-label>
-            <input matInput />
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Lead Name</mat-label>
-            <input matInput />
-          </mat-form-field>
-        </form>
+      <form class="loan-details-form">
+        <mat-form-field appearance="outline" class="quarter-width">
+          <mat-label>Principal Amount</mat-label>
+          <input matInput />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Customer Name</mat-label>
+          <input matInput />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Agent Name</mat-label>
+          <input matInput />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Lead Name</mat-label>
+          <input matInput />
+        </mat-form-field>
+      </form>
       <mat-tab-group class="form-separate">
         <!-- Installment Listing -->
         <mat-tab label="Installment Listing">
           <div class="form-container">
             <form
-              (submit)="addInstallmentData(installmentForm.value); installmentForm.reset()"
+              (submit)="
+                addInstallmentData(installmentForm.value);
+                installmentForm.reset()
+              "
               #installmentForm="ngForm"
             >
               <mat-form-field appearance="outline">
                 <mat-label>Installment Date</mat-label>
-                <input matInput [matDatepicker]="installmentDatePicker" name="installmentDate" ngModel />
+                <input
+                  matInput
+                  [matDatepicker]="installmentDatePicker"
+                  name="installmentDate"
+                  ngModel
+                />
                 <mat-datepicker-toggle
                   matSuffix
                   [for]="installmentDatePicker"
@@ -58,48 +73,79 @@
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Status</mat-label>
-                <input matInput name="status" ngModel />
+                <mat-select name="status" [(ngModel)]="status">
+                  <mat-option *ngFor="let status of paymentStatus" [value]="status">
+                    {{ status }}
+                  </mat-option>
+                </mat-select>
               </mat-form-field>
-              <button mat-raised-button color="primary" type="submit">Insert</button>
+              <button mat-raised-button color="primary" type="submit">
+                Insert
+              </button>
             </form>
 
-            <table mat-table [dataSource]="installmentData" class="mat-elevation-z8">
+            <table
+              mat-table
+              [dataSource]="installmentData"
+              class="mat-elevation-z8"
+            >
               <ng-container matColumnDef="installmentDate">
-                <th mat-header-cell *matHeaderCellDef> Installment Date </th>
-                <td mat-cell *matCellDef="let element"> {{ element.installmentDate }} </td>
+                <th mat-header-cell *matHeaderCellDef>Installment Date</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.installmentDate }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="dueAmount">
-                <th mat-header-cell *matHeaderCellDef> Due Amount </th>
-                <td mat-cell *matCellDef="let element"> {{ element.dueAmount }} </td>
+                <th mat-header-cell *matHeaderCellDef>Due Amount</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.dueAmount }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="expectedAmount">
-                <th mat-header-cell *matHeaderCellDef> Expected Amount </th>
-                <td mat-cell *matCellDef="let element"> {{ element.expectedAmount }} </td>
+                <th mat-header-cell *matHeaderCellDef>Expected Amount</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.expectedAmount }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="status">
-                <th mat-header-cell *matHeaderCellDef> Status </th>
-                <td mat-cell *matCellDef="let element"> {{ element.status }} </td>
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">{{ element.status }}</td>
               </ng-container>
 
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record; let i = index">
-                  <button mat-button color="accent" (click)="onEdit(record, i)"><mat-icon>edit</mat-icon></button>
-                  <button mat-button color="warn" (click)="onDelete(record, i)"><mat-icon>delete</mat-icon></button>
+                  <button mat-button color="accent" (click)="onEdit(record, i)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-button color="warn" (click)="onDelete(record, i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
                 </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedInstallmentColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedInstallmentColumns"></tr>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedInstallmentColumns"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedInstallmentColumns"
+              ></tr>
             </table>
           </div>
           <div class="action-buttons">
-            <button mat-raised-button color="primary" (click)="savePaymentListing()">Save</button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="savePaymentListing()"
+            >
+              Save
+            </button>
           </div>
-          
         </mat-tab>
 
         <!-- Payment Listing -->
@@ -119,7 +165,12 @@
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Payment Date</mat-label>
-                <input matInput [matDatepicker]="paymentDatePicker" name="paymentDate" ngModel />
+                <input
+                  matInput
+                  [matDatepicker]="paymentDatePicker"
+                  name="paymentDate"
+                  ngModel
+                />
                 <mat-datepicker-toggle
                   matSuffix
                   [for]="paymentDatePicker"
@@ -138,54 +189,90 @@
                 <mat-label>Bank / Agent / Account No</mat-label>
                 <input matInput name="bankAgentAccount" ngModel />
               </mat-form-field>
-              <button mat-raised-button color="primary" type="submit">Insert</button>
+              <button mat-raised-button color="primary" type="submit">
+                Insert
+              </button>
             </form>
 
-            <table mat-table [dataSource]="paymentData" class="mat-elevation-z8">
+            <table
+              mat-table
+              [dataSource]="paymentData"
+              class="mat-elevation-z8"
+            >
               <ng-container matColumnDef="paymentType">
-                <th mat-header-cell *matHeaderCellDef> Payment Type </th>
-                <td mat-cell *matCellDef="let element"> {{ element.paymentType }} </td>
+                <th mat-header-cell *matHeaderCellDef>Payment Type</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.paymentType }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="installmentId">
-                <th mat-header-cell *matHeaderCellDef> Installment ID </th>
-                <td mat-cell *matCellDef="let element"> {{ element.installmentId }} </td>
+                <th mat-header-cell *matHeaderCellDef>Installment ID</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.installmentId }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="paymentDate">
-                <th mat-header-cell *matHeaderCellDef> Payment Date </th>
-                <td mat-cell *matCellDef="let element"> {{ element.paymentDate }} </td>
+                <th mat-header-cell *matHeaderCellDef>Payment Date</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.paymentDate }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="paymentAmount">
-                <th mat-header-cell *matHeaderCellDef> Payment Amount </th>
-                <td mat-cell *matCellDef="let element"> {{ element.paymentAmount }} </td>
+                <th mat-header-cell *matHeaderCellDef>Payment Amount</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.paymentAmount }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="balance">
-                <th mat-header-cell *matHeaderCellDef> Balance </th>
-                <td mat-cell *matCellDef="let element"> {{ element.balance }} </td>
+                <th mat-header-cell *matHeaderCellDef>Balance</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.balance }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="bankAgentAccount">
-                <th mat-header-cell *matHeaderCellDef> Bank / Agent / Account No </th>
-                <td mat-cell *matCellDef="let element"> {{ element.bankAgentAccount }} </td>
+                <th mat-header-cell *matHeaderCellDef>
+                  Bank / Agent / Account No
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.bankAgentAccount }}
+                </td>
               </ng-container>
 
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record; let i = index">
-                  <button mat-button color="accent" (click)="onEdit(record, i)"><mat-icon>edit</mat-icon></button>
-                  <button mat-button color="warn" (click)="onDelete(record, i)"><mat-icon>delete</mat-icon></button>
+                  <button mat-button color="accent" (click)="onEdit(record, i)">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-button color="warn" (click)="onDelete(record, i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
                 </td>
               </ng-container>
 
-              <tr mat-header-row *matHeaderRowDef="displayedPaymentColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedPaymentColumns"></tr>
+              <tr
+                mat-header-row
+                *matHeaderRowDef="displayedPaymentColumns"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedPaymentColumns"
+              ></tr>
             </table>
           </div>
           <div class="action-buttons">
-            <button mat-raised-button color="primary" (click)="savePaymentListing()">Save</button>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="savePaymentListing()"
+            >
+              Save
+            </button>
           </div>
         </mat-tab>
 

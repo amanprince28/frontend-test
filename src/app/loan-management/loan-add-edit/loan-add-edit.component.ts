@@ -74,10 +74,10 @@ export class LoanAddEditComponent implements OnInit {
     { id: 4, unit: 'Year' },
   ];
   loanStatus=[
-    { id: 1, status: 'Completed' },
-    { id: 2, status: 'Normal' },
-    { id: 3, status: 'Bad Debt' },
-    { id: 4, status: 'Bad Debt Completed' },
+    {  status: 'Completed' },
+    {  status: 'Normal' },
+    {  status: 'Bad Debt' },
+    {  status: 'Bad Debt Completed' },
     
   ]
   customerId: any;
@@ -152,7 +152,7 @@ export class LoanAddEditComponent implements OnInit {
       const principalAmount =
         this.loanDetailsForm.get('principalAmount')?.value;
       const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-      const paymentTerm = this.loanDetailsForm.get('datePeriod')?.value;
+      const paymentTerm = this.loanDetailsForm.get('repaymentTerms')?.value;
       const interest = this.loanDetailsForm.get('interest')?.value;
 
       // Check if any of the required values is null or undefined
@@ -196,7 +196,7 @@ export class LoanAddEditComponent implements OnInit {
       this.updateInterestAndPaymentPerTerm();
     });
 
-    this.loanDetailsForm.get('datePeriod')?.valueChanges.subscribe(() => {
+    this.loanDetailsForm.get('repaymentTerms')?.valueChanges.subscribe(() => {
       // Recalculate amountGiven if applicationFee changes
       this.updateInterestAndPaymentPerTerm();
     });
@@ -243,7 +243,7 @@ export class LoanAddEditComponent implements OnInit {
   updateInterestAndPaymentPerTerm() {
     const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
     const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-    const paymentTerm = this.loanDetailsForm.get('datePeriod')?.value;
+    const paymentTerm = this.loanDetailsForm.get('repaymentTerms')?.value;
     const interest = this.loanDetailsForm.get('interest')?.value;
 
     if (
