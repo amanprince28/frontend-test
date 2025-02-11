@@ -293,6 +293,7 @@ export class LoanAddEditComponent implements OnInit {
       loanRemark: new FormControl(''),
       interestAmount: new FormControl({ value:'',  disabled: true }),
       loanStatus: new FormControl(''),
+      repaymentTerms:new FormControl('')
     });
   }
   loadAllData(row: any) {

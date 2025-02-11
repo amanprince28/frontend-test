@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { DataService } from '../data.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-payment',
@@ -30,6 +31,7 @@ import { DataService } from '../data.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
+    MatIconModule
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
@@ -49,11 +51,7 @@ export class PaymentComponent implements OnInit {
     'dueAmount',
     'expectedAmount',
     'status',
-  ];
-  displayedLoanSharingColumns: string[] = [
-    'sharedWith',
-    'percentageShared',
-    'remarks',
+    'actions'
   ];
   loanSharingData: any[] = [];
   paymentData: any[] = [];
@@ -64,6 +62,7 @@ export class PaymentComponent implements OnInit {
     'paymentAmount',
     'balance',
     'bankAgentAccount',
+    'actions'
   ];
 
   constructor(private cdr: ChangeDetectorRef,
@@ -85,7 +84,7 @@ export class PaymentComponent implements OnInit {
   }
 
   savePaymentListing(){
-    
+
   }
 
   addInstallmentData(data: any) {
@@ -101,5 +100,12 @@ export class PaymentComponent implements OnInit {
   addLoanSharingData(data: any) {
     this.loanSharingData = [...this.loanSharingData, { ...data }];
     this.cdr.detectChanges();
+  }
+
+  onEdit(record:any,i:any){
+
+  }
+  onDelete(record:any,i:any){
+
   }
 }
