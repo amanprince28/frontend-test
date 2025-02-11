@@ -45,14 +45,14 @@ export class PaymentComponent implements OnInit {
   status:any;
   ngOnInit(): void {
 
-    this.paymentForm = new FormGroup({
+    this.installmentForm = new FormGroup({
       installmentDate: new FormControl(null ),
       dueAmount: new FormControl(null ),
       expectedAmount: new FormControl(),
       status: new FormControl(null),
     })
 
-    this.installmentForm = new FormGroup({
+    this.paymentForm = new FormGroup({
       paymentType: new FormControl(null ),
       installmentId: new FormControl(null ),
       paymentDate: new FormControl(),
@@ -157,19 +157,21 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  savePaymentListing(){
+  saveInstallmentListing(){
 
   }
 
-  addInstallmentData(data: any) {
+  onAddInstallment() {
    // this.installmentData = [...this.installmentData, { ...data }];
     this.cdr.detectChanges();
   }
 
-  addPaymentData(data: any) {
+  onAddPayment() {
     //this.paymentData = [...this.paymentData, { ...data }];
     this.cdr.detectChanges();
   }
+
+  savePaymentListing(){}
 
   addLoanSharingData(data: any) {
     this.loanSharingData = [...this.loanSharingData, { ...data }];
@@ -180,7 +182,7 @@ export class PaymentComponent implements OnInit {
     console.log(record);
     this.paymentForm.patchValue(record);
   }
-  onDelete(record:any,i:any){
+  onDelete(i:any){
 
   }
 }

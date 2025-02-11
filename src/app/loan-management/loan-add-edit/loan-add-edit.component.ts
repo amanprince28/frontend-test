@@ -73,13 +73,12 @@ export class LoanAddEditComponent implements OnInit {
     { id: 3, unit: 'Month' },
     { id: 4, unit: 'Year' },
   ];
-  loanStatus=[
-    {  status: 'Completed' },
-    {  status: 'Normal' },
-    {  status: 'Bad Debt' },
-    {  status: 'Bad Debt Completed' },
-    
-  ]
+  loanStatus = [
+    { status: 'Completed' },
+    { status: 'Normal' },
+    { status: 'Bad Debt' },
+    { status: 'Bad Debt Completed' },
+  ];
   customerId: any;
 
   userData: any;
@@ -98,11 +97,10 @@ export class LoanAddEditComponent implements OnInit {
   ngOnInit() {
     this.initializeForms();
     this.userDetails = localStorage.getItem('user-details');
-    this.userDetails = JSON.parse(this.userDetails)
+    this.userDetails = JSON.parse(this.userDetails);
     this.userRole = this.userDetails?.role ?? '';
     this.fetchUserData();
     this.fetchCustomer();
-
 
     this.route.params.subscribe((params) => {
       if (params['action'] === 'edit' || params['action'] === 'view') {
@@ -119,85 +117,87 @@ export class LoanAddEditComponent implements OnInit {
     });
 
     this.loanDetailsForm
-      .get('paymentUpfront')
-      ?.valueChanges.subscribe((value) => {
-        // Get the current values from the form controls
-        const principalAmount =
-          this.loanDetailsForm.get('principalAmount')?.value;
-        const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-        const applicationFee =
-          this.loanDetailsForm.get('applicationFee')?.value;
-        const paymentUpfront =
-          this.loanDetailsForm.get('paymentUpfront')?.value;
+    .get('payment_up_front')
+    ?.valueChanges.subscribe((value) => {
+      // Get the current values from the form controls
+      const principal_amount =
+        this.loanDetailsForm.get('principal_amount')?.value;
+      const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
+      const application_fee =
+        this.loanDetailsForm.get('application_fee')?.value;
+      const payment_up_front =
+        this.loanDetailsForm.get('payment_up_front')?.value;
 
         // Check if any of the values is null or undefined
         if (
-          principalAmount == null ||
-          depositAmount == null ||
-          applicationFee == null ||
-          paymentUpfront == null
+          principal_amount == null ||
+          deposit_amount == null ||
+          application_fee == null ||
+          payment_up_front == null
         ) {
-          // If any value is null or undefined, reset amountGiven to null
-          this.loanDetailsForm.get('amountGiven')?.setValue(null);
+          // If any value is null or undefined, reset amount_given to null
+          this.loanDetailsForm.get('amount_given')?.setValue(null);
         } else {
-          // Calculate amountGiven if all values are defined
-          const amountGiven =
-            principalAmount - (depositAmount + applicationFee + paymentUpfront);
-          this.loanDetailsForm.get('amountGiven')?.setValue(amountGiven);
+          // Calculate amount_given if all values are defined
+          const amount_given =
+            principal_amount - (deposit_amount + application_fee + payment_up_front);
+          this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
         }
       });
 
-    this.loanDetailsForm.get('interest')?.valueChanges.subscribe((value) => {
-      // Get the current values from the form controls
-      const principalAmount =
-        this.loanDetailsForm.get('principalAmount')?.value;
-      const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-      const paymentTerm = this.loanDetailsForm.get('repaymentTerms')?.value;
-      const interest = this.loanDetailsForm.get('interest')?.value;
-
-      // Check if any of the required values is null or undefined
-      if (
-        principalAmount == null ||
-        depositAmount == null ||
-        paymentTerm == null ||
-        interest == null
-      ) {
-        // If any value is null or undefined, reset the calculated fields
-        this.loanDetailsForm.get('interestAmount')?.setValue(null);
-        this.loanDetailsForm.get('paymentPerTerm')?.setValue(null);
-      } else {
-        // Calculate interestAmount and paymentPerTerm if all values are defined
-        const interestAmount = principalAmount * (interest / 100) * paymentTerm;
-        this.loanDetailsForm.get('interestAmount')?.setValue(interestAmount);
-
-        const paymentPerTerm = (principalAmount + interestAmount) / paymentTerm;
-        this.loanDetailsForm.get('paymentPerTerm')?.setValue(paymentPerTerm);
-      }
-    });
+      this.loanDetailsForm.get('interest')?.valueChanges.subscribe((value) => {
+        // Get the current values from the form controls
+        const principal_amount =
+          this.loanDetailsForm.get('principal_amount')?.value;
+        const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
+        const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
+        const interest = this.loanDetailsForm.get('interest')?.value;
+      
+        // Check if any of the required values is null or undefined
+        if (
+          principal_amount == null ||
+          deposit_amount == null ||
+          repayment_terms == null ||
+          interest == null
+        ) {
+          // If any value is null or undefined, reset the calculated fields
+          this.loanDetailsForm.get('interest_amount')?.setValue(null);
+          this.loanDetailsForm.get('payment_per_term')?.setValue(null);
+        } else {
+          // Calculate interest_amount and payment_per_term if all values are defined
+          const interest_amount =
+            principal_amount * (interest / 100) * repayment_terms;
+          this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
+      
+          const payment_per_term =
+            (principal_amount + interest_amount) / repayment_terms;
+          this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
+        }
+      });
 
     // Add a valueChanges listener for principalAmount, depositAmount, and applicationFee to ensure calculations are updated when they change
-    this.loanDetailsForm.get('principalAmount')?.valueChanges.subscribe(() => {
-      // Recalculate amountGiven if principalAmount changes
+    this.loanDetailsForm.get('principal_amount')?.valueChanges.subscribe(() => {
+      // Recalculate amount_given if principal_amount changes
       this.updateAmountGiven();
     });
-
-    this.loanDetailsForm.get('depositAmount')?.valueChanges.subscribe(() => {
-      // Recalculate amountGiven if depositAmount changes
+    
+    this.loanDetailsForm.get('deposit_amount')?.valueChanges.subscribe(() => {
+      // Recalculate amount_given if deposit_amount changes
       this.updateAmountGiven();
     });
-
-    this.loanDetailsForm.get('applicationFee')?.valueChanges.subscribe(() => {
-      // Recalculate amountGiven if applicationFee changes
+    
+    this.loanDetailsForm.get('application_fee')?.valueChanges.subscribe(() => {
+      // Recalculate amount_given if application_fee changes
       this.updateAmountGiven();
     });
-
+    
     this.loanDetailsForm.get('interest')?.valueChanges.subscribe(() => {
-      // Recalculate amountGiven if applicationFee changes
+      // Recalculate interest_amount and payment_per_term if interest changes
       this.updateInterestAndPaymentPerTerm();
     });
-
-    this.loanDetailsForm.get('repaymentTerms')?.valueChanges.subscribe(() => {
-      // Recalculate amountGiven if applicationFee changes
+    
+    this.loanDetailsForm.get('repayment_term')?.valueChanges.subscribe(() => {
+      // Recalculate interest_amount and payment_per_term if repayment_terms changes
       this.updateInterestAndPaymentPerTerm();
     });
   }
@@ -219,51 +219,52 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   updateAmountGiven() {
-    const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
-    const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-    const applicationFee = this.loanDetailsForm.get('applicationFee')?.value;
-    const paymentUpfront = this.loanDetailsForm.get('paymentUpfront')?.value;
-
+    const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
+    const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
+    const application_fee = this.loanDetailsForm.get('application_fee')?.value;
+    const payment_up_front = this.loanDetailsForm.get('payment_up_front')?.value;
+  
     if (
-      principalAmount == null ||
-      depositAmount == null ||
-      applicationFee == null ||
-      paymentUpfront == null
+      principal_amount == null ||
+      deposit_amount == null ||
+      application_fee == null ||
+      payment_up_front == null
     ) {
-      // Reset amountGiven if any value is null or undefined
-      this.loanDetailsForm.get('amountGiven')?.setValue(null);
+      // Reset amount_given if any value is null or undefined
+      this.loanDetailsForm.get('amount_given')?.setValue(null);
     } else {
-      // Calculate amountGiven if all values are valid
-      const amountGiven =
-        principalAmount - (depositAmount + applicationFee + paymentUpfront);
-      this.loanDetailsForm.get('amountGiven')?.setValue(amountGiven);
+      // Calculate amount_given if all values are valid
+      const amount_given =
+        principal_amount - (deposit_amount + application_fee + payment_up_front);
+      this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
     }
   }
-
+  
   updateInterestAndPaymentPerTerm() {
-    const principalAmount = this.loanDetailsForm.get('principalAmount')?.value;
-    const depositAmount = this.loanDetailsForm.get('depositAmount')?.value;
-    const paymentTerm = this.loanDetailsForm.get('repaymentTerms')?.value;
+    const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
+    const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
+    const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
     const interest = this.loanDetailsForm.get('interest')?.value;
-
+  
     if (
-      principalAmount == null ||
-      depositAmount == null ||
-      paymentTerm == null ||
+      principal_amount == null ||
+      deposit_amount == null ||
+      repayment_terms == null ||
       interest == null
     ) {
-      // Reset amountGiven if any value is null or undefined
-      this.loanDetailsForm.get('interestAmount')?.setValue(null);
-      this.loanDetailsForm.get('paymentPerTerm')?.setValue(null);
+      // Reset interest_amount and payment_per_term if any value is null or undefined
+      this.loanDetailsForm.get('interest_amount')?.setValue(null);
+      this.loanDetailsForm.get('payment_per_term')?.setValue(null);
     } else {
-      // Calculate amountGiven if all values are valid
-      const interestAmount = principalAmount * (interest / 100) * paymentTerm;
-      this.loanDetailsForm.get('interestAmount')?.setValue(interestAmount);
-
-      const paymentPerTerm = (principalAmount + interestAmount) / paymentTerm;
-      this.loanDetailsForm.get('paymentPerTerm')?.setValue(paymentPerTerm);
+      // Calculate interest_amount and payment_per_term if all values are valid
+      const interest_amount = principal_amount * (interest / 100) * repayment_terms;
+      this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
+  
+      const payment_per_term = (principal_amount + interest_amount) / repayment_terms;
+      this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
     }
   }
+  
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
@@ -280,24 +281,24 @@ export class LoanAddEditComponent implements OnInit {
     });
 
     this.loanDetailsForm = new FormGroup({
-      repaymentDate: new FormControl(new Date(), Validators.required),
-      datePeriod: new FormControl('', Validators.required),
-      unitofDate: new FormControl('', Validators.required),
-      principalAmount: new FormControl('', Validators.required),
-      depositAmount: new FormControl('', Validators.required),
-      applicationFee: new FormControl('', Validators.required),
-      paymentUpfront: new FormControl('', Validators.required),
+      repayment_date: new FormControl(new Date(), Validators.required),
+      date_period: new FormControl('', Validators.required),
+      unit_of_date: new FormControl('', Validators.required),
+      principal_amount: new FormControl('', Validators.required),
+      deposit_amount: new FormControl('', Validators.required),
+      application_fee: new FormControl('', Validators.required),
+      payment_up_front: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
-      amountGiven: new FormControl({ value:'', disabled: true }),
-      paymentPerTerm: new FormControl({ value:'', disabled: true }),
-      loanRemark: new FormControl(''),
-      interestAmount: new FormControl({ value:'',  disabled: true }),
-      loanStatus: new FormControl(''),
-      repaymentTerms:new FormControl('')
+      amount_given: new FormControl({ value: '', disabled: true }),
+      payment_per_term: new FormControl({ value: '', disabled: true }),
+      loan_remark: new FormControl(''),
+      interest_amount: new FormControl({ value: '', disabled: true }),
+      status: new FormControl(''),
+      repayment_term: new FormControl(''),
     });
   }
   loadAllData(row: any) {
-    this.loan_id=row.id;
+    this.loan_id = row.id;
     this.agentDetailsForm.patchValue({
       agentId: row.supervisor,
       agentName: row.agentName,
@@ -312,38 +313,36 @@ export class LoanAddEditComponent implements OnInit {
     });
 
     this.loanDetailsForm.patchValue({
-      repaymentDate: row.repayment_date,
-      datePeriod: row.date_period,
-      principalAmount: row.principal_amount,
-      depositAmount: row.deposit_amount,
-      applicationFee: row.application_fee,
-      paymentUpfront: row.payment_up_front,
+      repayment_date: row.repayment_date,
+      date_period: row.date_period,
+      principal_amount: row.principal_amount,
+      deposit_amount: row.deposit_amount,
+      application_fee: row.application_fee,
+      payment_up_front: row.payment_up_front,
       interest: row.interest,
-      loanRemark: row.loan_remark,
-      interestAmount: row.interest_amount,
-      amountGiven: row.amount_given,
-      paymentPerTerm: row.payment_per_term,
-      unitofDate:row.unit_of_date,
-      repaymentTerms:row.repaymentTerms
+      loan_remark: row.loan_remark,
+      interest_amount: row.interest_amount,
+      amount_given: row.amount_given,
+      payment_per_term: row.payment_per_term,
+      unit_of_date: row.unit_of_date,
+      repayment_terms: row.repayment_terms,
     });
   }
 
   saveLoan() {
-      const loanData = {
-        supervisor: this.agentDetailsForm.get('agentId')?.value,  
-        customerId: this.customerDetailsForm.get('customerId')?.value,  
-        ...this.loanDetailsForm.value, 
-      };
-      if(this.isEditMode){
-        loanData.id=this.loan_id;
-      }
-      console.log(loanData,'loan data')
+    const loanData = {
+      supervisor: this.agentDetailsForm.get('agentId')?.value,
+      customer_id: this.customerDetailsForm.get('customerId')?.value,
+      ...this.loanDetailsForm.value,
+    };
+    if (this.isEditMode) {
+      loanData.id = this.loan_id;
+    }
+    console.log(loanData, 'loan data');
 
-      this.dataService.addLoan(loanData).subscribe((response) => {
-        this.router.navigate(['/loan']);
-      });
-    
-      
+    this.dataService.addLoan(loanData).subscribe((response) => {
+      this.router.navigate(['/loan']);
+    });
   }
 
   cancel() {
@@ -390,14 +389,14 @@ export class LoanAddEditComponent implements OnInit {
         console.log('Selected:', result);
         if (title == 'Customer Search') {
           this.customerDetailsForm.patchValue({
-            customerId: result.ic?result.ic:result.passport,
+            customerId: result.id,
             customerName: result.name,
             mobile: result.mobile_no,
             customerAddress: result.customerAddress,
           });
         } else {
           this.agentDetailsForm.patchValue({
-            agentId:result.id,
+            agentId: result.id,
             agentName: result.name,
             email: result.email,
             role: result.role,
@@ -406,6 +405,4 @@ export class LoanAddEditComponent implements OnInit {
       }
     });
   }
-
-  
 }
