@@ -73,6 +73,13 @@ export class LoanAddEditComponent implements OnInit {
     { id: 3, unit: 'Month' },
     { id: 4, unit: 'Year' },
   ];
+  loanStatus=[
+    { id: 1, status: 'Completed' },
+    { id: 2, status: 'Normal' },
+    { id: 3, status: 'Bad Debt' },
+    { id: 4, status: 'Bad Debt Completed' },
+    
+  ]
   customerId: any;
 
   userData: any;
@@ -285,6 +292,7 @@ export class LoanAddEditComponent implements OnInit {
       paymentPerTerm: new FormControl({ value:'', disabled: true }),
       loanRemark: new FormControl(''),
       interestAmount: new FormControl({ value:'',  disabled: true }),
+      loanStatus: new FormControl(''),
     });
   }
   loadAllData(row: any) {

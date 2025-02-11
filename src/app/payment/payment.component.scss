@@ -1,0 +1,86 @@
+.loan-management-container {
+    padding: 16px;
+  
+    h2 {
+      margin-bottom: 16px;
+      color: #545a72;
+    }
+  
+    .search-filter-create {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+  
+      .search-input {
+        flex: 1;
+        margin-right: 20px;
+      }
+  
+      button {
+        margin-right: 10px;
+      }
+    }
+  
+    .loan-table {
+      width: 100%;
+      mat-header-cell {
+        color: #757575;
+        font-weight: bold;
+      }
+  
+      mat-cell {
+        color: #333;
+      }
+    }
+  }
+
+  .breadcrumb {
+    font-size: 14px;
+    color: #757575;
+    margin-bottom: 8px;
+  }
+  
+  .form-seperate {
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+  }
+
+  .loan-details-form,
+.form-container form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px; // Adds spacing between fields
+}
+
+.loan-details-form mat-form-field,
+.form-container form mat-form-field {
+    margin: 5px;
+  flex: 1 1 calc(25% - 16px); // Ensures 4 fields per row
+  min-width: 200px; // Sets a minimum width for smaller screens
+}
+
+@media (max-width: 768px) {
+  .loan-details-form mat-form-field,
+  .form-container form mat-form-field {
+    flex: 1 1 calc(50% - 16px); // Adjusts to 2 fields per row for smaller screens
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-details-form mat-form-field,
+  .form-container form mat-form-field {
+    flex: 1 1 100%; // Adjusts to 1 field per row for very small screens
+  }
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}

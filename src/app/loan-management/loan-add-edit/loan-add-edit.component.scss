@@ -24,6 +24,10 @@
     }
   }
 
+  .quarter-width {
+    flex: 0 0 25%;
+  }
+
   .action-buttons {
     display: flex;
     align-items: center;

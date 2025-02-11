@@ -1,0 +1,221 @@
+<div class="loan-management-container">
+  <nav class="breadcrumb">
+    <h4>Payment</h4>
+  </nav>
+
+  <div class="search-filter-create">
+    <mat-form-field class="search-input" appearance="outline">
+      <input matInput [(ngModel)]="searchQuery" placeholder="Loan ID" name="searchQuery" />
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
+  </div>
+
+  <mat-card>
+    <mat-card-title>Loan Details</mat-card-title>
+    <mat-card-content>
+        <form class="loan-details-form">
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Principal Amount</mat-label>
+            <input matInput />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Customer Name</mat-label>
+            <input matInput />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Agent Name</mat-label>
+            <input matInput />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Lead Name</mat-label>
+            <input matInput />
+          </mat-form-field>
+        </form>
+      <mat-tab-group class="form-separate">
+        <!-- Installment Listing -->
+        <mat-tab label="Installment Listing">
+          <div class="form-container">
+            <form
+              (submit)="addInstallmentData(installmentForm.value); installmentForm.reset()"
+              #installmentForm="ngForm"
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Installment Date</mat-label>
+                <input matInput [matDatepicker]="installmentDatePicker" name="installmentDate" ngModel />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="installmentDatePicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #installmentDatePicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Due Amount</mat-label>
+                <input matInput type="number" name="dueAmount" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Expected To Receive</mat-label>
+                <input matInput type="number" name="expectedAmount" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Status</mat-label>
+                <input matInput name="status" ngModel />
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Insert</button>
+            </form>
+
+            <table mat-table [dataSource]="installmentData" class="mat-elevation-z8">
+              <ng-container matColumnDef="installmentDate">
+                <th mat-header-cell *matHeaderCellDef> Installment Date </th>
+                <td mat-cell *matCellDef="let element"> {{ element.installmentDate }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="dueAmount">
+                <th mat-header-cell *matHeaderCellDef> Due Amount </th>
+                <td mat-cell *matCellDef="let element"> {{ element.dueAmount }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="expectedAmount">
+                <th mat-header-cell *matHeaderCellDef> Expected Amount </th>
+                <td mat-cell *matCellDef="let element"> {{ element.expectedAmount }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{ element.status }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedInstallmentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedInstallmentColumns"></tr>
+            </table>
+          </div>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="savePaymentListing()">Save</button>
+          </div>
+          
+        </mat-tab>
+
+        <!-- Payment Listing -->
+        <mat-tab label="Payment Listing">
+          <div class="form-container">
+            <form
+              (submit)="addPaymentData(paymentForm.value); paymentForm.reset()"
+              #paymentForm="ngForm"
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Payment Type</mat-label>
+                <input matInput name="paymentType" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Installment ID</mat-label>
+                <input matInput name="installmentId" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Payment Date</mat-label>
+                <input matInput [matDatepicker]="paymentDatePicker" name="paymentDate" ngModel />
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="paymentDatePicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #paymentDatePicker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Payment Amount</mat-label>
+                <input matInput type="number" name="paymentAmount" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Balance</mat-label>
+                <input matInput type="number" name="balance" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Bank / Agent / Account No</mat-label>
+                <input matInput name="bankAgentAccount" ngModel />
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Insert</button>
+            </form>
+
+            <table mat-table [dataSource]="paymentData" class="mat-elevation-z8">
+              <ng-container matColumnDef="paymentType">
+                <th mat-header-cell *matHeaderCellDef> Payment Type </th>
+                <td mat-cell *matCellDef="let element"> {{ element.paymentType }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="installmentId">
+                <th mat-header-cell *matHeaderCellDef> Installment ID </th>
+                <td mat-cell *matCellDef="let element"> {{ element.installmentId }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="paymentDate">
+                <th mat-header-cell *matHeaderCellDef> Payment Date </th>
+                <td mat-cell *matCellDef="let element"> {{ element.paymentDate }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="paymentAmount">
+                <th mat-header-cell *matHeaderCellDef> Payment Amount </th>
+                <td mat-cell *matCellDef="let element"> {{ element.paymentAmount }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="balance">
+                <th mat-header-cell *matHeaderCellDef> Balance </th>
+                <td mat-cell *matCellDef="let element"> {{ element.balance }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="bankAgentAccount">
+                <th mat-header-cell *matHeaderCellDef> Bank / Agent / Account No </th>
+                <td mat-cell *matCellDef="let element"> {{ element.bankAgentAccount }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedPaymentColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedPaymentColumns"></tr>
+            </table>
+          </div>
+          <div class="action-buttons">
+            <button mat-raised-button color="primary" (click)="savePaymentListing()">Save</button>
+          </div>
+        </mat-tab>
+
+        <mat-tab label="Loan Sharing">
+          <div class="form-container">
+            <form
+              (submit)="addLoanSharingData(loanSharingForm.value); loanSharingForm.reset()"
+              #loanSharingForm="ngForm"
+            >
+              <mat-form-field appearance="outline">
+                <mat-label>Shared With</mat-label>
+                <input matInput name="sharedWith" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Percentage Shared</mat-label>
+                <input matInput type="number" name="percentageShared" ngModel />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Remarks</mat-label>
+                <input matInput name="remarks" ngModel />
+              </mat-form-field>
+              <button mat-raised-button color="primary" type="submit">Insert</button>
+            </form>
+
+            <table mat-table [dataSource]="loanSharingData" class="mat-elevation-z8">
+              <ng-container matColumnDef="sharedWith">
+                <th mat-header-cell *matHeaderCellDef> Shared With </th>
+                <td mat-cell *matCellDef="let element"> {{ element.sharedWith }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="percentageShared">
+                <th mat-header-cell *matHeaderCellDef> Percentage Shared </th>
+                <td mat-cell *matCellDef="let element"> {{ element.percentageShared }} </td>
+              </ng-container>
+
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef> Remarks </th>
+                <td mat-cell *matCellDef="let element"> {{ element.remarks }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedLoanSharingColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedLoanSharingColumns"></tr>
+            </table>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div>

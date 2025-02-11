@@ -9,6 +9,7 @@ import { LoanManagementComponent } from './loan-management/loan-management.compo
 import { LoanAddEditComponent } from './loan-management/loan-add-edit/loan-add-edit.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import { CustomerCheckComponent } from './customer-check/customer-check.component';
+import { PaymentComponent } from './payment/payment.component';
 
 
 export const routes: Routes = [
@@ -26,7 +27,8 @@ export const routes: Routes = [
       {path:'loan',component:LoanManagementComponent},
       {path:'loan-add',component:LoanAddEditComponent},
       {path:'change-password',component:PasswordChangeComponent},
-      {path:'customer-check',component:CustomerCheckComponent}
+      {path:'customer-check',component:CustomerCheckComponent},
+      {path:'payment',component:PaymentComponent},
     ]
   }
 ];
