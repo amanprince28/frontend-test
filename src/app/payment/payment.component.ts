@@ -53,6 +53,8 @@ export class PaymentComponent implements OnInit {
   selectedPaymentIndex: number | null = null;
   enablePaymentInsert: boolean | false = false;
   enableInsatllmentInsert: boolean | false = false;
+  dataSourceAgent2:any
+  dataSourceAgent1:any
   ngOnInit(): void {
     this.loanDetailsForm = new FormGroup({
       principalAmount: new FormControl(''),
@@ -100,6 +102,8 @@ export class PaymentComponent implements OnInit {
     'bankAgentAccount',
     'actions',
   ];
+  displayedColumns: string[] = ['paymentId', 'paymentType', 'paymentDate', 'sharedAmount'];
+
   loanSharingData: any[] = [];
 
   constructor(
@@ -128,9 +132,12 @@ export class PaymentComponent implements OnInit {
             new Date(b.installment_date).getTime()
           );
         });
-        this.paymentData = response.installment.filter(
-          (data: any) => data.status === 'paid' || data.status === 'Paid'
-        );
+        this.paymentData = response.installment
+        .filter((data: any) => data?.status?.toLowerCase() === 'paid') // Ensure status exists
+        .map((payment: any) => {
+          const { id, ...rest } = payment; // Remove `id`
+          return rest;
+        })// Remove `id` while keeping the rest
       }
     });
   }
