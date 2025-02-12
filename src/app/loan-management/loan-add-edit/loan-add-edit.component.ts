@@ -59,14 +59,6 @@ export class LoanAddEditComponent implements OnInit {
   loanDetailsForm!: FormGroup;
   formValid: boolean = false;
 
-  agentIddropdown = [
-    { id: 1, name: 'agent 1' },
-    { id: 2, name: 'agent 2' },
-  ];
-  agentLead = [
-    { id: 1, name: 'Lead 1' },
-    { id: 2, name: 'Lead 2' },
-  ];
   dateUnit = [
     { id: 1, unit: 'Days' },
     { id: 2, unit: 'Week' },

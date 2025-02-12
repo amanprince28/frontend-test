@@ -1,10 +1,11 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -16,6 +17,7 @@ import { MatTableModule } from '@angular/material/table';
 import { DataService } from '../data.service';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-payment',
@@ -33,7 +35,7 @@ import { MatSelectModule } from '@angular/material/select';
     MatNativeDateModule,
     MatTableModule,
     MatIconModule,
-    MatSelectModule
+    MatSelectModule,
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
@@ -41,12 +43,17 @@ import { MatSelectModule } from '@angular/material/select';
 export class PaymentComponent implements OnInit {
   paymentForm!: FormGroup;
   installmentForm!: FormGroup;
-  paymentStatus:any;
-  status:any;
-  installmentData:any
+  paymentStatus: any;
+  status: any;
+  installmentData: any[] = [];
+  paymentData: any[] = [];
   loanDetailsForm!: FormGroup;
+  selectedIndex: number | null = null;
+  paymentType: any;
+  selectedPaymentIndex: number | null = null;
+  enablePaymentInsert: boolean | false = false;
+  enableInsatllmentInsert: boolean | false = false;
   ngOnInit(): void {
-
     this.loanDetailsForm = new FormGroup({
       principalAmount: new FormControl(''),
       customerName: new FormControl(''),
@@ -55,31 +62,34 @@ export class PaymentComponent implements OnInit {
     });
 
     this.installmentForm = new FormGroup({
-      installmentDate: new FormControl(null ),
-      dueAmount: new FormControl(null ),
-      expectedAmount: new FormControl(),
+      installment_date: new FormControl(null),
+      due_amount: new FormControl(null),
+      accepted_amount: new FormControl(),
       status: new FormControl(null),
-    })
+    });
 
     this.paymentForm = new FormGroup({
-      paymentType: new FormControl(null ),
-      installmentId: new FormControl(null ),
+      paymentType: new FormControl(null),
+      installmentId: new FormControl(null),
       paymentDate: new FormControl(),
       paymentAmount: new FormControl(null),
       balance: new FormControl(),
       bankAgentAccount: new FormControl(null),
-    })
-    this.paymentStatus=['Paid', 'Unpaid', 'Contra', 'Void', 'Late', 'Delete'];
+    });
+    this.paymentStatus = ['Paid', 'Unpaid', 'Contra', 'Void', 'Late', 'Delete'];
+    this.paymentType = ['In', 'Out'];
+    this.enablePaymentInsert =false
+    this.enableInsatllmentInsert=false;
   }
   searchQuery: string = '';
   // Data for Installment Listing Table
-  
+
   displayedInstallmentColumns: string[] = [
-    'installmentDate',
-    'dueAmount',
-    'expectedAmount',
+    'installment_date',
+    'due_amount',
+    'accepted_amount',
     'status',
-    'actions'
+    'actions',
   ];
   displayedPaymentColumns: string[] = [
     'paymentType',
@@ -88,99 +98,135 @@ export class PaymentComponent implements OnInit {
     'paymentAmount',
     'balance',
     'bankAgentAccount',
-    'actions'
+    'actions',
   ];
   loanSharingData: any[] = [];
-  
-  // Dummy data for payments table
-   paymentData = [
-    {
-      paymentType: 'Credit Card',
-      installmentId: 1,
-      paymentDate: '2025-02-02',
-      paymentAmount: 500,
-      balance: 500,
-      bankAgentAccount: 'Bank of America',
-      actions: 'View/Edit/Delete'
-    },
-    {
-      paymentType: 'Bank Transfer',
-      installmentId: 2,
-      paymentDate: '2025-03-05',
-      paymentAmount: 1200,
-      balance: 0,
-      bankAgentAccount: 'Chase Bank',
-      actions: 'View/Edit/Delete'
-    },
-    {
-      paymentType: 'Cash',
-      installmentId: 3,
-      paymentDate: '2025-04-03',
-      paymentAmount: 1500,
-      balance: 0,
-      bankAgentAccount: 'N/A',
-      actions: 'View/Edit/Delete'
-    }
-  ];
- 
 
-  constructor(private cdr: ChangeDetectorRef,
-    private dataService:DataService
+  constructor(
+    private cdr: ChangeDetectorRef,
+    private dataService: DataService,
+    private snackbar: MatSnackBar
   ) {}
 
   filterTable(): void {
-    const searchValue = this.searchQuery
+    const searchValue = this.searchQuery;
     console.log(searchValue, 'Search Value');
     this.dataService.getLoanById(searchValue).subscribe((response: any) => {
       console.log(response);
-      if(response && response.installment){
 
+      if (response && response.installment) {
         this.loanDetailsForm.patchValue({
           principalAmount: response.principal_amount || '',
           customerName: response.customer.name || '',
-          agentName: response.agentName || '',
+          agentName: response.user.name || '',
           leadName: response.leadName || '',
         });
 
-      this.installmentData = response.installment
+        this.installmentData = response.installment.sort((a: any, b: any) => {
+          return (
+            new Date(a.installment_date).getTime() -
+            new Date(b.installment_date).getTime()
+          );
+        });
+        this.paymentData = response.installment.filter(
+          (data: any) => data.status === 'paid' || data.status === 'Paid'
+        );
       }
-      // if(response.length>0){
-      // this.dataSource.data = response; 
-      // this.paginator.length = response.totalCount; 
-      // }else{
-      //   this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
-      // }
     });
   }
 
-  saveInstallmentListing(){
-
-  }
-
-  onAddInstallment() {
-   // this.installmentData = [...this.installmentData, { ...data }];
-    this.cdr.detectChanges();
+  saveInstallmentListing() {
+    this.dataService
+      .updateInstallment(this.searchQuery, this.installmentData)
+      .subscribe((data) => {
+        console.log(data);
+        this.snackbar.open('insatllment updated');
+      });
   }
 
   onAddPayment() {
+    if (this.paymentForm.invalid) return;
+
+    const data = this.paymentForm.value;
+
+    // data.due_amount = String(data.due_amount);
+    // data.accepted_amount = String(data.accepted_amount);
+    if (this.selectedPaymentIndex !== null) {
+      // Update the existing record
+      this.paymentData[this.selectedPaymentIndex] = {
+        ...this.paymentData[this.selectedPaymentIndex],
+        ...data,
+      };
+      this.paymentData = [...this.paymentData]; // Trigger UI update
+      this.selectedPaymentIndex = null;
+    } else {
+      // Add new record
+      this.paymentData = [...this.paymentData, { ...data }];
+    }
+
+    this.paymentForm.reset(); // Reset form after submission
     //this.paymentData = [...this.paymentData, { ...data }];
     this.cdr.detectChanges();
   }
 
-  savePaymentListing(){}
+  savePaymentListing() {
+    this.dataService.addPayment(this.paymentData).subscribe((data) => {
+      console.log(data);
+      this.snackbar.open('added payment');
+    });
+  }
 
   addLoanSharingData(data: any) {
     this.loanSharingData = [...this.loanSharingData, { ...data }];
     this.cdr.detectChanges();
   }
 
-  onEdit(record:any,i:any){
-    console.log(record);
+  onEdit(record: any, index: number) {
+    this.enableInsatllmentInsert=true;
+    this.selectedIndex = index; // Store the index
     this.installmentForm.patchValue({
-      installmentDate:new Date(record.installmentDate)
+      installment_date: new Date(record.installment_date),
+      due_amount: record.due_amount,
+      accepted_amount: record.accepted_amount, // Correct the field name
+      status: record.status,
     });
   }
-  onDelete(i:any){
 
+  onPaymentEdit(record: any, index: any) {
+    this.enablePaymentInsert = true;
+    this.selectedPaymentIndex = index; // Store the index
+    this.paymentForm.patchValue({
+      paymentType: '',
+      installmentId: record.generate_id,
+      paymentDate: record.installment_date,
+      paymentAmount: record.accepted_amount,
+      balance: '',
+      bankAgentAccount: '',
+    });
   }
+
+  onAddInstallment() {
+    if (this.installmentForm.invalid) return;
+
+    const data = this.installmentForm.value;
+    data.due_amount = String(data.due_amount);
+    data.accepted_amount = String(data.accepted_amount);
+    if (this.selectedIndex !== null) {
+      // Update the existing record
+      this.installmentData[this.selectedIndex] = {
+        ...this.installmentData[this.selectedIndex],
+        ...data,
+      };
+      this.installmentData = [...this.installmentData]; // Trigger UI update
+      this.selectedIndex = null;
+    } else {
+      // Add new record
+      this.installmentData = [...this.installmentData, { ...data }];
+    }
+
+    this.installmentForm.reset(); // Reset form after submission
+    this.enablePaymentInsert = false;
+  }
+
+  onDelete(i: any) {}
 }

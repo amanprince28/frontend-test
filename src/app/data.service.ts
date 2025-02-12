@@ -97,6 +97,15 @@ export class DataService {
     return this.http.post<any>(url, loan);
   }
 
+  addPayment(payment: any): Observable<any> {
+    const url = this.apiUrl + '/payment';
+    return this.http.post<any>(url, payment);
+  }
+
+  updateInstallment(id: string, updateLoanDto: any): Observable<any> {
+    return this.http.put(`${this.loan}/installment/${id}`, updateLoanDto);
+  }
+
   getLoanById(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.apiUrl}/loan/${id}`);
   }
