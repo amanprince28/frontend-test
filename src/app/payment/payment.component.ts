@@ -157,9 +157,9 @@ export class PaymentComponent implements OnInit {
               paymentAmount:el.amount,
               accepted_amount:el.amount,
               bankAgentAccount :el.account_details,
-              installmentId:el.installment.generate_id,
+              installmentId:el.insatllment && el.installment.generate_id ?el.insatllment.generate_id:'',
               installment_date:el.payment_date,
-              generate_id:el.installment.generate_id,
+              generate_id:el.insatllment && el.installment.generate_id ?el.insatllment.generate_id:'',
             }));
       
           } else {
@@ -196,11 +196,10 @@ export class PaymentComponent implements OnInit {
       .updateInstallment(this.searchQuery, this.installmentData)
       .subscribe((data) => {
         console.log(data);
+        this.filterTable();
         this.snackbar.open('insatllment updated');
       });
   }
-
-  
 
   onAddPayment() {
     if (this.paymentForm.invalid) return;
@@ -251,6 +250,7 @@ export class PaymentComponent implements OnInit {
       next: (data) => {
         console.log("Response:", data);
         this.snackbar.open('Payment added successfully');
+        this.filterTable();
       },
       error: (err) => {
         console.error("Error adding payment:", err);
