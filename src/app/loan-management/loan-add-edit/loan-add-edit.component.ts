@@ -270,6 +270,7 @@ export class LoanAddEditComponent implements OnInit {
       customerName: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.required),
       customerAddress: new FormControl('', Validators.required),
+      customerIc : new FormControl(''),
     });
 
     this.loanDetailsForm = new FormGroup({
@@ -302,6 +303,7 @@ export class LoanAddEditComponent implements OnInit {
       customerName: row.customerName,
       mobile: row.mobile,
       customerAddress: row.customerAddress,
+      customerIc : row.ic
     });
 
     this.loanDetailsForm.patchValue({
@@ -388,6 +390,7 @@ export class LoanAddEditComponent implements OnInit {
             customerName: result.name,
             mobile: result.mobile_no,
             customerAddress: result.customerAddress,
+            customerIc:result.ic
           });
         } else {
           this.agentDetailsForm.patchValue({
