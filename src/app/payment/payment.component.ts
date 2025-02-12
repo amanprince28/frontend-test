@@ -150,7 +150,7 @@ export class PaymentComponent implements OnInit {
           const data = await this.getPaymentListing(response.id);
           
           if (data && Array.isArray(data) && data.length > 0) {
-            this.paymentData = data.map((el: any) => ({
+            const paymenListing = data.map((el: any) => ({
               paymentType: el.type,
               balance:el.balance,
               paymentDate:el.payment_date,
@@ -161,7 +161,7 @@ export class PaymentComponent implements OnInit {
               installment_date:el.payment_date,
               generate_id:el.insatllment && el.installment.generate_id ?el.insatllment.generate_id:'',
             }));
-      
+            this.paymentData =[...this.paymentData,...paymenListing]
           } else {
             console.warn('No payment data found');
             this.paymentData = [];
