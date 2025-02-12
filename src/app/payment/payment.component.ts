@@ -122,10 +122,12 @@ export class PaymentComponent implements OnInit {
     try {
       const searchValue = this.searchQuery;
       console.log(searchValue, 'Search Value');
-  
-      const response = await this.dataService.getLoanById(searchValue).toPromise();
+
+      const response = await this.dataService
+        .getLoanById(searchValue)
+        .toPromise();
       console.log(response);
-  
+
       if (response && response.installment) {
         this.loanDetailsForm.patchValue({
           principalAmount: response.principal_amount || '',
@@ -133,60 +135,70 @@ export class PaymentComponent implements OnInit {
           agentName: response.user?.name || '',
           leadName: response.leadName || '',
         });
-  
+
         this.installmentData = response.installment.sort((a: any, b: any) => {
           return (
             new Date(a.installment_date).getTime() -
             new Date(b.installment_date).getTime()
           );
         });
-  
-        this.paymentData = response.installment
-          .filter((data: any) => data?.status?.toLowerCase() === 'paid')
-          .map(({ id, ...rest }: any) => rest);
-  
+
+        this.paymentData = response.installment.filter(
+          (data: any) => data?.status?.toLowerCase() === 'paid'
+        );
+
         // Fetch Payment Data Correctly
         try {
           const data = await this.getPaymentListing(response.id);
-          
+
           if (data && Array.isArray(data) && data.length > 0) {
             const paymenListing = data.map((el: any) => ({
               paymentType: el.type,
-              balance:el.balance,
-              paymentDate:el.payment_date,
-              paymentAmount:el.amount,
-              accepted_amount:el.amount,
-              bankAgentAccount :el.account_details,
-              installmentId:el.insatllment && el.installment.generate_id ?el.insatllment.generate_id:'',
-              installment_date:el.payment_date,
-              generate_id:el.insatllment && el.installment.generate_id ?el.insatllment.generate_id:'',
+              balance: el.balance,
+              paymentDate: el.payment_date,
+              paymentAmount: el.amount,
+              accepted_amount: el.amount,
+              bankAgentAccount: el.account_details,
+              installmentId: el.installment_id,
+              installment_date: el.payment_date,
+              generate_id: el.installment && el.installment.generate_id ? el.installment.generate_id : '',
+              loan_id: response.id , 
             }));
-            this.paymentData =[...this.paymentData,...paymenListing]
+            this.paymentData = [...this.paymentData, ...paymenListing];
+            //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
+            console.log(JSON.stringify(this.paymentData, null, 2));
+            const idSet = new Set(this.paymentData.map((item) => item.id).filter(Boolean));
+
+            // Step 2: Filter out objects where `id` exists in `installmentId`
+            const filteredData = this.paymentData.filter(
+              (item) => !("id" in item && idSet.has(item.id) && this.paymentData.some(d => d.installmentId === item.id))
+            );
+             this.paymentData=filteredData;
           } else {
             console.warn('No payment data found');
             this.paymentData = [];
           }
-          
+
           console.log(this.paymentData, 'pya');
         } catch (error) {
           console.error('Error fetching payment listing:', error);
         }
-  
+
         console.log(this.paymentData, 'pya');
       }
     } catch (error) {
       console.error('Error fetching loan details:', error);
     }
   }
-  
-  
 
-  async getPaymentListing(loanId:any): Promise<any> {
+  async getPaymentListing(loanId: any): Promise<any> {
     try {
-      const data = await this.dataService.getPaymentByLoanId(loanId).toPromise();
+      const data = await this.dataService
+        .getPaymentByLoanId(loanId)
+        .toPromise();
       return data;
     } catch (error) {
-      console.error("Error fetching payment listing:", error);
+      console.error('Error fetching payment listing:', error);
       throw error;
     }
   }
@@ -197,7 +209,9 @@ export class PaymentComponent implements OnInit {
       .subscribe((data) => {
         console.log(data);
         this.filterTable();
-        this.snackbar.open('insatllment updated');
+        this.snackbar.open('Installment updated', '', {
+          duration: 2000,
+        });
       });
   }
 
@@ -222,43 +236,46 @@ export class PaymentComponent implements OnInit {
     //this.paymentData = [...this.paymentData, { ...data }];
     this.cdr.detectChanges();
   }
+
   savePaymentListing() {
     let payload: any[] = []; // Initialize the array properly
     console.log(this.paymentData, 'payment data');
-    
+
     if (!this.paymentData || !Array.isArray(this.paymentData)) {
-      console.error("paymentData is undefined or not an array");
+      console.error('paymentData is undefined or not an array');
       return;
     }
-    
+
     this.paymentData.forEach((el: any) => {
       const temp = {
         type: el.paymentType,
-        payment_date: el.paymentDate || '',  // Ensure a valid value
-        balance: String(el.balance),  // Default to 0 if undefined
-        receiving_date: new Date(),  // Consider formatting if needed
-        status: el.status || 'Pending',  // Default status
-        account_details: el.bankAgentAccount || '',  // Ensure a valid value
-        amount: String(el.paymentAmount),  // Default to 0 if undefined
-        loan_id: el.loan_id || null,  // Ensure a valid value
-        installment_id: el.id || null,  // Ensure a valid value
+        payment_date: el.paymentDate || '', // Ensure a valid value
+        balance: String(el.balance), // Default to 0 if undefined
+        receiving_date: new Date(), // Consider formatting if needed
+        status: el.status || 'Pending', // Default status
+        account_details: el.bankAgentAccount || '', // Ensure a valid value
+        amount: String(el.paymentAmount), // Default to 0 if undefined
+        loan_id: el.loan_id || null, // Ensure a valid value
+        installment_id: el.id || null, // Ensure a valid value
       };
       payload.push(temp);
     });
-    
+
     this.dataService.addPayment(payload).subscribe({
       next: (data) => {
-        console.log("Response:", data);
-        this.snackbar.open('Payment added successfully');
-        this.filterTable();
+        console.log('Response:', data);
+        this.snackbar.open('Payment added successfully' ,'Close', {
+          duration: 3000,
+        });
       },
       error: (err) => {
-        console.error("Error adding payment:", err);
-        this.snackbar.open('Failed to add payment', 'Close', { duration: 3000 });
-      }
+        console.error('Error adding payment:', err);
+        this.snackbar.open('Failed to add payment', 'Close', {
+          duration: 3000,
+        });
+      },
     });
-}
-
+  }
 
   addLoanSharingData(data: any) {
     this.loanSharingData = [...this.loanSharingData, { ...data }];
@@ -277,7 +294,7 @@ export class PaymentComponent implements OnInit {
   }
 
   onPaymentEdit(record: any, index: any) {
-    console.log(record,'record');
+    console.log(record, 'record');
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index; // Store the index
     this.paymentForm.patchValue({
@@ -287,6 +304,7 @@ export class PaymentComponent implements OnInit {
       paymentAmount: record.accepted_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
+      installment_id: record.id,
     });
   }
 
