@@ -5,20 +5,36 @@
     <div class="section">
       <h5>Agent Details</h5>
       <form [formGroup]="agentDetailsForm">
-        <!-- Agent Details Fields -->
         <div class="fields-row">
-          <mat-form-field appearance="fill">
-            <mat-label>Agent Name</mat-label>
-            <input formControlName="agentName" matInput required>
-          </mat-form-field>
-          <mat-icon (click)="openAgentSearch()">search</mat-icon>
-          <mat-form-field appearance="fill">
-            <mat-label>Agent ID</mat-label>
-            <input formControlName="agentId" matInput required>
-           
-          </mat-form-field>
+            <mat-form-field appearance="fill">
+                <mat-label>Agent Name</mat-label>
+                <input formControlName="agentName" matInput required>
+            </mat-form-field>
+            
+            <div class="icon-column">
+                <mat-icon (click)="openAgentSearch()">search</mat-icon>
+                <mat-icon (click)="openAgentSearch('two')">add</mat-icon>
+            </div>
+            
+            <mat-form-field appearance="fill">
+                <mat-label>Agent ID</mat-label>
+                <input formControlName="agentId" matInput required>
+            </mat-form-field>
         </div>
-      </form>
+    
+        <div *ngIf="secondAgent" class="fields-row">
+            <mat-form-field appearance="fill">
+                <mat-label>Agent Name</mat-label>
+                <input formControlName="agentName1" matInput required>
+            </mat-form-field>
+            
+            <mat-form-field appearance="fill">
+                <mat-label>Agent ID</mat-label>
+                <input formControlName="agentId1" matInput required>
+            </mat-form-field>
+        </div>
+    </form>
+    
     </div>
 
     <!-- Customer Details Section -->

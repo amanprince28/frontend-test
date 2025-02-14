@@ -58,6 +58,7 @@ export class LoanAddEditComponent implements OnInit {
   customerDetailsForm!: FormGroup;
   loanDetailsForm!: FormGroup;
   formValid: boolean = false;
+  secondAgent :boolean = false;
 
   dateUnit = [
     { id: 1, unit: 'Days' },
@@ -263,6 +264,8 @@ export class LoanAddEditComponent implements OnInit {
       agentName: new FormControl('', Validators.required),
       agentId: new FormControl('', Validators.required),
       agentLead: new FormControl('', Validators.required),
+      agentName1: new FormControl('',),
+      agentId1: new FormControl('',),
     });
 
     this.customerDetailsForm = new FormGroup({
@@ -332,6 +335,10 @@ export class LoanAddEditComponent implements OnInit {
       interest_amount:this.loanDetailsForm.getRawValue().interest_amount,
       ...this.loanDetailsForm.value,
     };
+    const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
+    if (agentId1) {
+      loanData.supervisor1 = agentId1;
+    }
     if (this.isEditMode) {
       loanData.id = this.loan_id;
     }
@@ -349,13 +356,15 @@ export class LoanAddEditComponent implements OnInit {
     this.router.navigate(['/loan']); // Navigate back to loan list or another appropriate page
   }
 
-  openAgentSearch() {
+  openAgentSearch(optionalParam?: string) {
+    console.log(optionalParam);
+    this.secondAgent = optionalParam === 'two';
     this.openModal('Agent Search', 'Search by Agent ID', this.userData, [
-      { key: 'name', header: 'Name' },
-      { key: 'role', header: 'Role' },
-      { key: 'status', header: 'Status' },
+        { key: 'name', header: 'Name' },
+        { key: 'role', header: 'Role' },
+        { key: 'status', header: 'Status' }
     ]);
-  }
+}
 
   openCustomerSearch() {
     this.openModal(
@@ -383,24 +392,31 @@ export class LoanAddEditComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.log('Selected:', result);
-        if (title == 'Customer Search') {
-          this.customerDetailsForm.patchValue({
-            customerId: result.id,
-            customerName: result.name,
-            mobile: result.mobile_no,
-            customerAddress: result.customerAddress,
-            customerIc:result.ic
-          });
-        } else {
-          this.agentDetailsForm.patchValue({
-            agentId: result.id,
-            agentName: result.name,
-            email: result.email,
-            role: result.role,
-          });
-        }
+          console.log('Selected:', result);
+          if (title === 'Customer Search') {
+              this.customerDetailsForm.patchValue({
+                  customerId: result.id,
+                  customerName: result.name,
+                  mobile: result.mobile_no,
+                  customerAddress: result.customerAddress,
+                  customerIc: result.ic
+              });
+          } else {
+              if (this.secondAgent) {
+                  this.agentDetailsForm.patchValue({
+                      agentId1: result.id,
+                      agentName1: result.name
+                  });
+              } else {
+                  this.agentDetailsForm.patchValue({
+                      agentId: result.id,
+                      agentName: result.name,
+                      email: result.email,
+                      role: result.role
+                  });
+              }
+          }
       }
-    });
+  });
   }
 }

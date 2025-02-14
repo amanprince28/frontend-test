@@ -58,3 +58,23 @@
   }
 }
 
+.search-filter-create {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  .search-input {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  button {
+    margin-right: 10px;
+  }
+}
+
+.breadcrumb {
+  font-size: 14px;
+  color: #757575;
+  margin-bottom: 8px;
+}

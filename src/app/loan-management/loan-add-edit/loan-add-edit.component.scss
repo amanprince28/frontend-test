@@ -60,3 +60,23 @@ button {
   border-radius: 20px !important;
   overflow: hidden;
 }
+
+
+.fields-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .icon-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    mat-icon {
+      cursor: pointer;
+      font-size: 24px;
+      margin: 4px 0;
+    }
+  }
+}
