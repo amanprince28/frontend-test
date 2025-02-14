@@ -61,7 +61,7 @@ export class LoanAddEditComponent implements OnInit {
   secondAgent :boolean = false;
 
   dateUnit = [
-    { id: 1, unit: 'Days' },
+    { id: 1, unit: 'Day' },
     { id: 2, unit: 'Week' },
     { id: 3, unit: 'Month' },
     { id: 4, unit: 'Year' },
