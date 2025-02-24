@@ -236,7 +236,7 @@
           <mat-tab label="Loan Sharing">
             <div class="form-container">
               <!-- First Table -->
-              <h6>Agent Name: xxx</h6>
+              <h6>Agent Name: {{loanSharingData?.user1?.name}}</h6>
               <table style="margin: 20px 20px ;" mat-table [dataSource]="dataSourceAgent1" class="mat-elevation-z8">
                 <ng-container matColumnDef="paymentId">
                   <th mat-header-cell *matHeaderCellDef> Payment ID </th>
@@ -263,7 +263,7 @@
               </table>
         
               <!-- Second Table -->
-              <h6>Agent Name: xxx</h6>
+              <h6>Agent Name: {{loanSharingData?.user2?.name}}</h6>
               <table style="margin: 20px 20px;" mat-table [dataSource]="dataSourceAgent2" class="mat-elevation-z8">
                 <ng-container matColumnDef="paymentId">
                   <th mat-header-cell *matHeaderCellDef> Payment ID </th>

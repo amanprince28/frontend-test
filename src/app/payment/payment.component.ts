@@ -110,7 +110,7 @@ export class PaymentComponent implements OnInit {
     'sharedAmount',
   ];
 
-  loanSharingData: any[] = [];
+  loanSharingData: any;
 
   constructor(
     private cdr: ChangeDetectorRef,
@@ -147,6 +147,14 @@ export class PaymentComponent implements OnInit {
           (data: any) => data?.status?.toLowerCase() === 'paid'
         );
 
+        if (response && response.user_2) {
+          this.loanSharingData = this.transformInstallments(response);
+          console.log(this.loanSharingData, 'loan');
+          this.dataSourceAgent1 = this.loanSharingData.user1.payments;
+          this.dataSourceAgent2 = this.loanSharingData.user2.payments;
+          console.log(this.loanSharingData);
+        }
+
         // Fetch Payment Data Correctly
         try {
           const data = await this.getPaymentListing(response.id);
@@ -161,19 +169,29 @@ export class PaymentComponent implements OnInit {
               bankAgentAccount: el.account_details,
               installmentId: el.installment_id,
               installment_date: el.payment_date,
-              generate_id: el.installment && el.installment.generate_id ? el.installment.generate_id : '',
-              loan_id: response.id , 
+              generate_id:
+                el.installment && el.installment.generate_id
+                  ? el.installment.generate_id
+                  : '',
+              loan_id: response.id,
             }));
             this.paymentData = [...this.paymentData, ...paymenListing];
             //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
             console.log(JSON.stringify(this.paymentData, null, 2));
-            const idSet = new Set(this.paymentData.map((item) => item.id).filter(Boolean));
+            const idSet = new Set(
+              this.paymentData.map((item) => item.id).filter(Boolean)
+            );
 
             // Step 2: Filter out objects where `id` exists in `installmentId`
             const filteredData = this.paymentData.filter(
-              (item) => !("id" in item && idSet.has(item.id) && this.paymentData.some(d => d.installmentId === item.id))
+              (item) =>
+                !(
+                  'id' in item &&
+                  idSet.has(item.id) &&
+                  this.paymentData.some((d) => d.installmentId === item.id)
+                )
             );
-             this.paymentData=filteredData;
+            this.paymentData = filteredData;
           } else {
             console.warn('No payment data found');
             this.paymentData = [];
@@ -247,7 +265,7 @@ export class PaymentComponent implements OnInit {
     }
 
     this.paymentData.forEach((el: any) => {
-      if(el.paymentType!='Out'){
+      if (el.paymentType != 'Out') {
         const temp = {
           type: el.paymentType,
           payment_date: el.paymentDate || '', // Ensure a valid value
@@ -261,13 +279,12 @@ export class PaymentComponent implements OnInit {
         };
         payload.push(temp);
       }
-     
     });
 
     this.dataService.addPayment(payload).subscribe({
       next: (data) => {
         console.log('Response:', data);
-        this.snackbar.open('Payment added successfully' ,'Close', {
+        this.snackbar.open('Payment added successfully', 'Close', {
           duration: 3000,
         });
       },
@@ -332,6 +349,52 @@ export class PaymentComponent implements OnInit {
 
     this.installmentForm.reset(); // Reset form after submission
     this.enablePaymentInsert = false;
+  }
+
+  transformInstallments(data: any) {
+    if (!data || !data.installment || !data.user || !data.user_2) {
+      throw new Error('Invalid input data');
+    }
+
+    const user1Payments = [];
+    const user2Payments = [];
+
+    for (const installment of data.installment) {
+      if (installment.status === 'Paid' && installment.accepted_amount) {
+        const sharedAmount = installment.accepted_amount / 2;
+
+        // Format the date to dd-mm-yyyy
+        const formattedDate = new Date(installment.installment_date)
+          .toLocaleDateString('en-GB')
+          .split('/')
+          .join('-');
+
+        user1Payments.push({
+          paymentId: installment.generate_id,
+          paymentType: 'In',
+          paymentDate: formattedDate,
+          sharedAmount: sharedAmount,
+        });
+
+        user2Payments.push({
+          paymentId: installment.generate_id,
+          paymentType: 'In',
+          paymentDate: formattedDate,
+          sharedAmount: sharedAmount,
+        });
+      }
+    }
+
+    return {
+      user1: {
+        name: data.user.name,
+        payments: user1Payments,
+      },
+      user2: {
+        name: data.user_2.name,
+        payments: user2Payments,
+      },
+    };
   }
 
   onDelete(i: any) {}
