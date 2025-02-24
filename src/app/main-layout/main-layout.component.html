@@ -6,7 +6,7 @@
     </div>
   
     <!-- Menu items with icons -->
-    <a class="menu-item" [routerLink]="['users']" routerLinkActive="router-link-active">
+    <a class="menu-item" [routerLink]="['users']" routerLinkActive="router-link-active" *ngIf="userDetails.role!=='AGENT'">
       <mat-icon>person</mat-icon>
       Users
     </a>
