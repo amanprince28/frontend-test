@@ -203,6 +203,8 @@ export class PaymentComponent implements OnInit {
         }
 
         console.log(this.paymentData, 'pya');
+      }else {
+        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
       }
     } catch (error) {
       console.error('Error fetching loan details:', error);
