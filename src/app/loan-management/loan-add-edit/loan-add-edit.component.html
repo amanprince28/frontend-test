@@ -6,34 +6,38 @@
       <h5>Agent Details</h5>
       <form [formGroup]="agentDetailsForm">
         <div class="fields-row">
-            <mat-form-field appearance="fill">
-                <mat-label>Agent Name</mat-label>
-                <input formControlName="agentName" matInput required>
-            </mat-form-field>
-            
-            <div class="icon-column">
-                <mat-icon (click)="openAgentSearch()">search</mat-icon>
-                <mat-icon (click)="openAgentSearch('two')">add</mat-icon>
-            </div>
-            
-            <mat-form-field appearance="fill">
-                <mat-label>Agent ID</mat-label>
-                <input formControlName="agentId" matInput required>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="search-field">
+            <mat-label>Agent Name</mat-label>
+            <input formControlName="agentName" matInput required>
+            <button mat-icon-button matSuffix (click)="openAgentSearch()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </mat-form-field>
+      
+          <mat-icon class="clickable-icon" (click)="openAgentSearch('two')">add</mat-icon>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Agent ID</mat-label>
+            <input formControlName="agentId" matInput required>
+          </mat-form-field>
         </div>
-    
+      
         <div *ngIf="secondAgent" class="fields-row">
-            <mat-form-field appearance="fill">
-                <mat-label>Agent Name</mat-label>
-                <input formControlName="agentName1" matInput required>
-            </mat-form-field>
-            
-            <mat-form-field appearance="fill">
-                <mat-label>Agent ID</mat-label>
-                <input formControlName="agentId1" matInput required>
-            </mat-form-field>
+          <mat-form-field appearance="fill" class="search-field">
+            <mat-label>Agent Name</mat-label>
+            <input formControlName="agentName1" matInput required>
+            <button mat-icon-button matSuffix (click)="openAgentSearch()">
+              <mat-icon>search</mat-icon>
+            </button>
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Agent ID</mat-label>
+            <input formControlName="agentId1" matInput required>
+          </mat-form-field>
         </div>
-    </form>
+      </form>
+      
     
     </div>
 
@@ -56,8 +60,11 @@
           <mat-form-field appearance="fill">
             <mat-label>Customer IC/Passport</mat-label>
             <input formControlName="customerIc" matInput required>
+            <button mat-icon-button matSuffix (click)="openCustomerSearch()">
+              <mat-icon>search</mat-icon>
+            </button>
           </mat-form-field>
-          <mat-icon (click)="openCustomerSearch()">search</mat-icon>
+          <!-- <mat-icon (click)="openCustomerSearch()">search</mat-icon> -->
           <mat-form-field appearance="fill">
             <mat-label>Customer Name</mat-label>
             <input formControlName="customerName" matInput required>

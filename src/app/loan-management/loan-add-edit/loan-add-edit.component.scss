@@ -18,65 +18,33 @@
     display: flex;
     gap: 16px;
     justify-content: space-between;
+    align-items: center;
 
     mat-form-field {
       flex: 1;
+      position: relative;
     }
-  }
 
-  .quarter-width {
-    flex: 0 0 25%;
-  }
-
-  .action-buttons {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .clickable-icon {
-    cursor: pointer;
-    color: #1976d2; // Blue color for the clickable icon
-  }
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Space between search field and button */
-}
-
-.search-field.small-search {
-  width: 25%; /* Set search field to 25% width */
-}
-
-button {
-  height: 40px; /* Adjust button height if necessary */
-}
-
-::ng-deep .custom-dialog-container {
-  border-radius: 20px !important;
-  overflow: hidden;
-}
-
-
-.fields-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  .icon-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    
-    mat-icon {
+    .clickable-icon {
       cursor: pointer;
       font-size: 24px;
-      margin: 4px 0;
+      color: #1976d2;
+    }
+
+    .search-field {
+      display: flex;
+      align-items: center;
+      position: relative;
+
+      button {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
     }
   }
 }
