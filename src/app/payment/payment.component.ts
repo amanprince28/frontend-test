@@ -247,18 +247,21 @@ export class PaymentComponent implements OnInit {
     }
 
     this.paymentData.forEach((el: any) => {
-      const temp = {
-        type: el.paymentType,
-        payment_date: el.paymentDate || '', // Ensure a valid value
-        balance: String(el.balance), // Default to 0 if undefined
-        receiving_date: new Date(), // Consider formatting if needed
-        status: el.status || 'Pending', // Default status
-        account_details: el.bankAgentAccount || '', // Ensure a valid value
-        amount: String(el.paymentAmount), // Default to 0 if undefined
-        loan_id: el.loan_id || null, // Ensure a valid value
-        installment_id: el.id || null, // Ensure a valid value
-      };
-      payload.push(temp);
+      if(el.paymentType!='Out'){
+        const temp = {
+          type: el.paymentType,
+          payment_date: el.paymentDate || '', // Ensure a valid value
+          balance: String(el.balance), // Default to 0 if undefined
+          receiving_date: new Date(), // Consider formatting if needed
+          status: el.status || 'Pending', // Default status
+          account_details: el.bankAgentAccount || '', // Ensure a valid value
+          amount: String(el.paymentAmount), // Default to 0 if undefined
+          loan_id: el.loan_id || null, // Ensure a valid value
+          installment_id: el.id || null, // Ensure a valid value
+        };
+        payload.push(temp);
+      }
+     
     });
 
     this.dataService.addPayment(payload).subscribe({

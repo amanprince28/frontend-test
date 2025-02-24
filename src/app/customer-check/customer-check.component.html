@@ -22,53 +22,38 @@
       <!-- Name Column -->
       <ng-container matColumnDef="agent">
         <th mat-header-cell *matHeaderCellDef>Agent</th>
-        <td mat-cell *matCellDef="let element">{{ element.agent }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.user?.name }}</td>
       </ng-container>
               <!-- The actual rendered columns are set as a property on the row definition" --> 
     
       <!-- Name Column -->
       <ng-container matColumnDef="ongoing">
         <th mat-header-cell *matHeaderCellDef>Ongoing</th>
-        <td mat-cell *matCellDef="let element">{{ element.ongoing }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.statusCount?.ongoing }}</td>
       </ng-container>
               <!-- The actual rendered columns are set as a property on the row definition" --> 
     
       <!-- Name Column -->
       <ng-container matColumnDef="completed">
         <th mat-header-cell *matHeaderCellDef>Completed</th>
-        <td mat-cell *matCellDef="let element">{{ element.completed }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.statusCount?.Paid || element.statusCount?.paid }}</td>
       </ng-container>
 
       <ng-container matColumnDef="badDebt">
         <th mat-header-cell *matHeaderCellDef>Bad Debt</th>
-        <td mat-cell *matCellDef="let element">{{ element.badDebt }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.statusCount?.badDebts || 0 }}</td>
       </ng-container>
 
       <ng-container matColumnDef="lastPaymentDate">
         <th mat-header-cell *matHeaderCellDef>Last Payment Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.lastPaymentDate }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.lastPaidDate }}</td>
       </ng-container>
 
       <ng-container matColumnDef="nextPaymentDate">
         <th mat-header-cell *matHeaderCellDef>Next Payment Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.nextPaymentDate }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.nextInstallmentDate }}</td>
       </ng-container>
   
-      
-      <!-- <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element">
-          <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')">
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="onDelete(element)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container> -->
     
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr

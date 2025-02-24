@@ -1,12 +1,17 @@
 import { Component, OnInit, signal, ViewChild } from '@angular/core';
-import {MatTableDataSource, MatTableModule} from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -21,29 +26,57 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
-
 @Component({
   selector: 'app-customer-check',
   standalone: true,
-  imports: [CommonModule, MatTabsModule, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatButtonModule, MatSelectModule, MatOptionModule,MatPaginatorModule,MatTableModule, MatCard, MatCardContent, MatCardTitle,MatIconModule,MatDatepickerModule,MatNativeDateModule],
+  imports: [
+    CommonModule,
+    MatTabsModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatCard,
+    MatCardContent,
+    MatCardTitle,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
   templateUrl: './customer-check.component.html',
-  styleUrl: './customer-check.component.scss'
+  styleUrl: './customer-check.component.scss',
 })
 export class CustomerCheckComponent {
-  displayedColumns: string[] = ['agent', 'ongoing', 'completed','badDebt','lastPaymentDate','nextPaymentDate'];
+  displayedColumns: string[] = [
+    'agent',
+    'ongoing',
+    'completed',
+    'badDebt',
+    'lastPaymentDate',
+    'nextPaymentDate',
+  ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchForm!: FormGroup;
-  searchQuery:any;
+  searchQuery: any;
   signalData = signal({});
   search = new FormControl();
 
-  constructor(private dialog: MatDialog,private router: Router, private signalService: SignalService, private dataService: DataService,
-    private snackbar:MatSnackBar
+  constructor(
+    private dialog: MatDialog,
+    private router: Router,
+    private signalService: SignalService,
+    private dataService: DataService,
+    private snackbar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
-    this.fetchData();
+  //  this.fetchData();
   }
 
   ngAfterViewInit(): void {
@@ -54,7 +87,7 @@ export class CustomerCheckComponent {
   }
 
   fetchData(page: number = 0, limit: number = 5): void {
-    const payload = { page, limit};
+    const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
       console.log(response);
       this.dataSource.data = [
@@ -94,7 +127,7 @@ export class CustomerCheckComponent {
     });
   }
 
-  onRowClick(row: any,action:string): void {
+  onRowClick(row: any, action: string): void {
     if (!row.id) {
       return;
     }
@@ -107,18 +140,73 @@ export class CustomerCheckComponent {
 
   // For filtering the table
   filterTable(): void {
-    const searchValue = this.searchQuery
+    const searchValue = this.searchQuery;
     console.log(searchValue, 'Search Value');
-    this.dataService.findAgentAndLeads(searchValue).subscribe((response: any) => {
-      console.log(response);
-      if(response.length>0){
-      this.dataSource.data = response; 
-      this.paginator.length = response.totalCount; 
-      }else{
-        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
-      }
-    });
+    this.dataService
+      .getLoanStatusByPassport(searchValue)
+      .subscribe((response: any) => {
+       
+        if (response.length > 0) {
+          const filteredDate = this.processData(response);
+          console.log(filteredDate,'filteredDate')
+          this.dataSource.data = filteredDate;
+          this.paginator.length = response.totalCount;
+        } else {
+          this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+        }
+      });
   }
+
+  processData(data: any[]): any[] {
+    return data.map(item => {
+        // Sort installments by date
+        item.installment.sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime());
+
+        // Initialize status count
+        let statusCount: { [key: string]: number } = {};
+        let lastPaidDate: string | null = null;
+        let nextInstallmentDate: string | null = null;
+
+        for (const installment of item.installment) {
+            // Set status to 'ongoing' if null
+            if (!installment.status) {
+                installment.status = "ongoing";
+            }
+
+            // Count status occurrences
+            statusCount[installment.status] = (statusCount[installment.status] || 0) + 1;
+
+            // Track the last paid date
+            if (installment.status.toLowerCase() === "paid") {
+              lastPaidDate = installment.installment_date;
+          }
+          
+        }
+
+        // Find the next installment date after the last paid
+        if (lastPaidDate !== null) {
+            const lastPaidTime = new Date(lastPaidDate).getTime();
+            const nextInstallment = item.installment.find((inst: any) => 
+                new Date(inst.installment_date).getTime() > lastPaidTime
+            );
+            
+            nextInstallmentDate = nextInstallment ? nextInstallment.installment_date : null;
+        }
+        const formatDate = (date: string | null): string | null => {
+          if (!date) return null;
+          let d = new Date(date);
+          return `${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}-${d.getFullYear()}`;
+      };
+
+        return {
+            ...item,
+            statusCount,
+            lastPaidDate:formatDate(lastPaidDate),
+            nextInstallmentDate:formatDate(nextInstallmentDate)
+        };
+    });
+}
+
 
   onAddClick(): void {
     this.router.navigate(['/users-details']);
@@ -129,20 +217,24 @@ export class CustomerCheckComponent {
       data: { message: 'Are you sure you want to delete this user?' },
       width: '400px',
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Call the delete API
         this.dataService.deleteUser(row.id).subscribe(
           () => {
-            this.snackbar.open('User deleted successfully', 'Close', { duration: 2000 });
+            this.snackbar.open('User deleted successfully', 'Close', {
+              duration: 2000,
+            });
             this.fetchData(); // Reload data after deletion
           },
           (error: any) => {
-            this.snackbar.open('Error deleting user', 'Close', { duration: 2000 });
+            this.snackbar.open('Error deleting user', 'Close', {
+              duration: 2000,
+            });
           }
         );
       }
     });
-}
+  }
 }

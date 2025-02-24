@@ -49,6 +49,11 @@ export class DataService {
     return this.http.get<any[]>(this.user, { params });
   }
 
+  getLoanStatusByPassport(passportNumber: string): Observable<any> {
+    return this.http.get<any>(`${this.loan}/user-status/${passportNumber}`);
+  }
+
+
   findUser(payload: any): Observable<any> {
     const params = new HttpParams()
     .set('page', payload.page.toString())

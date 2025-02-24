@@ -337,7 +337,7 @@ export class LoanAddEditComponent implements OnInit {
     };
     const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
     if (agentId1) {
-      loanData.supervisor1 = agentId1;
+      loanData.supervisor_2 = agentId1;
     }
     if (this.isEditMode) {
       loanData.id = this.loan_id;
