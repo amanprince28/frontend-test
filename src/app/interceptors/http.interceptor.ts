@@ -18,7 +18,7 @@ export class HttpInterceptorService implements HttpInterceptor {
     }
 
     // Add the access token only to GET and POST requests
-    if (accessToken && (request.method === 'GET' || request.method === 'POST')) {
+    if (accessToken && (request.method === 'GET' || request.method === 'POST' ||request.method==='PUT')) {
       const modifiedRequest = request.clone({
         setHeaders: {
           'access_token': accessToken,

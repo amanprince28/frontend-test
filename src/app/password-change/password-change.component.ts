@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators,AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,7 @@ import { DataService } from '../data.service';
   templateUrl: './password-change.component.html',
   styleUrls: ['./password-change.component.scss']
 })
-export class PasswordChangeComponent {
+export class PasswordChangeComponent implements OnInit {
   private dataService = inject(DataService);
   private snackBar = inject(MatSnackBar);
 
@@ -37,9 +37,13 @@ export class PasswordChangeComponent {
     },
     { validators: this.passwordMatchValidator }
   );
+  userDetails: any;
 
   constructor() {}
-
+ngOnInit(): void {
+  this.userDetails = localStorage.getItem('user-details');
+  this.userDetails = JSON.parse(this.userDetails)
+}
   // Custom validator to check if passwords match
   passwordMatchValidator(form: AbstractControl): { [key: string]: boolean } | null {
     const newPassword = form.get('newPassword')?.value;
@@ -61,21 +65,19 @@ export class PasswordChangeComponent {
       });
       return;
     }
-
+  
     const { currentPassword, newPassword } = this.passwordForm.value;
-
-    
+  
     this.dataService.changePassword(currentPassword, newPassword).subscribe(
       (response) => {
-        this.snackBar.open('Password changed successfully!', 'Close', {
-          duration: 2000,
-        });
-        this.passwordForm.reset(); // Reset the form
+        this.snackBar.open(response.message, 'Close', { duration: 2000 });
+        this.passwordForm.reset(); // Clear the form on success
       },
       (error) => {
-        this.snackBar.open('Error changing password. Please try again.', 'Close', {
-          duration: 2000,
+        this.snackBar.open(error.error.message || 'Failed to change password', 'Close', {
+          duration: 3000,
         });
+        console.error('Error:', error);
       }
     );
   }

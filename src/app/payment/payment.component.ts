@@ -121,12 +121,11 @@ export class PaymentComponent implements OnInit {
   async filterTable(): Promise<void> {
     try {
       const searchValue = this.searchQuery;
-      console.log(searchValue, 'Search Value');
+     
 
       const response = await this.dataService
         .getLoanById(searchValue)
         .toPromise();
-      console.log(response);
 
       if (response && response.installment) {
         this.loanDetailsForm.patchValue({
@@ -149,10 +148,9 @@ export class PaymentComponent implements OnInit {
 
         if (response && response.user_2) {
           this.loanSharingData = this.transformInstallments(response);
-          console.log(this.loanSharingData, 'loan');
+         
           this.dataSourceAgent1 = this.loanSharingData.user1.payments;
           this.dataSourceAgent2 = this.loanSharingData.user2.payments;
-          console.log(this.loanSharingData);
         }
 
         // Fetch Payment Data Correctly
@@ -177,7 +175,7 @@ export class PaymentComponent implements OnInit {
             }));
             this.paymentData = [...this.paymentData, ...paymenListing];
             //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
-            console.log(JSON.stringify(this.paymentData, null, 2));
+           
             const idSet = new Set(
               this.paymentData.map((item) => item.id).filter(Boolean)
             );
@@ -196,16 +194,12 @@ export class PaymentComponent implements OnInit {
             console.warn('No payment data found');
             this.paymentData = [];
           }
-
-          console.log(this.paymentData, 'pya');
         } catch (error) {
           console.error('Error fetching payment listing:', error);
         }
-
-        console.log(this.paymentData, 'pya');
       }else {
-        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
-      }
+          this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+        }
     } catch (error) {
       console.error('Error fetching loan details:', error);
     }
@@ -224,16 +218,20 @@ export class PaymentComponent implements OnInit {
   }
 
   saveInstallmentListing() {
+    this.installmentData = this.installmentData.map((el: any) => ({
+      ...el,
+      due_amount: typeof el.due_amount === 'number' ? String(el.due_amount) : el.due_amount,
+      accepted_amount: typeof el.accepted_amount === 'number' ? String(el.accepted_amount) : el.accepted_amount,
+    }));
+  
     this.dataService
       .updateInstallment(this.searchQuery, this.installmentData)
       .subscribe((data) => {
-        console.log(data);
         this.filterTable();
-        this.snackbar.open('Installment updated', '', {
-          duration: 2000,
-        });
+        this.snackbar.open('Installment updated', '', { duration: 2000 });
       });
   }
+  
 
   onAddPayment() {
     if (this.paymentForm.invalid) return;
@@ -259,7 +257,7 @@ export class PaymentComponent implements OnInit {
 
   savePaymentListing() {
     let payload: any[] = []; // Initialize the array properly
-    console.log(this.paymentData, 'payment data');
+   
 
     if (!this.paymentData || !Array.isArray(this.paymentData)) {
       console.error('paymentData is undefined or not an array');
@@ -285,7 +283,7 @@ export class PaymentComponent implements OnInit {
 
     this.dataService.addPayment(payload).subscribe({
       next: (data) => {
-        console.log('Response:', data);
+      
         this.snackbar.open('Payment added successfully', 'Close', {
           duration: 3000,
         });
@@ -316,7 +314,7 @@ export class PaymentComponent implements OnInit {
   }
 
   onPaymentEdit(record: any, index: any) {
-    console.log(record, 'record');
+  
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index; // Store the index
     this.paymentForm.patchValue({
@@ -330,29 +328,81 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  onAddInstallment() {
-    if (this.installmentForm.invalid) return;
+  // onAddInstallment() {
+  //   console.log(this.installmentData,'install');
+  //   if (this.installmentForm.invalid) return;
 
+  //   const data = this.installmentForm.value;
+  //   data.due_amount = String(data.due_amount);
+  //   data.accepted_amount = String(data.due_amount);
+  //   if (this.selectedIndex !== null) {
+  //     // Update the existing record
+  //     this.installmentData[this.selectedIndex] = {
+  //       ...this.installmentData[this.selectedIndex],
+  //       ...data,
+  //     };
+  //     this.installmentData = [...this.installmentData]; // Trigger UI update
+  //     this.selectedIndex = null;
+  //   } else {
+  //     // Add new record
+      
+  //     this.installmentData = [...this.installmentData, { ...data }];
+
+  //   }
+
+  //   this.installmentForm.reset(); // Reset form after submission
+  //   this.enablePaymentInsert = false;
+  // }
+
+  onAddInstallment() {
+    console.log(this.installmentData, 'install');
+    if (this.installmentForm.invalid) return;
+  
     const data = this.installmentForm.value;
-    data.due_amount = String(data.due_amount);
-    data.accepted_amount = String(data.accepted_amount);
+    data.due_amount = Number(data.due_amount); // Ensure numeric value
+  
     if (this.selectedIndex !== null) {
-      // Update the existing record
+      // Update existing record
       this.installmentData[this.selectedIndex] = {
         ...this.installmentData[this.selectedIndex],
         ...data,
       };
-      this.installmentData = [...this.installmentData]; // Trigger UI update
-      this.selectedIndex = null;
     } else {
       // Add new record
-      this.installmentData = [...this.installmentData, { ...data }];
+      this.installmentData.push({ ...data });
     }
-
+  
+    // Update accepted_amount only up to the modified index
+    this.updateAcceptedAmounts(this.selectedIndex !== null ? this.selectedIndex : this.installmentData.length - 1);
+  
+    this.selectedIndex = null;
     this.installmentForm.reset(); // Reset form after submission
     this.enablePaymentInsert = false;
+  
+    // 🔥 Force UI update
+    this.installmentData = [...this.installmentData];
   }
-
+  
+  // Function to update accepted_amount only for the modified and previous entries
+  updateAcceptedAmounts(index: number) {
+    let updatedData = [...this.installmentData]; // Create a new reference to ensure UI updates
+  
+    if (index === 0) {
+      updatedData[0].accepted_amount = updatedData[0].due_amount;
+    } else {
+      for (let i = 0; i <= index; i++) {
+        if (i === 0) {
+          updatedData[i].accepted_amount = updatedData[i].due_amount;
+        } else {
+          updatedData[i].accepted_amount = updatedData[i - 1].accepted_amount + updatedData[i].due_amount;
+        }
+      }
+    }
+  
+    this.installmentData = updatedData; // Assign new array reference to trigger UI change
+  }
+  
+  
   transformInstallments(data: any) {
     if (!data || !data.installment || !data.user || !data.user_2) {
       throw new Error('Invalid input data');

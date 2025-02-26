@@ -19,6 +19,7 @@ export class MainLayoutComponent implements OnInit {
   showFiller = false;
   userDetails: any
   userName: any;
+  checkUsers: any;
 
 
   constructor(private router:Router){}
@@ -27,8 +28,13 @@ export class MainLayoutComponent implements OnInit {
   ngOnInit(): void {
     this.userDetails = localStorage.getItem('user-details');
     this.userDetails = JSON.parse(this.userDetails)
-    this.userName = this.userDetails?.name ?? '';
-    console.log(this.userDetails,'ss')
+    this.userName = this.userDetails?.name ?? '';    
+    this.showUsers();
+  }
+
+  showUsers(): void {
+    this.checkUsers = ['AGENT', 'LEAD'].includes(this.userDetails?.role || '');
+    console.log(this.checkUsers,'ss');
   }
 
   goToSettings() {

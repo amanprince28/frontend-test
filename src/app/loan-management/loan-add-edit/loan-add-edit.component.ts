@@ -110,7 +110,7 @@ export class LoanAddEditComponent implements OnInit {
     });
 
     this.loanDetailsForm
-    .get('payment_up_front')
+    .get('deposit_amount')
     ?.valueChanges.subscribe((value) => {
       // Get the current values from the form controls
       const principal_amount =
@@ -118,22 +118,20 @@ export class LoanAddEditComponent implements OnInit {
       const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
       const application_fee =
         this.loanDetailsForm.get('application_fee')?.value;
-      const payment_up_front =
-        this.loanDetailsForm.get('payment_up_front')?.value;
+  
 
         // Check if any of the values is null or undefined
         if (
           principal_amount == null ||
           deposit_amount == null ||
-          application_fee == null ||
-          payment_up_front == null
+          application_fee == null 
         ) {
           // If any value is null or undefined, reset amount_given to null
           this.loanDetailsForm.get('amount_given')?.setValue(null);
         } else {
           // Calculate amount_given if all values are defined
           const amount_given =
-            principal_amount - (deposit_amount + application_fee + payment_up_front);
+            principal_amount - deposit_amount;
           this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
         }
       });
@@ -215,20 +213,18 @@ export class LoanAddEditComponent implements OnInit {
     const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const application_fee = this.loanDetailsForm.get('application_fee')?.value;
-    const payment_up_front = this.loanDetailsForm.get('payment_up_front')?.value;
   
     if (
       principal_amount == null ||
       deposit_amount == null ||
-      application_fee == null ||
-      payment_up_front == null
+      application_fee == null 
     ) {
       // Reset amount_given if any value is null or undefined
       this.loanDetailsForm.get('amount_given')?.setValue(null);
     } else {
       // Calculate amount_given if all values are valid
       const amount_given =
-        principal_amount - (deposit_amount + application_fee + payment_up_front);
+        principal_amount - deposit_amount;
       this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
     }
   }
@@ -283,7 +279,6 @@ export class LoanAddEditComponent implements OnInit {
       principal_amount: new FormControl('', Validators.required),
       deposit_amount: new FormControl('', Validators.required),
       application_fee: new FormControl('', Validators.required),
-      payment_up_front: new FormControl('', Validators.required),
       interest: new FormControl('', Validators.required),
       amount_given: new FormControl({ value: '', disabled: true }),
       payment_per_term: new FormControl({ value: '', disabled: true }),
@@ -315,7 +310,6 @@ export class LoanAddEditComponent implements OnInit {
       principal_amount: row.principal_amount,
       deposit_amount: row.deposit_amount,
       application_fee: row.application_fee,
-      payment_up_front: row.payment_up_front,
       interest: row.interest,
       loan_remark: row.loan_remark,
       interest_amount: row.interest_amount,

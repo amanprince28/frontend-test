@@ -177,12 +177,10 @@ export class DataService {
     return this.http.delete<any>(url);
   }
 
+
   changePassword(currentPassword: string, newPassword: string): Observable<any> {
-    const payload = {
-      currentPassword,
-      newPassword,
-    };
-    return this.http.put(`${this.apiUrl}/auth/change-password`, payload);
+    const body = { currentPassword, newPassword };
+    return this.http.put(`${this.user}/change-password`, body); // Changed POST to PUT
   }
 
 

@@ -95,7 +95,7 @@ export class DetailsComponent {
     'remarks',
     'actions',
   ];
-  displayedColumnsRemark: string[] = ['remarks', 'createdBy', 'actions'];
+  displayedColumnsRemark: string[] = ['remarks','createdAt', 'createdBy', 'actions'];
   race: any[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -392,6 +392,8 @@ export class DetailsComponent {
     if (this.remarksForm.valid) {
       const remarksRecord = this.remarksForm.value;
       remarksRecord['createdBy']=this.createdBy
+      remarksRecord['createdAt'] = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+
       if (this.isRemarkEditMode) {
         // Update the record in edit mode
         this.remarkDataSource.data[this.bankEditIndex] = remarksRecord;
