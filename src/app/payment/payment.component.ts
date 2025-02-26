@@ -146,15 +146,9 @@ export class PaymentComponent implements OnInit {
           (data: any) => data?.status?.toLowerCase() === 'paid'
         );
 
-        if (response && response.user_2) {
-          this.loanSharingData = this.transformInstallments(response);
-         
-          this.dataSourceAgent1 = this.loanSharingData.user1.payments;
-          this.dataSourceAgent2 = this.loanSharingData.user2.payments;
-        }
-
         // Fetch Payment Data Correctly
         try {
+          this.paymentDataFromAPI = response.id
           const data = await this.getPaymentListing(response.id);
 
           if (data && Array.isArray(data) && data.length > 0) {
@@ -190,18 +184,32 @@ export class PaymentComponent implements OnInit {
                 )
             );
             this.paymentData = filteredData;
+
+            if (response && response.user_2) {
+              console.log(this.paymentData, 'inside');
+              
+              const data = { ...response, paymentdata: this.paymentData }; // Corrected assignment
+              
+              this.loanSharingData = this.transformInstallments(data);
+              
+              this.dataSourceAgent1 = this.loanSharingData.user1.payments;
+              this.dataSourceAgent2 = this.loanSharingData.user2.payments;
+          }
+
           } else {
             console.warn('No payment data found');
             this.paymentData = [];
           }
         } catch (error) {
-          console.error('Error fetching payment listing:', error);
+          this.snackbar.open('Error fetching payment listing', 'Close', { duration: 2000 });
+          // console.error('Error fetching payment listing:', error);
         }
       }else {
           this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
         }
     } catch (error) {
-      console.error('Error fetching loan details:', error);
+      this.snackbar.open('Error fetching loan details:', 'Close', { duration: 2000 });
+     // console.error('Error fetching loan details:', error);
     }
   }
 
@@ -228,6 +236,7 @@ export class PaymentComponent implements OnInit {
       .updateInstallment(this.searchQuery, this.installmentData)
       .subscribe((data) => {
         this.filterTable();
+        this.getPaymentListing(this.searchQuery)
         this.snackbar.open('Installment updated', '', { duration: 2000 });
       });
   }
@@ -388,13 +397,13 @@ export class PaymentComponent implements OnInit {
     let updatedData = [...this.installmentData]; // Create a new reference to ensure UI updates
   
     if (index === 0) {
-      updatedData[0].accepted_amount = updatedData[0].due_amount;
+      updatedData[0].accepted_amount = Number(updatedData[0].due_amount);
     } else {
       for (let i = 0; i <= index; i++) {
         if (i === 0) {
-          updatedData[i].accepted_amount = updatedData[i].due_amount;
+          updatedData[i].accepted_amount = Number(updatedData[i].due_amount);
         } else {
-          updatedData[i].accepted_amount = updatedData[i - 1].accepted_amount + updatedData[i].due_amount;
+          updatedData[i].accepted_amount = Number(updatedData[i - 1].accepted_amount) + Number(updatedData[i].due_amount);
         }
       }
     }
@@ -404,6 +413,7 @@ export class PaymentComponent implements OnInit {
   
   
   transformInstallments(data: any) {
+    console.log(data)
     if (!data || !data.installment || !data.user || !data.user_2) {
       throw new Error('Invalid input data');
     }
@@ -411,8 +421,8 @@ export class PaymentComponent implements OnInit {
     const user1Payments = [];
     const user2Payments = [];
 
-    for (const installment of data.installment) {
-      if (installment.status === 'Paid' && installment.accepted_amount) {
+    for (const installment of data.paymentdata) {
+      if (installment.accepted_amount) {
         const sharedAmount = installment.accepted_amount / 2;
 
         // Format the date to dd-mm-yyyy
@@ -423,14 +433,14 @@ export class PaymentComponent implements OnInit {
 
         user1Payments.push({
           paymentId: installment.generate_id,
-          paymentType: 'In',
+          paymentType: installment.paymentType,
           paymentDate: formattedDate,
           sharedAmount: sharedAmount,
         });
 
         user2Payments.push({
           paymentId: installment.generate_id,
-          paymentType: 'In',
+          paymentType: installment.paymentType,
           paymentDate: formattedDate,
           sharedAmount: sharedAmount,
         });
