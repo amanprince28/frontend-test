@@ -10,25 +10,27 @@ import { LoanAddEditComponent } from './loan-management/loan-add-edit/loan-add-e
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import { CustomerCheckComponent } from './customer-check/customer-check.component';
 import { PaymentComponent } from './payment/payment.component';
+import { RoleGuard } from './common/auth.guard';
 
 
 export const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
     path: '',
     component: MainLayoutComponent,
     children: [
-      { path: 'listing', component: ListingComponent },
-      { path: 'users', component: UsersListingComponent },
-      { path: 'users-details', component: UserDetailsComponent },
-      { path: 'users-details/:id', component: UserDetailsComponent },
-      { path: 'details/:id', component: DetailsComponent },
-      { path: 'details', component: DetailsComponent }, // Route for adding new details
-      {path:'loan',component:LoanManagementComponent},
-      {path:'loan-add',component:LoanAddEditComponent},
-      {path:'change-password',component:PasswordChangeComponent},
-      {path:'customer-check',component:CustomerCheckComponent},
-      {path:'payment',component:PaymentComponent},
+      { path: 'listing', component: ListingComponent,canActivate:[RoleGuard]  },
+      { path: 'users', component: UsersListingComponent,canActivate:[RoleGuard]  },
+      { path: 'users-details', component: UserDetailsComponent,canActivate:[RoleGuard]  },
+      { path: 'users-details/:id', component: UserDetailsComponent ,canActivate:[RoleGuard] },
+      { path: 'details/:id', component: DetailsComponent ,canActivate:[RoleGuard] },
+      { path: 'details', component: DetailsComponent ,canActivate:[RoleGuard] }, // Route for adding new details
+      {path:'loan',component:LoanManagementComponent,canActivate:[RoleGuard] },
+      {path:'loan-add',component:LoanAddEditComponent,canActivate:[RoleGuard] },
+      {path:'change-password',component:PasswordChangeComponent,canActivate:[RoleGuard] },
+      {path:'customer-check',component:CustomerCheckComponent,canActivate:[RoleGuard] },
+      {path:'payment',component:PaymentComponent,canActivate:[RoleGuard] },
     ]
   }
 ];

@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./main-layout.component.scss'] // Make sure the CSS file is created if needed
 })
 export class MainLayoutComponent implements OnInit {
-  title = 'frontend-test';
+  title = 'Loan ';
   showFiller = false;
   userDetails: any
   userName: any;
@@ -33,7 +33,7 @@ export class MainLayoutComponent implements OnInit {
   }
 
   showUsers(): void {
-    this.checkUsers = ['AGENT', 'LEAD'].includes(this.userDetails?.role || '');
+    this.checkUsers = ['AGENT', 'LEAD','ADMIN'].includes(this.userDetails?.role || '');
     console.log(this.checkUsers,'ss');
   }
 
@@ -42,7 +42,8 @@ export class MainLayoutComponent implements OnInit {
   }
 
   logout() {
-    this.router.navigate(['/']);
+    localStorage.removeItem('user-details');
+    this.router.navigate(['/login']);
   }
 
   changePassword(){
