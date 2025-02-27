@@ -95,9 +95,11 @@ export class LoanAddEditComponent implements OnInit {
     this.fetchUserData();
     this.fetchCustomer();
 
-    this.route.params.subscribe((params) => {
+    this.route.params.subscribe(async (params) => {
       if (params['action'] === 'edit' || params['action'] === 'view') {
-        this.loadAllData(params);
+        const loanData = await this.dataService.getLoanById(params['generate_id']).toPromise()
+        this.loadAllData(loanData);
+       
         this.isEditMode = params['action'] === 'edit';
         if (params['action'] === 'view') {
           this.agentDetailsForm.disable();
@@ -290,18 +292,19 @@ export class LoanAddEditComponent implements OnInit {
   }
   loadAllData(row: any) {
     this.loan_id = row.id;
+  
     this.agentDetailsForm.patchValue({
       agentId: row.supervisor,
-      agentName: row.agentName,
+      agentName: row.user.name,
       agentLead: row.agentLead,
     });
 
     this.customerDetailsForm.patchValue({
-      customerId: row.customer_id,
-      customerName: row.customerName,
-      mobile: row.mobile,
+      customerId: row.customer.id,
+      customerName: row.customer.name,
+      mobile: row.customer.mobile_no,
       customerAddress: row.customerAddress,
-      customerIc : row.ic
+      customerIc : row.customer.ic
     });
 
     this.loanDetailsForm.patchValue({
@@ -317,6 +320,7 @@ export class LoanAddEditComponent implements OnInit {
       payment_per_term: row.payment_per_term,
       unit_of_date: row.unit_of_date,
       repayment_term: row.repayment_term,
+      status:row.status
     });
   }
 
@@ -337,10 +341,15 @@ export class LoanAddEditComponent implements OnInit {
       loanData.id = this.loan_id;
     }
     console.log(loanData, 'loan data');
-
+    if(this.isEditMode){
+      this.dataService.updateLoan(this.loan_id,loanData).subscribe((response) => {
+        this.router.navigate(['/loan']);
+      });
+    }else{
     this.dataService.addLoan(loanData).subscribe((response) => {
       this.router.navigate(['/loan']);
     });
+  }
   }
 
   cancel() {

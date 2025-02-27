@@ -3,19 +3,22 @@
     <h4>Payment</h4>
   </nav>
 
-  <div class="search-filter-create">
-    <mat-form-field class="search-input" appearance="outline">
-      <input
-        matInput
-        [(ngModel)]="searchQuery"
-        placeholder="Loan ID"
-        name="searchQuery"
-      />
-    </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="filterTable()">
-      Search 
-    </button>
-  </div>
+  <form (ngSubmit)="filterTable()">
+    <div class="search-filter-create">
+      <mat-form-field class="search-input" appearance="outline">
+        <input
+          matInput
+          [(ngModel)]="searchQuery"
+          placeholder="Loan ID"
+          name="searchQuery"
+          required
+        />
+      </mat-form-field>
+      <button mat-stroked-button color="primary" type="submit">
+        Search
+      </button>
+    </div>
+  </form>
 
   <mat-card>
     <mat-card-title>Loan Details</mat-card-title>
@@ -238,10 +241,10 @@
               <!-- First Table -->
               <h6>Agent Name: {{loanSharingData?.user1?.name}}</h6>
               <table style="margin: 20px 20px ;" mat-table [dataSource]="dataSourceAgent1" class="mat-elevation-z8">
-                <ng-container matColumnDef="paymentId">
+                <!-- <ng-container matColumnDef="paymentId">
                   <th mat-header-cell *matHeaderCellDef> Payment ID </th>
                   <td mat-cell *matCellDef="let element"> {{ element.paymentId }} </td>
-                </ng-container>
+                </ng-container> -->
         
                 <ng-container matColumnDef="paymentType">
                   <th mat-header-cell *matHeaderCellDef> Payment Type </th>
@@ -265,10 +268,10 @@
               <!-- Second Table -->
               <h6>Agent Name: {{loanSharingData?.user2?.name}}</h6>
               <table style="margin: 20px 20px;" mat-table [dataSource]="dataSourceAgent2" class="mat-elevation-z8">
-                <ng-container matColumnDef="paymentId">
+                <!-- <ng-container matColumnDef="paymentId">
                   <th mat-header-cell *matHeaderCellDef> Payment ID </th>
                   <td mat-cell *matCellDef="let element"> {{ element.paymentId }} </td>
-                </ng-container>
+                </ng-container> -->
         
                 <ng-container matColumnDef="paymentType">
                   <th mat-header-cell *matHeaderCellDef> Payment Type </th>

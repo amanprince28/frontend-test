@@ -6,7 +6,7 @@
     <!-- <h5>Filter</h5> -->
     <div class="search-filter-create">
       <mat-form-field class="search-input" appearance="outline">
-        <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keyup)="filterTable()"/>
+        <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keydown.enter)="filterTable()"/>
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
       <!-- <button mat-stroked-button color="accent">Export</button> -->
@@ -33,12 +33,12 @@
 
         <ng-container matColumnDef="principleAmount">
           <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
-          <td mat-cell *matCellDef="let element">{{ element.principal_amount + " RM"}}</td>
+          <td mat-cell *matCellDef="let element">{{ "RM " + element.principal_amount }}</td>
         </ng-container>
 
         <ng-container matColumnDef="amountGiven">
           <th mat-header-cell *matHeaderCellDef>Amount Given</th>
-          <td mat-cell *matCellDef="let element">{{ element.amount_given +" RM" }}</td>
+          <td mat-cell *matCellDef="let element">{{"RM "+ element.amount_given }}</td>
         </ng-container>
 
         <ng-container matColumnDef="paymentTerm">
@@ -53,7 +53,7 @@
 
         <ng-container matColumnDef="paymentPerTerm">
           <th mat-header-cell *matHeaderCellDef>Payment Per Term</th>
-          <td mat-cell *matCellDef="let element">{{ element.payment_per_term +" RM" }}</td>
+          <td mat-cell *matCellDef="let element">{{ "RM " + element.payment_per_term  }}</td>
         </ng-container>
 
         <!-- Action Column for Edit and View -->

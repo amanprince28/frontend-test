@@ -60,15 +60,6 @@ export class LoanManagementComponent implements OnInit {
     private dialog:MatDialog
   ) {}
 
-  // loanData = [
-  //   {
-  //     agentName: 'Agent Vinod',
-  //     customerName: 'Ali Bin Abu',
-  //     customerId: '1234567890',
-  //     loanPackage: '6 Months',
-  //     principleAmount: '1000',
-  //   },
-  // ];
 
   ngOnInit(): void {
     this.userDetails = localStorage.getItem('user-details');

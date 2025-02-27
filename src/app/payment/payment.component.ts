@@ -104,7 +104,7 @@ export class PaymentComponent implements OnInit {
     'actions',
   ];
   displayedColumns: string[] = [
-    'paymentId',
+    
     'paymentType',
     'paymentDate',
     'sharedAmount',
@@ -121,8 +121,6 @@ export class PaymentComponent implements OnInit {
   async filterTable(): Promise<void> {
     try {
       const searchValue = this.searchQuery;
-     
-
       const response = await this.dataService
         .getLoanById(searchValue)
         .toPromise();
@@ -236,7 +234,7 @@ export class PaymentComponent implements OnInit {
       .updateInstallment(this.searchQuery, this.installmentData)
       .subscribe((data) => {
         this.filterTable();
-        this.getPaymentListing(this.searchQuery)
+        //this.getPaymentListing(this.searchQuery)
         this.snackbar.open('Installment updated', '', { duration: 2000 });
       });
   }
