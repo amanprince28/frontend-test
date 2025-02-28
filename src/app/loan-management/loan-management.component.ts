@@ -43,6 +43,7 @@ export class LoanManagementComponent implements OnInit {
     'paymentTerm',
     'interest',
     'paymentPerTerm',
+    'status',
     'actions',
   ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;

@@ -57,6 +57,7 @@ export class CustomerCheckComponent {
     'ongoing',
     'completed',
     'badDebt',
+    'badDebtCompleted',
     'lastPaymentDate',
     'nextPaymentDate',
   ];
@@ -215,6 +216,7 @@ export class CustomerCheckComponent {
         let completedCount = 0;
         let ongoingCount = 0;
         let badDebtCount = 0;
+        let badDebtCompletedCount = 0;
 
         // Track status occurrences
         if (item.status === "Completed") {
@@ -224,6 +226,9 @@ export class CustomerCheckComponent {
         } else if (item.status === "Bad Debt") {
             badDebtCount++;
         }
+        else if (item.status === "Bad Debt Completed") {
+          badDebtCompletedCount++;
+      }
 
         // Sort installments by date (earliest first)
         item.installment.sort((a: any, b: any) => 
