@@ -158,9 +158,9 @@ export class DetailsComponent {
         mobile_no: new FormControl(null, Validators.required),
         //tel_code: new FormControl('+1', Validators.required), // Default value
         tel_no: new FormControl(null, Validators.required),
-        email: new FormControl(null, [Validators.required, Validators.email]),
+        // email: new FormControl(null, [Validators.required, Validators.email]),
         car_plate: new FormControl(null),
-        relationship: new FormControl(null, Validators.required),
+        // relationship: new FormControl(null, Validators.required),
         //tel_no: new FormControl('', Validators.required),
         fblink: new FormControl(''),
         //car_plate: new FormControl(''),
@@ -627,44 +627,44 @@ export class DetailsComponent {
   //   });
   // }
 
-  loadEmployementData(id: string) {
-    this.dataService.getCustomerById(this.customerId).subscribe((data) => {
-      const signalData = data;
-      this.dataSource.data = signalData?.relations;
-      this.bankDataSource.data = signalData?.bank_details;
-      if (
-        this.signalData &&
-        this.signalData.customer_address &&
-        this.signalData.customer_address.length > 0
-      ) {
-        const customerPermanentAddress = this.signalData.customer_address.find(
-          (address: any) => address.is_permanent
-        );
+  // loadEmployementData(id: string) {
+  //   this.dataService.getCustomerById(this.customerId).subscribe((data) => {
+  //     const signalData = data;
+  //     this.dataSource.data = signalData?.relations;
+  //     this.bankDataSource.data = signalData?.bank_details;
+  //     if (
+  //       this.signalData &&
+  //       this.signalData.customer_address &&
+  //       this.signalData.customer_address.length > 0
+  //     ) {
+  //       const customerPermanentAddress = this.signalData.customer_address.find(
+  //         (address: any) => address.is_permanent
+  //       );
 
-        this.customerEmployemntForm.patchValue({
-          annual_income: signalData?.employment?.annual_income,
-          department: signalData?.employment?.department,
-          business_type: signalData?.employment?.business_type,
-          employee_no: signalData?.employment?.employee_no,
-          //employee_type: signalData?.employment?.employee_type,
-          income_date: signalData?.employment?.income_date,
-          //income_type: signalData?.employment?.income_type,
-          occupation_category: signalData?.employment?.occupation_category,
-          position: signalData?.employment?.position,
-          employment_remarks: signalData?.employment?.employment_remarks,
-          //telecode: signalData?.employment?.tel_code,
-          telephone_no: signalData?.employment?.telephone_no,
-        });
-        console.log(this.customerEmployemntForm, 'ssform');
-        this.onCountryChange(
-          customerPermanentAddress.country_id ||
-            this.signalData.customer_address[0].country_id
-        );
-      } else {
-        this.isEditMode = false;
-      }
-    });
-  }
+  //       this.customerEmployemntForm.patchValue({
+  //         annual_income: signalData?.employment?.annual_income,
+  //         department: signalData?.employment?.department,
+  //         business_type: signalData?.employment?.business_type,
+  //         employee_no: signalData?.employment?.employee_no,
+  //         //employee_type: signalData?.employment?.employee_type,
+  //         income_date: signalData?.employment?.income_date,
+  //         //income_type: signalData?.employment?.income_type,
+  //         occupation_category: signalData?.employment?.occupation_category,
+  //         position: signalData?.employment?.position,
+  //         employment_remarks: signalData?.employment?.employment_remarks,
+  //         //telecode: signalData?.employment?.tel_code,
+  //         telephone_no: signalData?.employment?.telephone_no,
+  //       });
+  //       console.log(this.customerEmployemntForm, 'ssform');
+  //       this.onCountryChange(
+  //         customerPermanentAddress.country_id ||
+  //           this.signalData.customer_address[0].country_id
+  //       );
+  //     } else {
+  //       this.isEditMode = false;
+  //     }
+  //   });
+  // }
 
   fetchCountries(): void {
     this.dataService
@@ -794,6 +794,14 @@ export class DetailsComponent {
   }
 
   async onMasterSubmit() {
+    if(this.customerForm.invalid){
+      this.snackBar.open('Please fill all mandatory fields', 'Close', {
+        duration: 3000, // Duration in milliseconds
+        horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+        verticalPosition: 'bottom', // Position: 'top', 'bottom'
+      });
+      return 
+    }
     const submissionData: any = {
       name: this.customerForm.get('name')?.value,
       ic: this.customerForm.get('ic')?.value,
@@ -803,7 +811,7 @@ export class DetailsComponent {
       no_of_child: this.customerForm.get('no_of_child')?.value,
       mobile_no: this.customerForm.get('mobile_no')?.value,
       tel_no: this.customerForm.get('tel_no')?.value,
-      email: this.customerForm.get('email')?.value,
+      // email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
       status: this.customerForm.get('status')?.value,
       customer_address: [
