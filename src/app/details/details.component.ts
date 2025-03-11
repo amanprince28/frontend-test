@@ -884,14 +884,35 @@ export class DetailsComponent {
     }
 
     console.log(submissionData, 'master submit');
-    await this.dataService.addCustomer(submissionData).subscribe((response) => {
-      this.snackBar.open('Record Saved', 'Close', {
-        duration: 3000, // Duration in milliseconds
-        horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-        verticalPosition: 'bottom', // Position: 'top', 'bottom'
-      });
-      this.router.navigate(['/listing']);
-    });
+    this.dataService.addCustomer(submissionData).subscribe(
+      (response) => {
+        // Success callback
+        this.snackBar.open('Record Saved', 'Close', {
+          duration: 3000, // Duration in milliseconds
+          horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          verticalPosition: 'bottom', // Position: 'top', 'bottom'
+        });
+        this.router.navigate(['/listing']);
+      },
+      (error) => {
+        // Error callback
+        if (error.status === 400 && error.error.message === 'IC already exist') {
+          // Handle the specific error case
+          this.snackBar.open('IC already exists. Please use a different IC.', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+          });
+        } else {
+          // Handle other errors
+          this.snackBar.open('An error occurred. Please try again.', 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+          });
+        }
+      }
+    );
     if (this.uploadedFiles && this.uploadedFiles.length > 0) {
       const data = { id: this.customerId, filesData: this.uploadedFiles };
       console.log(data,this.formDataValues, 'data');
