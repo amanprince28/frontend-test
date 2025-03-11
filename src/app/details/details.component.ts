@@ -576,6 +576,7 @@ export class DetailsComponent {
           email: data.email,
           car_plate: data.car_plate,
           status: data.status,
+          race: data.race,
         });
         this.customerAddressForm.patchValue({
           same_as_permanent: customerPermanentAddress?.is_permanent,
