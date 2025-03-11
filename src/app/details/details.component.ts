@@ -820,7 +820,7 @@ export class DetailsComponent {
       // email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
       status: this.customerForm.get('status')?.value,
-      race:this.customerAddressForm.get('race')?.value,
+      race:this.customerForm.get('race')?.value,
       customer_address: [
         {
           address_lines:
