@@ -884,6 +884,7 @@ export class DetailsComponent {
     }
 
     console.log(submissionData, 'master submit');
+    if(this.signalData ==null){
     this.dataService.addCustomer(submissionData).subscribe(
       (response) => {
         // Success callback
@@ -913,12 +914,18 @@ export class DetailsComponent {
         }
       }
     );
-    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
+    }
+    else{
       const data = { id: this.customerId, filesData: this.uploadedFiles };
       console.log(data,this.formDataValues, 'data');
       await this.dataService.uploadFiles(data).subscribe((response) => {
-        console.log(response);
+        this.snackBar.open('Record Updated', 'Close', {
+          duration: 3000, // Duration in milliseconds
+          horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+          verticalPosition: 'bottom', // Position: 'top', 'bottom'
+        });
+        this.router.navigate(['/listing']);
       });
-    }
+  }
   }
 }
