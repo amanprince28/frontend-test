@@ -132,9 +132,9 @@ export class DataService {
     return this.http.put<any>(updateUrl, user);
   }
   
-  updateCustomer(customer: any): Observable<any> {
-    const url = this.apiUrl + '/customer';
-    return this.http.post<any>(url + '/:id', customer);
+  updateCustomer(id: string, updateCustomerDto: any): Observable<any> {
+    const url = `${this.apiUrl}/customer/${id}`; 
+    return this.http.put(url, updateCustomerDto); 
   }
 
   saveLoan(loanData: any): Observable<any> {

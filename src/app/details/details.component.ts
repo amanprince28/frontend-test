@@ -95,7 +95,12 @@ export class DetailsComponent {
     'remarks',
     'actions',
   ];
-  displayedColumnsRemark: string[] = ['remarks','createdAt', 'createdBy', 'actions'];
+  displayedColumnsRemark: string[] = [
+    'remarks',
+    'createdAt',
+    'createdBy',
+    'actions',
+  ];
   race: any[] = [];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -117,7 +122,7 @@ export class DetailsComponent {
   customerRelationshipId: any;
   selectedFile: any;
   uploadedDocumentSource = new MatTableDataSource<any>([]);
-  formDataValues:any
+  formDataValues: any;
   createdBy: any;
   userDetailsFromStorage: any;
 
@@ -142,7 +147,7 @@ export class DetailsComponent {
   ngOnInit() {
     // Initialize form controls
     this.userDetailsFromStorage = localStorage.getItem('user-details');
-    this.userDetailsFromStorage = JSON.parse(this.userDetailsFromStorage)
+    this.userDetailsFromStorage = JSON.parse(this.userDetailsFromStorage);
     this.createdBy = this.userDetailsFromStorage?.name ?? '';
     this.race = ['Chinese', 'Malay', 'Indian', 'Other'];
     this.customerForm = new FormGroup(
@@ -232,7 +237,7 @@ export class DetailsComponent {
           this.clearCorrespondenceAddress('customerAddressForm');
         }
       });
-    
+
     this.customerRelationshipForm
       .get('same_as_permanent')
       ?.valueChanges.subscribe((value) => {
@@ -249,7 +254,7 @@ export class DetailsComponent {
       this.customerId = params['id'];
       if (this.customerId && params) {
         this.loadCustomerData(this.customerId);
-        
+
         //this.loadCustomerRaltionshipData(this.customerId);
         //this.loadEmployementData(this.customerId);
         if (params['action'] === 'edit') {
@@ -273,24 +278,23 @@ export class DetailsComponent {
     this.fetchCountries();
   }
 
-  getDocument(customerId:any){
-    this.dataService.getDocumentById(customerId).subscribe((res)=>{
-      if(res.length>0){
-        res.forEach((el:any)=>{
-          const temp ={
+  getDocument(customerId: any) {
+    this.dataService.getDocumentById(customerId).subscribe((res) => {
+      if (res.length > 0) {
+        res.forEach((el: any) => {
+          const temp = {
             fileName: el.name,
-            fileDescription:el.description, 
+            fileDescription: el.description,
             fileSize: el.size,
             fileType: el.type,
-          }
-          this.uploadedFiles.push(temp)
-        })
-        console.log(this.uploadedFiles,'uploadedFiles');
+          };
+          this.uploadedFiles.push(temp);
+        });
+        console.log(this.uploadedFiles, 'uploadedFiles');
         this.uploadedDocumentSource.data = this.uploadedFiles;
-        
       }
       console.log(res);
-    })
+    });
   }
 
   onCustomerRelationSave() {
@@ -391,8 +395,10 @@ export class DetailsComponent {
   onRemarksSubmit(): void {
     if (this.remarksForm.valid) {
       const remarksRecord = this.remarksForm.value;
-      remarksRecord['createdBy']=this.createdBy
-      remarksRecord['createdAt'] = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
+      remarksRecord['createdBy'] = this.createdBy;
+      remarksRecord['createdAt'] = new Date()
+        .toLocaleDateString('en-GB')
+        .replace(/\//g, '-');
 
       if (this.isRemarkEditMode) {
         // Update the record in edit mode
@@ -519,7 +525,7 @@ export class DetailsComponent {
             this.documentsForm.value.fileDescription
           );
         });
-        console.log(formData,'sss');
+        console.log(formData, 'sss');
         this.uploadedDocumentSource.data = [...this.uploadedFiles];
       }
 
@@ -532,8 +538,8 @@ export class DetailsComponent {
   }
 
   clearUploadForm() {
-    this.fileEditStatus=false;
-    this.selectedFiles[0]=null;
+    this.fileEditStatus = false;
+    this.selectedFiles[0] = null;
     this.documentsForm.reset();
   }
 
@@ -794,13 +800,13 @@ export class DetailsComponent {
   }
 
   async onMasterSubmit() {
-    if(this.customerForm.invalid){
+    if (this.customerForm.invalid) {
       this.snackBar.open('Please fill all mandatory fields', 'Close', {
         duration: 3000, // Duration in milliseconds
         horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
         verticalPosition: 'bottom', // Position: 'top', 'bottom'
       });
-      return 
+      return;
     }
     const submissionData: any = {
       name: this.customerForm.get('name')?.value,
@@ -814,6 +820,7 @@ export class DetailsComponent {
       // email: this.customerForm.get('email')?.value,
       car_plate: this.customerForm.get('car_plate')?.value,
       status: this.customerForm.get('status')?.value,
+      race:this.customerAddressForm.get('race')?.value,
       customer_address: [
         {
           address_lines:
@@ -868,7 +875,7 @@ export class DetailsComponent {
       };
     }
 
-   // Add customerRelationshipData only if there are values in the form
+    // Add customerRelationshipData only if there are values in the form
     if (this.dataSource.data.length > 0) {
       submissionData.relations = this.dataSource.data;
     }
@@ -884,40 +891,68 @@ export class DetailsComponent {
     }
 
     console.log(submissionData, 'master submit');
-    if(this.signalData ==null){
-    this.dataService.addCustomer(submissionData).subscribe(
-      (response) => {
-        // Success callback
-        this.snackBar.open('Record Saved', 'Close', {
-          duration: 3000, // Duration in milliseconds
-          horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
-          verticalPosition: 'bottom', // Position: 'top', 'bottom'
-        });
-        this.router.navigate(['/listing']);
-      },
-      (error) => {
-        // Error callback
-        if (error.status === 400 && error.error.message === 'IC already exist') {
-          // Handle the specific error case
-          this.snackBar.open('IC already exists. Please use a different IC.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'bottom',
+    if (this.signalData == null) {
+      this.dataService.addCustomer(submissionData).subscribe(
+        (response) => {
+          // Success callback
+          this.snackBar.open('Record Saved', 'Close', {
+            duration: 3000, // Duration in milliseconds
+            horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+            verticalPosition: 'bottom', // Position: 'top', 'bottom'
           });
-        } else {
-          // Handle other errors
-          this.snackBar.open('An error occurred. Please try again.', 'Close', {
-            duration: 3000,
-            horizontalPosition: 'center',
-            verticalPosition: 'bottom',
-          });
+          this.router.navigate(['/listing']);
+        },
+        (error) => {
+          // Error callback
+          if (
+            error.status === 400 &&
+            error.error.message === 'IC already exist'
+          ) {
+            // Handle the specific error case
+            this.snackBar.open(
+              'IC already exists. Please use a different IC.',
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+              }
+            );
+          } else {
+            // Handle other errors
+            this.snackBar.open(
+              'An error occurred. Please try again.',
+              'Close',
+              {
+                duration: 3000,
+                horizontalPosition: 'center',
+                verticalPosition: 'bottom',
+              }
+            );
+          }
         }
-      }
-    );
+      );
+    } else {
+      this.dataService
+        .updateCustomer(this.customerId, submissionData)
+        .subscribe(
+          (response) => {
+            this.snackBar.open('Record Updated', 'Close', {
+              duration: 3000, // Duration in milliseconds
+              horizontalPosition: 'center', // Position: 'start', 'center', 'end', 'left', 'right'
+              verticalPosition: 'bottom', // Position: 'top', 'bottom'
+            });
+            this.router.navigate(['/listing']);
+          },
+          (error) => {
+            console.error('Error updating customer:', error);
+            // Handle error (e.g., show an error message)
+          }
+        );
     }
-    else{
+    if (this.uploadedFiles && this.uploadedFiles.length > 0) {
       const data = { id: this.customerId, filesData: this.uploadedFiles };
-      console.log(data,this.formDataValues, 'data');
+      console.log(data, this.formDataValues, 'data');
       await this.dataService.uploadFiles(data).subscribe((response) => {
         this.snackBar.open('Record Updated', 'Close', {
           duration: 3000, // Duration in milliseconds
@@ -926,6 +961,6 @@ export class DetailsComponent {
         });
         this.router.navigate(['/listing']);
       });
-  }
+    }
   }
 }
