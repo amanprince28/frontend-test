@@ -64,9 +64,14 @@ export class GenericModalComponent {
 
       if(this.title == "Agent Search"){
       this.dataService.findAgentAndLeads(searchValue).subscribe((response) => {
-        this.dataSource.data = response;
-        this.searchControl.reset();
-        this.searchControl.reset();
+        if(response.length>0){
+          this.dataSource.data = response.filter((el: any) => el.role === 'AGENT');
+          this.searchControl.reset();
+          this.searchControl.reset();
+        }
+        // this.dataSource.data = response;
+        // console.log(this.dataSource.data,'ssss');
+      
       });
     }
     if(this.title=="Customer Search"){

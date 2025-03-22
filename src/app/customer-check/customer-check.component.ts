@@ -153,6 +153,8 @@ export class CustomerCheckComponent {
           this.dataSource.data = filteredDate;
           this.paginator.length = response.totalCount;
         } else {
+          this.dataSource.data = [];
+          this.paginator.length = 0;
           this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
         }
       });
@@ -262,6 +264,7 @@ export class CustomerCheckComponent {
             existing.completedCount += completedCount;
             existing.ongoingCount += ongoingCount;
             existing.badDebtCount += badDebtCount;
+            existing.badDebtCompletedCount += badDebtCompletedCount;
 
             existing.lastPaidDate = getLatestDate(existing.lastPaidDate, lastPaidDate);
             existing.nextInstallmentDate = getEarliestDate(existing.nextInstallmentDate, nextInstallmentDate);
@@ -272,6 +275,7 @@ export class CustomerCheckComponent {
                 ongoingCount,
                 badDebtCount,
                 lastPaidDate,
+                badDebtCompletedCount,
                 nextInstallmentDate
             });
         }

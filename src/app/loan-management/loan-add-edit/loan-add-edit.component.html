@@ -45,21 +45,10 @@
     <div class="section">
       <h5>Customer Details</h5>
       <form [formGroup]="customerDetailsForm">
-        <!-- Search Bar for Customer Details -->
-        <!-- <div class="search-bar">
-          <mat-form-field appearance="fill" class="search-field small-search">
-            <mat-label>Search Customer</mat-label>
-            <input matInput formControlName="customerSearchQuery" placeholder="Enter customer name or ID">
-          </mat-form-field>
-          <button mat-icon-button color="primary" (click)="searchCustomerDetails()">
-            <mat-icon>search</mat-icon>
-          </button>
-        </div> -->
-        <!-- Customer Details Fields -->
         <div class="fields-row">
           <mat-form-field appearance="fill">
             <mat-label>Customer IC/Passport</mat-label>
-            <input formControlName="customerIc" matInput required>
+            <input formControlName="customerIc"  matInput required>
             <button mat-icon-button matSuffix (click)="openCustomerSearch()">
               <mat-icon>search</mat-icon>
             </button>
