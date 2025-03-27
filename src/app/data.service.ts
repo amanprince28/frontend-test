@@ -7,7 +7,7 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'http://54.151.165.48/var/project/backend';
+  private apiUrl = 'http://54.151.165.48';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -185,7 +185,7 @@ export class DataService {
 
   changePassword(currentPassword: string, newPassword: string): Observable<any> {
     const body = { currentPassword, newPassword };
-    return this.http.put(`${this.user}/change-password`, body); // Changed POST to PUT
+    return this.http.put(`${this.apiUrl}/auth/change-password`, body); // Changed POST to PUT
   }
 
 
