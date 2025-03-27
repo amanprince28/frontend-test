@@ -35,7 +35,10 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./listing.component.scss']
 })
 export class ListingComponent implements OnInit {
-  displayedColumns: string[] = ['userId','name', 'ic', 'passport', 'actions'];
+  displayedColumns: string[] = ['userId','name', 'ic', 'passport','mobileNo','ongoing',
+    'completed',
+    'badDebt',
+    'badDebtCompleted', 'actions'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
   searchQuery: any;

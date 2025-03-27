@@ -133,7 +133,7 @@ export class LoanAddEditComponent implements OnInit {
         } else {
           // Calculate amount_given if all values are defined
           const amount_given =
-            principal_amount - deposit_amount;
+            principal_amount - deposit_amount-application_fee;
           this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
         }
       });
@@ -163,7 +163,7 @@ export class LoanAddEditComponent implements OnInit {
           this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
       
           const payment_per_term =
-            (principal_amount + interest_amount) / repayment_terms;
+            (principal_amount ) / repayment_terms;
           this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
         }
       });
@@ -226,7 +226,7 @@ export class LoanAddEditComponent implements OnInit {
     } else {
       // Calculate amount_given if all values are valid
       const amount_given =
-        principal_amount - deposit_amount;
+        principal_amount - deposit_amount-application_fee;
       this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
     }
   }
@@ -251,7 +251,7 @@ export class LoanAddEditComponent implements OnInit {
       const interest_amount = principal_amount * (interest / 100) * repayment_terms;
       this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
   
-      const payment_per_term = (principal_amount + interest_amount) / repayment_terms;
+      const payment_per_term = (principal_amount - deposit_amount) / repayment_terms;
       this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
     }
   }
