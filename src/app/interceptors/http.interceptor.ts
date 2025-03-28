@@ -7,11 +7,12 @@ export class HttpInterceptorService implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const tokenString = localStorage.getItem('user-details');
     let accessToken: string | null = null;
-
+    let userid;
     if (tokenString) {
       try {
         const token = JSON.parse(tokenString); // Parse the string into an object
         accessToken = token.access_token;
+        userid = token.id
       } catch (error) {
         console.error('Error parsing token from localStorage:', error);
       }
@@ -22,6 +23,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       const modifiedRequest = request.clone({
         setHeaders: {
           'access_token': accessToken,
+          'user_id':userid
         },
       });
       return next.handle(modifiedRequest); // Forward the modified request
