@@ -3,32 +3,48 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/c
 import { Observable } from 'rxjs';
 
 @Injectable()
+
 export class HttpInterceptorService implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const tokenString = localStorage.getItem('user-details');
     let accessToken: string | null = null;
-    let userid;
+    let userid: string | null = null;
+    
     if (tokenString) {
       try {
-        const token = JSON.parse(tokenString); // Parse the string into an object
+        const token = JSON.parse(tokenString);
         accessToken = token.access_token;
-        userid = token.id
+        userid = token.id;
       } catch (error) {
         console.error('Error parsing token from localStorage:', error);
       }
     }
 
-    // Add the access token only to GET and POST requests
-    if (accessToken && (request.method === 'GET' || request.method === 'POST' ||request.method==='PUT')) {
-      const modifiedRequest = request.clone({
+    // Add the access token to headers for GET, POST, and PUT requests
+    if (accessToken && (request.method === 'GET' || request.method === 'POST' || request.method === 'PUT')) {
+      let modifiedRequest = request.clone({
         setHeaders: {
           'access_token': accessToken,
-          'user_id':userid
-        },
+          'user_id': userid || ''
+        }
       });
-      return next.handle(modifiedRequest); // Forward the modified request
+
+      // For POST and PUT requests, add userid to the body if it exists
+      if ((request.method === 'POST' || request.method === 'PUT') && userid) {
+        const body = request.body ? { ...request.body, userid } : { userid };
+        modifiedRequest = modifiedRequest.clone({ body });
+      }
+
+      // For GET requests, add userid to the query params if it exists
+      if (request.method === 'GET' && userid) {
+        modifiedRequest = modifiedRequest.clone({
+          params: request.params.set('userid', userid)
+        });
+      }
+
+      return next.handle(modifiedRequest);
     }
 
-    return next.handle(request); // Forward other requests without changes
+    return next.handle(request);
   }
 }
