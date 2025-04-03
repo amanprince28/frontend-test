@@ -8,37 +8,37 @@
         <div class="fields-row">
           <mat-form-field appearance="fill" class="search-field">
             <mat-label>Agent Name</mat-label>
-            <input formControlName="agentName" matInput required>
+            <input formControlName="agentName" matInput required />
             <button mat-icon-button matSuffix (click)="openAgentSearch()">
               <mat-icon>search</mat-icon>
             </button>
           </mat-form-field>
-      
-          <mat-icon class="clickable-icon" (click)="openAgentSearch('two')">add</mat-icon>
-      
+
+          <mat-icon class="clickable-icon" (click)="openAgentSearch('two')"
+            >add</mat-icon
+          >
+
           <mat-form-field appearance="fill">
             <mat-label>Agent ID</mat-label>
-            <input formControlName="agentId" matInput required>
+            <input formControlName="agentId" matInput required />
           </mat-form-field>
         </div>
-      
+
         <div *ngIf="secondAgent" class="fields-row">
           <mat-form-field appearance="fill" class="search-field">
             <mat-label>Agent Name</mat-label>
-            <input formControlName="agentName1" matInput required>
+            <input formControlName="agentName1" matInput required />
             <button mat-icon-button matSuffix (click)="openAgentSearch()">
               <mat-icon>search</mat-icon>
             </button>
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill">
             <mat-label>Agent ID</mat-label>
-            <input formControlName="agentId1" matInput required>
+            <input formControlName="agentId1" matInput required />
           </mat-form-field>
         </div>
       </form>
-      
-    
     </div>
 
     <!-- Customer Details Section -->
@@ -48,7 +48,7 @@
         <div class="fields-row">
           <mat-form-field appearance="fill">
             <mat-label>Customer IC/Passport</mat-label>
-            <input formControlName="customerIc"  matInput required>
+            <input formControlName="customerIc" matInput required />
             <button mat-icon-button matSuffix (click)="openCustomerSearch()">
               <mat-icon>search</mat-icon>
             </button>
@@ -56,16 +56,13 @@
           <!-- <mat-icon (click)="openCustomerSearch()">search</mat-icon> -->
           <mat-form-field appearance="fill">
             <mat-label>Customer Name</mat-label>
-            <input formControlName="customerName" matInput required>
+            <input formControlName="customerName" matInput required />
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Mobile</mat-label>
-            <input formControlName="mobile" matInput type="tel" required>
+            <input formControlName="mobile" matInput type="tel" required />
           </mat-form-field>
         </div>
-
-        
-
       </form>
     </div>
 
@@ -76,26 +73,33 @@
         <div class="fields-row">
           <mat-form-field appearance="fill">
             <mat-label>Principal Amount</mat-label>
-            <input formControlName="principal_amount" matInput type="number">
+            <input formControlName="principal_amount" matInput type="number" />
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill">
             <mat-label>Deposit Amount</mat-label>
-            <input formControlName="deposit_amount" matInput type="number">
+            <input formControlName="deposit_amount" matInput type="number" />
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill">
             <mat-label>Application Fees</mat-label>
-            <input formControlName="application_fee" matInput type="number">
+            <input formControlName="application_fee" matInput type="number" />
           </mat-form-field>
 
           <mat-form-field appearance="fill">
             <mat-label>Repayment Date</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="repayment_date">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="repayment_date"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field>
-      
+
           <!-- <mat-form-field appearance="fill">
             <mat-label>Payment Upfront</mat-label>
             <input formControlName="payment_up_front" matInput type="number">
@@ -112,56 +116,68 @@
           </mat-form-field>
           <mat-form-field appearance="fill">
             <mat-label>Date Period</mat-label>
-            <input formControlName="date_period" matInput type="number">
+            <input formControlName="date_period" matInput type="number" />
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill">
             <mat-label>Repayment Terms</mat-label>
-            <input formControlName="repayment_term" matInput type="number">
+            <input formControlName="repayment_term" matInput type="number" />
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Interest (%)</mat-label>
-            <input formControlName="interest" matInput type="number">
+            <input formControlName="interest" matInput type="number" />
           </mat-form-field>
-      
-         
         </div>
         <div class="fields-row">
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Amount Given</mat-label>
-            <input formControlName="amount_given" matInput>
+            <input formControlName="amount_given" matInput />
           </mat-form-field>
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Interest Amount</mat-label>
-            <input formControlName="interest_amount" matInput>
+            <input formControlName="interest_amount" matInput />
           </mat-form-field>
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Payment Per Term</mat-label>
-            <input formControlName="payment_per_term" matInput>
+            <input formControlName="payment_per_term" matInput />
           </mat-form-field>
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
-            <input formControlName="loan_remark" matInput>
+            <input formControlName="loan_remark" matInput />
           </mat-form-field>
-      
+
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">
-              <mat-option *ngFor="let element of loanStatus" [value]="element.status">
+              <mat-option
+                *ngFor="let element of loanStatus"
+                [value]="element.status"
+              >
                 {{ element.status }}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </div>
       </form>
-      
     </div>
   </mat-card>
 
   <!-- Footer Buttons -->
   <div class="action-buttons">
     <button mat-stroked-button color="warn" (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="primary" (click)="saveLoan()" [disabled]="userRole === 'AGENT'">Save</button>
+    <!-- <button mat-raised-button color="primary" (click)="saveLoan()" [disabled]="userRole === 'AGENT'">Save</button> -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="saveLoan()"
+      [disabled]="userRole === 'AGENT' || isSaving"
+    >
+      <span *ngIf="!isSaving">{{ isEditMode ? "Update" : "Save" }}</span>
+      <span *ngIf="isSaving" class="saving-state">
+        <mat-spinner diameter="20" color="accent"></mat-spinner>
+        <span class="saving-text">Processing...</span>
+      </span>
+    </button>
   </div>
 </div>

@@ -52,6 +52,7 @@ export class LoanManagementComponent implements OnInit {
   signalData = signal({});
   userDetails: any
   userRole: any;
+  agentName2:boolean=false;
 
   constructor(
     private router: Router,
@@ -67,6 +68,7 @@ export class LoanManagementComponent implements OnInit {
     this.userDetails = JSON.parse(this.userDetails)
     this.userRole = this.userDetails?.role ?? '';
     this.fetchData();
+
   }
 
   ngAfterViewInit(): void {
@@ -78,11 +80,26 @@ export class LoanManagementComponent implements OnInit {
 
   }
 
+  
+
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getLoan(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response
+      this.dataSource.data = response;
+      
+      // Check if any item in response has user_2 object
+      const hasUser2 = response.some((item: any) => item.user_2 !== null);
+      
+      // Update displayedColumns based on hasUser2
+      if (hasUser2 && !this.displayedColumns.includes('agentNametwo')) {
+        // Insert 'agentNametwo' after 'agentName'
+        const agentNameIndex = this.displayedColumns.indexOf('agentName');
+        this.displayedColumns.splice(agentNameIndex + 1, 0, 'agentNametwo');
+      } else if (!hasUser2 && this.displayedColumns.includes('agentNametwo')) {
+        // Remove 'agentNametwo' if it exists but no user_2 in response
+        this.displayedColumns = this.displayedColumns.filter(col => col !== 'agentNametwo');
+      }
     });
   }
 

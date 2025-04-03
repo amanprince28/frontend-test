@@ -30,7 +30,12 @@
           <th mat-header-cell *matHeaderCellDef>Customer Name</th>
           <td mat-cell *matCellDef="let element">{{ element.customer.name }}</td>
         </ng-container>
-
+        
+        <ng-container   matColumnDef="agentNametwo">
+          <th mat-header-cell *matHeaderCellDef>Second Agent Name </th>
+          <td mat-cell *matCellDef="let element">{{ element?.user_2?.name }}</td>
+        </ng-container>
+      
         <ng-container matColumnDef="principleAmount">
           <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
           <td mat-cell *matCellDef="let element">{{ "RM " + element.principal_amount }}</td>
@@ -104,7 +109,7 @@
       
       <!-- Paginator -->
       <mat-paginator
-        [pageSizeOptions]="[5, 10, 20]"
+        [pageSizeOptions]="[10, 20,30]"
         showFirstLastButtons
         aria-label="Select page of periodic elements"
       >

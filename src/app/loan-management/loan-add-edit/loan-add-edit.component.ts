@@ -28,6 +28,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericModalComponent } from '../../generic-modal/generic-modal.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
 
 @Component({
   selector: 'app-loan-add',
@@ -50,6 +53,8 @@ import { GenericModalComponent } from '../../generic-modal/generic-modal.compone
     MatIconModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule
   ],
 })
 export class LoanAddEditComponent implements OnInit {
@@ -59,6 +64,7 @@ export class LoanAddEditComponent implements OnInit {
   loanDetailsForm!: FormGroup;
   formValid: boolean = false;
   secondAgent :boolean = false;
+  isSaving: boolean = false;
 
   dateUnit = [
     { id: 1, unit: 'Day' },
@@ -84,7 +90,9 @@ export class LoanAddEditComponent implements OnInit {
     private router: Router,
     private dataService: DataService,
     private route: ActivatedRoute,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
+
   ) {}
 
   ngOnInit() {
@@ -324,32 +332,79 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
 
+  // saveLoan() {
+  //   const loanData = {
+  //     supervisor: this.agentDetailsForm.get('agentId')?.value,
+  //     customer_id: this.customerDetailsForm.get('customerId')?.value,
+  //     payment_per_term:this.loanDetailsForm.getRawValue().payment_per_term,
+  //     amount_given:this.loanDetailsForm.getRawValue().amount_given,
+  //     interest_amount:this.loanDetailsForm.getRawValue().interest_amount,
+  //     ...this.loanDetailsForm.value,
+  //   };
+  //   const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
+  //   if (agentId1) {
+  //     loanData.supervisor_2 = agentId1;
+  //   }
+  //   if (this.isEditMode) {
+  //     loanData.id = this.loan_id;
+  //   }
+  //   console.log(loanData, 'loan data');
+  //   if(this.isEditMode){
+  //     this.dataService.updateLoan(this.loan_id,loanData).subscribe((response) => {
+  //       this.router.navigate(['/loan']);
+  //     });
+  //   }else{
+  //   this.dataService.addLoan(loanData).subscribe((response) => {
+  //     this.router.navigate(['/loan']);
+  //   });
+  // }
+  // }
+
   saveLoan() {
+    this.isSaving = true;
+
     const loanData = {
       supervisor: this.agentDetailsForm.get('agentId')?.value,
       customer_id: this.customerDetailsForm.get('customerId')?.value,
-      payment_per_term:this.loanDetailsForm.getRawValue().payment_per_term,
-      amount_given:this.loanDetailsForm.getRawValue().amount_given,
-      interest_amount:this.loanDetailsForm.getRawValue().interest_amount,
+      payment_per_term: this.loanDetailsForm.getRawValue().payment_per_term,
+      amount_given: this.loanDetailsForm.getRawValue().amount_given,
+      interest_amount: this.loanDetailsForm.getRawValue().interest_amount,
       ...this.loanDetailsForm.value,
     };
+
     const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
     if (agentId1) {
       loanData.supervisor_2 = agentId1;
     }
+
     if (this.isEditMode) {
       loanData.id = this.loan_id;
     }
-    console.log(loanData, 'loan data');
-    if(this.isEditMode){
-      this.dataService.updateLoan(this.loan_id,loanData).subscribe((response) => {
+
+    const saveOperation = this.isEditMode 
+      ? this.dataService.updateLoan(this.loan_id, loanData)
+      : this.dataService.addLoan(loanData);
+
+    saveOperation.subscribe({
+      next: (response) => {
+        this.isSaving = false;
+        this.snackBar.open(
+          `Loan ${this.isEditMode ? 'updated' : 'created'} successfully!`, 
+          'Close', 
+          { duration: 3000, panelClass: ['success-snackbar'] }
+        );
         this.router.navigate(['/loan']);
-      });
-    }else{
-    this.dataService.addLoan(loanData).subscribe((response) => {
-      this.router.navigate(['/loan']);
+      },
+      error: (error) => {
+        this.isSaving = false;
+        console.error('Error saving loan:', error);
+        this.snackBar.open(
+          'Failed to save loan. Please try again.', 
+          'Close', 
+          { duration: 5000, panelClass: ['error-snackbar'] }
+        );
+      }
     });
-  }
   }
 
   cancel() {
