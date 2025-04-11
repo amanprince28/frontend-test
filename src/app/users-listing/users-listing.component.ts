@@ -64,7 +64,9 @@ export class UsersListingComponent implements OnInit{
     const payload = { page, limit};
     this.dataService.getUser(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response;
+      this.dataSource.data = response.sort((a:any, b:any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });;
     });
   }
 

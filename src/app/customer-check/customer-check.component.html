@@ -7,7 +7,7 @@
     <div class="search-filter-create">
       
         <mat-form-field class="search-input" appearance="outline">
-          <input matInput [(ngModel)]="searchQuery" placeholder="Customer IC/Passport" name="searchQuery"/>
+          <input matInput [(ngModel)]="searchQuery" placeholder="Customer Name/Customer IC/Passport" name="searchQuery" (keydown.enter)="filterTable()"/>
         </mat-form-field>
         <button mat-stroked-button color="primary" (click)="filterTable()">Search</button>
         <!-- <button mat-raised-button color="primary" (click)="onAddClick()">Add User</button> -->
@@ -18,7 +18,10 @@
     <table mat-table [dataSource]="dataSource" >
       <!--- Note that these columns can be defined in any order.
               The actual rendered columns are set as a property on the row definition" -->
-    
+     <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.customer?.name }}</td>
+      </ng-container>
       <!-- Name Column -->
       <ng-container matColumnDef="agent">
         <th mat-header-cell *matHeaderCellDef>Agent</th>

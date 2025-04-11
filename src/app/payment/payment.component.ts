@@ -147,8 +147,10 @@ export class PaymentComponent implements OnInit {
         // Fetch Payment Data Correctly
         try {
           this.paymentDataFromAPI = response.id
-          const data = await this.getPaymentListing(response.id);
-
+          let data = await this.getPaymentListing(response.id);
+          data = data.sort((a:any, b:any) => {
+            return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          });    
           if (data && Array.isArray(data) && data.length > 0) {
             const paymenListing = data.map((el: any) => ({
               paymentType: el.type,

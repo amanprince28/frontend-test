@@ -37,6 +37,7 @@ export class LoanManagementComponent implements OnInit {
   displayedColumns: string[] = [
     'loanId',
     'customerName',
+    'customerIC',
     'agentName',
     'principleAmount',
     'amountGiven',
@@ -86,7 +87,9 @@ export class LoanManagementComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getLoan(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response;
+      this.dataSource.data = response.sort((a:any, b:any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      });
       
       // Check if any item in response has user_2 object
       const hasUser2 = response.some((item: any) => item.user_2 !== null);
@@ -124,6 +127,7 @@ export class LoanManagementComponent implements OnInit {
   }
 
   filterTable(): void {
+    console.log(this.searchQuery,'srac');
     if (this.searchQuery != null || this.searchQuery != undefined) {
       this.dataSource.filter = this.searchQuery as string;
       return;

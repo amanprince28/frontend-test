@@ -53,6 +53,7 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class CustomerCheckComponent {
   displayedColumns: string[] = [
+    'name',
     'agent',
     'ongoing',
     'completed',

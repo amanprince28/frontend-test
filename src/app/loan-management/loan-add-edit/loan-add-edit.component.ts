@@ -366,9 +366,9 @@ export class LoanAddEditComponent implements OnInit {
     const loanData = {
       supervisor: this.agentDetailsForm.get('agentId')?.value,
       customer_id: this.customerDetailsForm.get('customerId')?.value,
-      payment_per_term: this.loanDetailsForm.getRawValue().payment_per_term,
-      amount_given: this.loanDetailsForm.getRawValue().amount_given,
-      interest_amount: this.loanDetailsForm.getRawValue().interest_amount,
+      payment_per_term: this.loanDetailsForm.getRawValue().payment_per_term.toString(),
+      amount_given: this.loanDetailsForm.getRawValue().amount_given.toString(),
+      interest_amount: this.loanDetailsForm.getRawValue().interest_amount.toString(),
       ...this.loanDetailsForm.value,
     };
 

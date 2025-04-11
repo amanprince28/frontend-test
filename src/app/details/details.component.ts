@@ -160,10 +160,8 @@ export class DetailsComponent {
         gender: new FormControl('male', Validators.required), // Default value
         marital_status: new FormControl('single', Validators.required), // Default value
         no_of_child: new FormControl(0, Validators.required), // Default value
-        mobile_no: new FormControl(null, Validators.required),
-        //tel_code: new FormControl('+1', Validators.required), // Default value
-        tel_no: new FormControl(null, Validators.required),
-        // email: new FormControl(null, [Validators.required, Validators.email]),
+        mobile_no: new FormControl(null, Validators.required), 
+        tel_no: new FormControl(null),
         car_plate: new FormControl(null),
         // relationship: new FormControl(null, Validators.required),
         //tel_no: new FormControl('', Validators.required),

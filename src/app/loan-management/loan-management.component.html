@@ -6,7 +6,7 @@
     <!-- <h5>Filter</h5> -->
     <div class="search-filter-create">
       <mat-form-field class="search-input" appearance="outline">
-        <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keydown.enter)="filterTable()"/>
+        <input matInput [(ngModel)]="searchQuery" placeholder="Search with Loan Id/ Agent Name/Customer IC/Customer Name" name="searchQuery" (keydown.enter)="filterTable()"/>
       </mat-form-field>
       <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
       <!-- <button mat-stroked-button color="accent">Export</button> -->
@@ -29,6 +29,11 @@
         <ng-container matColumnDef="customerName">
           <th mat-header-cell *matHeaderCellDef>Customer Name</th>
           <td mat-cell *matCellDef="let element">{{ element.customer.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerIC">
+          <th mat-header-cell *matHeaderCellDef>Customer IC</th>
+          <td mat-cell *matCellDef="let element">{{ element.customer.ic }}</td>
         </ng-container>
         
         <ng-container   matColumnDef="agentNametwo">
@@ -92,7 +97,7 @@
               mat-icon-button 
               color="warn" 
               (click)="onDelete(element)" 
-              [disabled]="userRole === 'AGENT'">
+              [disabled]="userRole === 'AGENT' || userRole==='LEAD' || userRole==='ADMIN'">
               <mat-icon>delete</mat-icon>
             </button>
           </td>

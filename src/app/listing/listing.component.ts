@@ -71,7 +71,9 @@ export class ListingComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response.data;
+      this.dataSource.data = response.data.sort((a:any, b:any) => {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      });;
     });
   }
 

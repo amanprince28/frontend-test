@@ -7,7 +7,7 @@
       <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keydown.enter)="filterTable()"/>
     </mat-form-field>
     <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
-    <button mat-raised-button color="primary" (click)="onAddClick()" [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN'">
+    <button mat-raised-button color="primary" (click)="onAddClick()" [disabled]="userRole === 'AGENT' || userRole === 'LEAD'">
       Add Customer
     </button>
     
@@ -46,22 +46,22 @@
 
       <ng-container matColumnDef="ongoing">
         <th mat-header-cell *matHeaderCellDef>On Going No</th>
-        <td mat-cell *matCellDef="let element">{{ element.ongoing }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.normalStatusCounts }}</td>
       </ng-container>
 
       <ng-container matColumnDef="completed">
         <th mat-header-cell *matHeaderCellDef>Completed </th>
-        <td mat-cell *matCellDef="let element">{{ element.completed }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.onGoingStatusCounts }}</td>
       </ng-container>
 
       <ng-container matColumnDef="badDebt">
         <th mat-header-cell *matHeaderCellDef>Bad Debt</th>
-        <td mat-cell *matCellDef="let element">{{ element.badDebt }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.badDebtStatusCounts }}</td>
       </ng-container>
 
       <ng-container matColumnDef="badDebtCompleted">
         <th mat-header-cell *matHeaderCellDef>Bad Debt Completed </th>
-        <td mat-cell *matCellDef="let element">{{ element.badDebtCompleted }}</td>
+        <td mat-cell *matCellDef="let element">{{ element.badDebtCompletedStatusCounts }}</td>
       </ng-container>
 
       <!-- Actions Column -->
@@ -74,7 +74,7 @@
           <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')">
             <mat-icon>visibility</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="onDelete(element)" [disabled]="userRole === 'AGENT'">
+          <button mat-icon-button color="warn" (click)="onDelete(element)"   [disabled]="userRole === 'AGENT' || userRole==='LEAD' || userRole==='ADMIN'">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
