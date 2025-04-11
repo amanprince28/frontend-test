@@ -72,7 +72,7 @@ export class ListingComponent implements OnInit {
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       console.log(response);
       this.dataSource.data = response.data.sort((a:any, b:any) => {
-        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       });;
     });
   }
@@ -83,7 +83,9 @@ export class ListingComponent implements OnInit {
     this.dataService.getCustomerSearch(searchValue).subscribe((response: any) => {
       console.log(response);
       if(response.length>0){
-      this.dataSource.data = response; // Update table with filtered results
+      this.dataSource.data = response.data.sort((a:any, b:any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }); // Update table with filtered results
       this.paginator.length = response.totalCount; 
       }// Update total record count
       else{
