@@ -128,10 +128,24 @@ export class LoanManagementComponent implements OnInit {
 
   filterTable(): void {
     console.log(this.searchQuery,'srac');
-    if (this.searchQuery != null || this.searchQuery != undefined) {
-      this.dataSource.filter = this.searchQuery as string;
-      return;
-    }
+    const payload = { page:5, limit:10,filter:this.searchQuery };
+   
+    // if (this.searchQuery != null || this.searchQuery != undefined) {
+    //   this.dataSource.filter = this.searchQuery as string;
+    //   return;
+    // }
+    this.dataService.getLoanWithFilter(payload).subscribe((response: any) => {
+      console.log(response);
+      if(response.length>0){
+      this.dataSource.data = response.sort((a:any, b:any) => {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      }); // Update table with filtered results
+      this.paginator.length = response.totalCount; 
+      }// Update total record count
+      else{
+        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+      }
+    });
     this.dataSource.filter = '';
   }
 
