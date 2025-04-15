@@ -22,6 +22,11 @@
         <th mat-header-cell *matHeaderCellDef>Customer Name</th>
         <td mat-cell *matCellDef="let element">{{ element.customer?.name }}</td>
       </ng-container>
+
+      <ng-container matColumnDef="ic">
+        <th mat-header-cell *matHeaderCellDef>Customer Ic</th>
+        <td mat-cell *matCellDef="let element">{{ element.customer?.ic }}</td>
+      </ng-container>
       <!-- Name Column -->
       <ng-container matColumnDef="agent">
         <th mat-header-cell *matHeaderCellDef>Agent</th>

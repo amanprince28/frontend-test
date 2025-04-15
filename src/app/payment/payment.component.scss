@@ -1,15 +1,30 @@
 .loan-management-container {
-  .loan-details-form,
+  .loan-details-form {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    mat-form-field {
+      flex: 1 1 calc(25% - 16px);
+      min-width: 200px;
+
+      &.quarter-width {
+        flex: 0 0 calc(25% - 16px);
+        max-width: calc(25% - 16px);
+      }
+    }
+  }
+
   .form-container form {
     margin-top: 20px;
     display: flex;
     flex-wrap: wrap;
-    gap: 16px; /* Add space between fields */
-    justify-content: space-between;
+    gap: 16px;
 
     mat-form-field {
-      flex: 1 1 calc(25% - 16px); /* Adjust width for 4 fields per row */
-      min-width: 200px; /* Minimum width for each field */
+      flex: 1 1 calc(25% - 16px);
+      min-width: 200px;
     }
   }
 

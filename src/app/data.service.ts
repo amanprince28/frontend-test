@@ -7,7 +7,7 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'http://54.151.165.48/backend';
+  private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -22,6 +22,8 @@ export class DataService {
     console.log('Fetching data -----', params); 
     return this.http.get<any[]>(this.customer, { params });
   }
+
+
 
   getLoan(payload: any): Observable<any> {
     const params = new HttpParams()
@@ -73,6 +75,10 @@ export class DataService {
 
   getUserById(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.user}/${id}`);
+  }
+
+  getLeads(): Observable<any> {
+    return this.http.get<any[]>(`${this.user+"/getLeads"}`);
   }
 
 

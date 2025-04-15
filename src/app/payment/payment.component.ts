@@ -62,7 +62,10 @@ export class PaymentComponent implements OnInit {
       customerName: new FormControl(''),
       agentName: new FormControl(''),
       leadName: new FormControl(''),
+      payableAmount: new FormControl(''),
     });
+
+    this.loanDetailsForm.disable();
 
     this.installmentForm = new FormGroup({
       installment_date: new FormControl(null),
@@ -131,6 +134,7 @@ export class PaymentComponent implements OnInit {
           customerName: response.customer?.name || '',
           agentName: response.user?.name || '',
           leadName: response.leadName || '',
+          payableAmount:Number(response.principal_amount)-Number(response.deposit_amount)
         });
 
         this.installmentData = response.installment.sort((a: any, b: any) => {

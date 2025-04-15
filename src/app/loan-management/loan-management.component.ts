@@ -83,13 +83,11 @@ export class LoanManagementComponent implements OnInit {
 
   
 
-  fetchData(page: number = 0, limit: number = 5): void {
+  fetchData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getLoan(payload).subscribe((response: any) => {
       console.log(response);
-      this.dataSource.data = response.sort((a:any, b:any) => {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      });
+      this.dataSource.data = response;
       
       // Check if any item in response has user_2 object
       const hasUser2 = response.some((item: any) => item.user_2 !== null);
@@ -128,7 +126,7 @@ export class LoanManagementComponent implements OnInit {
 
   filterTable(): void {
     console.log(this.searchQuery,'srac');
-    const payload = { page:5, limit:10,filter:this.searchQuery };
+    const payload = { page:1, limit:10,filter:this.searchQuery };
    
     // if (this.searchQuery != null || this.searchQuery != undefined) {
     //   this.dataSource.filter = this.searchQuery as string;
@@ -137,9 +135,7 @@ export class LoanManagementComponent implements OnInit {
     this.dataService.getLoanWithFilter(payload).subscribe((response: any) => {
       console.log(response);
       if(response.length>0){
-      this.dataSource.data = response.sort((a:any, b:any) => {
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }); // Update table with filtered results
+      this.dataSource.data = response;
       this.paginator.length = response.totalCount; 
       }// Update total record count
       else{

@@ -146,7 +146,8 @@
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loan_remark" matInput />
           </mat-form-field>
-
+        </div>
+        <div class="fields-row">
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">
@@ -158,6 +159,17 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <mat-form-field appearance="fill" class="quarter-width">
+            <mat-label>Actual  Profit</mat-label>
+            <input formControlName="actualProfit" matInput />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="quarter-width">
+            <mat-label>Estimated Profit</mat-label>
+            <input formControlName="estimatedProfit" matInput />
+          </mat-form-field>
+
         </div>
       </form>
     </div>

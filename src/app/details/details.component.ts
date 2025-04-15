@@ -125,6 +125,7 @@ export class DetailsComponent {
   formDataValues: any;
   createdBy: any;
   userDetailsFromStorage: any;
+  leadsUsers: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -168,6 +169,7 @@ export class DetailsComponent {
         fblink: new FormControl(''),
         //car_plate: new FormControl(''),
         status: new FormControl('', Validators.required),
+        leadUser:new FormControl('', Validators.required),
       },
       { validators: this.eitherFieldRequiredValidator }
     );
@@ -224,6 +226,10 @@ export class DetailsComponent {
       fileUpload: new FormControl(),
       fileType: new FormControl(),
     });
+
+    this.dataService.getLeads().subscribe((resp:any)=>{
+      this.leadsUsers = resp;
+    })
 
     // Watch for changes in the 'same_as_permanent' checkbox
     this.customerAddressForm
@@ -575,6 +581,7 @@ export class DetailsComponent {
           car_plate: data.car_plate,
           status: data.status,
           race: data.race,
+          leadUser: data.leadUser.map((obj:any) => Object.values(obj)[0])
         });
         this.customerAddressForm.patchValue({
           same_as_permanent: customerPermanentAddress?.is_permanent,
@@ -616,60 +623,6 @@ export class DetailsComponent {
     });
     this.getDocument(this.customerId);
   }
-
-  // loadCustomerRaltionshipData(id:string) {
-  //   this.dataService.getCustomerById(this.customerId).subscribe(data => {
-  //     const signalData = data;
-  //     this.dataSource.data = signalData.customer_relation;
-  //     // console.log(this.dataSource.data,'ss');
-  //     if (this.signalData && this.signalData.customer_address && this.signalData.customer_address.length > 0) {
-  //       const customerPermanentAddress = this.signalData.customer_address.find((address: any) => address.is_permanent);
-
-  //       this.onCountryChange(customerPermanentAddress.country_id || this.signalData.customer_address[0].country_id);
-  //     } else {
-  //       this.isEditMode = false;
-  //     }
-  //   });
-  // }
-
-  // loadEmployementData(id: string) {
-  //   this.dataService.getCustomerById(this.customerId).subscribe((data) => {
-  //     const signalData = data;
-  //     this.dataSource.data = signalData?.relations;
-  //     this.bankDataSource.data = signalData?.bank_details;
-  //     if (
-  //       this.signalData &&
-  //       this.signalData.customer_address &&
-  //       this.signalData.customer_address.length > 0
-  //     ) {
-  //       const customerPermanentAddress = this.signalData.customer_address.find(
-  //         (address: any) => address.is_permanent
-  //       );
-
-  //       this.customerEmployemntForm.patchValue({
-  //         annual_income: signalData?.employment?.annual_income,
-  //         department: signalData?.employment?.department,
-  //         business_type: signalData?.employment?.business_type,
-  //         employee_no: signalData?.employment?.employee_no,
-  //         //employee_type: signalData?.employment?.employee_type,
-  //         income_date: signalData?.employment?.income_date,
-  //         //income_type: signalData?.employment?.income_type,
-  //         occupation_category: signalData?.employment?.occupation_category,
-  //         position: signalData?.employment?.position,
-  //         employment_remarks: signalData?.employment?.employment_remarks,
-  //         //telecode: signalData?.employment?.tel_code,
-  //         telephone_no: signalData?.employment?.telephone_no,
-  //       });
-  //       console.log(this.customerEmployemntForm, 'ssform');
-  //       this.onCountryChange(
-  //         customerPermanentAddress.country_id ||
-  //           this.signalData.customer_address[0].country_id
-  //       );
-  //     } else {
-  //       this.isEditMode = false;
-  //     }
-  //   });
-  // }
 
   fetchCountries(): void {
     this.dataService
@@ -798,6 +751,13 @@ export class DetailsComponent {
     this.uploadedFiles = [...this.uploadedFiles];
   }
 
+   convertToLeadObjects(values: string[]): Record<string, string>[] {
+    return values.map((value, index) => ({
+      [`lead${index + 1}`]: value
+    }));
+  }
+  
+
   async onMasterSubmit() {
     if (this.customerForm.invalid) {
       this.snackBar.open('Please fill all mandatory fields', 'Close', {
@@ -820,6 +780,7 @@ export class DetailsComponent {
       car_plate: this.customerForm.get('car_plate')?.value,
       status: this.customerForm.get('status')?.value,
       race:this.customerForm.get('race')?.value,
+      leadUser:this.convertToLeadObjects(this.customerForm.get('leadUser')?.value),
       customer_address: [
         {
           address_lines:

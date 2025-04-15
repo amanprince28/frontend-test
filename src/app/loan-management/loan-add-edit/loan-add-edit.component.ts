@@ -296,6 +296,9 @@ export class LoanAddEditComponent implements OnInit {
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
       repayment_term: new FormControl(''),
+      actualProfit:new FormControl({ value: '', disabled: true }),
+      estimatedProfit:new FormControl({ value: '', disabled: true }),
+
     });
   }
   loadAllData(row: any) {
@@ -331,34 +334,6 @@ export class LoanAddEditComponent implements OnInit {
       status:row.status
     });
   }
-
-  // saveLoan() {
-  //   const loanData = {
-  //     supervisor: this.agentDetailsForm.get('agentId')?.value,
-  //     customer_id: this.customerDetailsForm.get('customerId')?.value,
-  //     payment_per_term:this.loanDetailsForm.getRawValue().payment_per_term,
-  //     amount_given:this.loanDetailsForm.getRawValue().amount_given,
-  //     interest_amount:this.loanDetailsForm.getRawValue().interest_amount,
-  //     ...this.loanDetailsForm.value,
-  //   };
-  //   const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
-  //   if (agentId1) {
-  //     loanData.supervisor_2 = agentId1;
-  //   }
-  //   if (this.isEditMode) {
-  //     loanData.id = this.loan_id;
-  //   }
-  //   console.log(loanData, 'loan data');
-  //   if(this.isEditMode){
-  //     this.dataService.updateLoan(this.loan_id,loanData).subscribe((response) => {
-  //       this.router.navigate(['/loan']);
-  //     });
-  //   }else{
-  //   this.dataService.addLoan(loanData).subscribe((response) => {
-  //     this.router.navigate(['/loan']);
-  //   });
-  // }
-  // }
 
   saveLoan() {
     this.isSaving = true;
