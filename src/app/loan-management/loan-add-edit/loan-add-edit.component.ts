@@ -223,6 +223,7 @@ export class LoanAddEditComponent implements OnInit {
     const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const application_fee = this.loanDetailsForm.get('application_fee')?.value;
+    
   
     if (
       principal_amount == null ||
@@ -236,6 +237,8 @@ export class LoanAddEditComponent implements OnInit {
       const amount_given =
         principal_amount - deposit_amount-application_fee;
       this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
+      const estimatedProfit = (principal_amount-deposit_amount) - amount_given;
+      this.loanDetailsForm.get('estimated_profit')?.setValue(estimatedProfit);
     }
   }
   
@@ -296,20 +299,29 @@ export class LoanAddEditComponent implements OnInit {
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
       repayment_term: new FormControl(''),
-      actualProfit:new FormControl({ value: '', disabled: true }),
-      estimatedProfit:new FormControl({ value: '', disabled: true }),
+      actual_profit:new FormControl({ value: '', disabled: true }),
+      estimated_profit:new FormControl({ value: 0, disabled: true }),
 
     });
   }
   loadAllData(row: any) {
     this.loan_id = row.id;
+
+    const totalAcceptedAmount = row.installment
+    .filter((item: any) => item.status === 'Paid')
+    .reduce((sum: number, item: any) => {
+    const amount = Number(item.due_amount) || 0;
+    return sum + amount;
+    }, 0);
+    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
+
+    console.log(totalAcceptedAmount,actualProfit,Number(row.amount_given),'total')
   
     this.agentDetailsForm.patchValue({
       agentId: row.supervisor,
       agentName: row.user.name,
       agentLead: row.agentLead,
     });
-
     this.customerDetailsForm.patchValue({
       customerId: row.customer.id,
       customerName: row.customer.name,
@@ -331,12 +343,14 @@ export class LoanAddEditComponent implements OnInit {
       payment_per_term: row.payment_per_term,
       unit_of_date: row.unit_of_date,
       repayment_term: row.repayment_term,
-      status:row.status
+      status:row.status,
+      actual_profit:actualProfit
     });
   }
 
   saveLoan() {
     this.isSaving = true;
+
 
     const loanData = {
       supervisor: this.agentDetailsForm.get('agentId')?.value,
@@ -344,6 +358,8 @@ export class LoanAddEditComponent implements OnInit {
       payment_per_term: this.loanDetailsForm.getRawValue().payment_per_term.toString(),
       amount_given: this.loanDetailsForm.getRawValue().amount_given.toString(),
       interest_amount: this.loanDetailsForm.getRawValue().interest_amount.toString(),
+      estimated_profit: this.loanDetailsForm.getRawValue().estimated_profit.toString(),
+      actual_profit :this.loanDetailsForm.getRawValue().actual_profit.toString(),
       ...this.loanDetailsForm.value,
     };
 
