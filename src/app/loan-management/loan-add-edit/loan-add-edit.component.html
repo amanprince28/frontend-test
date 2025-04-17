@@ -132,15 +132,15 @@
         <div class="fields-row">
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Amount Given</mat-label>
-            <input formControlName="amount_given" matInput />
+            <input formControlName="amount_given" matInput [readonly]="readonly" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="quarter-width">
+          <mat-form-field appearance="fill" class="quarter-width" >
             <mat-label>Interest Amount</mat-label>
-            <input formControlName="interest_amount" matInput />
+            <input formControlName="interest_amount" matInput [readonly]="readonly" />
           </mat-form-field>
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Payment Per Term</mat-label>
-            <input formControlName="payment_per_term" matInput />
+            <input formControlName="payment_per_term" matInput [readonly]="readonly" />
           </mat-form-field>
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Loan Remark</mat-label>
@@ -148,6 +148,17 @@
           </mat-form-field>
         </div>
         <div class="fields-row">
+
+          <mat-form-field appearance="fill" class="quarter-width">
+            <mat-label>Estimated Profit</mat-label>
+            <input formControlName="estimated_profit" matInput [readonly]="readonly" />
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="quarter-width">
+            <mat-label>Actual  Profit</mat-label>
+            <input formControlName="actual_profit" matInput [readonly]="readonly" />
+          </mat-form-field>
+
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">
@@ -158,16 +169,6 @@
                 {{ element.status }}
               </mat-option>
             </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="fill" class="quarter-width">
-            <mat-label>Actual  Profit</mat-label>
-            <input formControlName="actual_profit" matInput />
-          </mat-form-field>
-
-          <mat-form-field appearance="fill" class="quarter-width">
-            <mat-label>Estimated Profit</mat-label>
-            <input formControlName="estimated_profit" matInput />
           </mat-form-field>
 
         </div>

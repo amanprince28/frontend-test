@@ -65,6 +65,7 @@ export class LoanAddEditComponent implements OnInit {
   formValid: boolean = false;
   secondAgent :boolean = false;
   isSaving: boolean = false;
+  readonly: boolean=true;
 
   dateUnit = [
     { id: 1, unit: 'Day' },
@@ -307,10 +308,10 @@ export class LoanAddEditComponent implements OnInit {
   loadAllData(row: any) {
     this.loan_id = row.id;
 
-    const totalAcceptedAmount = row.installment
-    .filter((item: any) => item.status === 'Paid')
+    const totalAcceptedAmount = row.payment
+    .filter((item: any) => item.type === 'In')
     .reduce((sum: number, item: any) => {
-    const amount = Number(item.due_amount) || 0;
+    const amount = Number(item.amount) || 0;
     return sum + amount;
     }, 0);
     const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);

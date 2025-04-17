@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -39,6 +39,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class PaymentComponent implements OnInit {
   paymentForm!: FormGroup;
@@ -56,16 +57,17 @@ export class PaymentComponent implements OnInit {
   dataSourceAgent2: any;
   dataSourceAgent1: any;
   paymentDataFromAPI: any;
+  readonly=true;
   ngOnInit(): void {
     this.loanDetailsForm = new FormGroup({
-      principalAmount: new FormControl(''),
-      customerName: new FormControl(''),
-      agentName: new FormControl(''),
-      leadName: new FormControl(''),
-      payableAmount: new FormControl(''),
+      principalAmount: new FormControl({ value: '', disabled: this.readonly }),
+      customerName: new FormControl({ value: '', disabled: this.readonly }),
+      agentName: new FormControl({ value: '', disabled: this.readonly }),
+      leadName: new FormControl({ value: '', disabled: this.readonly }),
+      payableAmount: new FormControl({ value: '', disabled: this.readonly }),
     });
 
-    this.loanDetailsForm.disable();
+    
 
     this.installmentForm = new FormGroup({
       installment_date: new FormControl(null),

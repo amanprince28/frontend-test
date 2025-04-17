@@ -93,3 +93,13 @@
   color: #757575;
   margin-bottom: 8px;
 }
+
+input[readonly] {
+  font-weight: bolder;
+  font-size: larger;
+}
+
+.custom-disabled .mat-input-element:disabled {
+  color: #3f51b5; /* Example color */
+  -webkit-text-fill-color: #3f51b5;
+}
