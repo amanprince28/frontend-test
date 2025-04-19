@@ -164,8 +164,6 @@ export class UserDetailsComponent implements OnInit {
           viewValue: customer.name,
           role:customer.role
         }));
-
-      console.log(this.customerList, 'filtered customer list');
     });
   }
 

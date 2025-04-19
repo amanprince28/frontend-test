@@ -92,7 +92,7 @@ export class CustomerCheckComponent {
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.dataSource.data = [
         {
           agent: 'John Doe',
@@ -144,14 +144,14 @@ export class CustomerCheckComponent {
   // For filtering the table
   filterTable(): void {
     const searchValue = this.searchQuery;
-    console.log(searchValue, 'Search Value');
+    
     this.dataService
       .getLoanStatusByPassport(searchValue)
       .subscribe((response: any) => {
        
         if (response.length > 0) {
           const filteredDate = this.processData(response);
-          console.log(filteredDate,'filteredDate')
+          
           this.dataSource.data = filteredDate;
           this.paginator.length = response.totalCount;
         } else {

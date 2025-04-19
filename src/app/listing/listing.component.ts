@@ -71,16 +71,16 @@ export class ListingComponent implements OnInit {
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.dataSource.data = response.data;
     });
   }
 
   filterTable(): void {
     const searchValue = this.searchQuery
-    console.log(searchValue, 'Search Value');
+    
     this.dataService.getCustomerSearch(searchValue).subscribe((response: any) => {
-      console.log(response);
+      
       if(response.length>0){
       this.dataSource.data = response;
       this.paginator.length = response.totalCount; 
@@ -98,7 +98,9 @@ export class ListingComponent implements OnInit {
     row.action = action;
     this.dataService.getCustomerById(row.id).subscribe((response: any) => {
       this.signalService.triggerAction(response);
-      this.router.navigate(['/details', row]);
+      this.router.navigate(['/details'], { state: { data: row } });
+
+      //this.router.navigate(['/details', row]);
     });
   }
 

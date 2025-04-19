@@ -192,7 +192,7 @@ export class PaymentComponent implements OnInit {
             this.paymentData = filteredData;
 
             if (response && response.user_2) {
-              console.log(this.paymentData, 'inside');
+              
               
               const data = { ...response, paymentdata: this.paymentData }; // Corrected assignment
               
@@ -343,34 +343,7 @@ export class PaymentComponent implements OnInit {
     });
   }
 
-  // onAddInstallment() {
-  //   console.log(this.installmentData,'install');
-  //   if (this.installmentForm.invalid) return;
-
-  //   const data = this.installmentForm.value;
-  //   data.due_amount = String(data.due_amount);
-  //   data.accepted_amount = String(data.due_amount);
-  //   if (this.selectedIndex !== null) {
-  //     // Update the existing record
-  //     this.installmentData[this.selectedIndex] = {
-  //       ...this.installmentData[this.selectedIndex],
-  //       ...data,
-  //     };
-  //     this.installmentData = [...this.installmentData]; // Trigger UI update
-  //     this.selectedIndex = null;
-  //   } else {
-  //     // Add new record
-      
-  //     this.installmentData = [...this.installmentData, { ...data }];
-
-  //   }
-
-  //   this.installmentForm.reset(); // Reset form after submission
-  //   this.enablePaymentInsert = false;
-  // }
-
   onAddInstallment() {
-    console.log(this.installmentData, 'install');
     if (this.installmentForm.invalid) return;
   
     const data = this.installmentForm.value;
@@ -419,7 +392,7 @@ export class PaymentComponent implements OnInit {
   
   
   transformInstallments(data: any) {
-    console.log(data)
+    
     if (!data || !data.installment || !data.user || !data.user_2) {
       throw new Error('Invalid input data');
     }

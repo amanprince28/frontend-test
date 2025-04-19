@@ -41,7 +41,7 @@ export class GenericModalComponent {
   ) {
     this.dataSource.data = data.items;
     this.title = data.title;
-    console.log(this.title,'title');
+    
     this.displayedColumns = ['select', ...data.columns.map((col: any) => col.key)];
   }
 
@@ -60,7 +60,7 @@ export class GenericModalComponent {
       const filterParams = { [searchKey]: searchValue };
 
       // Call your API with filterParams
-      console.log('Filtering data with:', filterParams);
+      
 
       if(this.title == "Agent Search"){
       this.dataService.findAgentAndLeads(searchValue).subscribe((response) => {
@@ -70,13 +70,13 @@ export class GenericModalComponent {
           this.searchControl.reset();
         }
         // this.dataSource.data = response;
-        // console.log(this.dataSource.data,'ssss');
+        
       
       });
     }
     if(this.title=="Customer Search"){
       this.dataService.getCustomerSearch(searchValue).subscribe((response) => {
-        console.log(response);
+        
         this.dataSource.data = response;
         this.searchControl.reset();
         this.searchControl.reset();

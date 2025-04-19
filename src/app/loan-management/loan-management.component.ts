@@ -86,7 +86,7 @@ export class LoanManagementComponent implements OnInit {
   fetchData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getLoan(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.dataSource.data = response;
       
       // Check if any item in response has user_2 object
@@ -112,20 +112,24 @@ export class LoanManagementComponent implements OnInit {
     if (!row.id) {
       return;
     }
-    console.log(row, 'row');
 
     // Add the action to the row object
     row.action = action;
-
+    const data ={
+      id:row.id,
+      action:row.action,
+      generate_id:row.generate_id
+    }
     // Trigger action with the modified row object
     this.signalService.triggerAction(row);
 
     // Navigate to the loan-add route, passing the modified row object
-    this.router.navigate(['/loan-add', row]);
+    //this.router.navigate(['/loan-add', data]);
+    this.router.navigate(['/loan-add'], { state: { data: data } });
   }
 
   filterTable(): void {
-    console.log(this.searchQuery,'srac');
+    
     const payload = { page:1, limit:10,filter:this.searchQuery };
    
     // if (this.searchQuery != null || this.searchQuery != undefined) {
@@ -133,7 +137,7 @@ export class LoanManagementComponent implements OnInit {
     //   return;
     // }
     this.dataService.getLoanWithFilter(payload).subscribe((response: any) => {
-      console.log(response);
+      
       if(response.length>0){
       this.dataSource.data = response;
       this.paginator.length = response.totalCount; 

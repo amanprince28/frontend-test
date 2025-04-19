@@ -63,7 +63,7 @@ export class UsersListingComponent implements OnInit{
   fetchData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit};
     this.dataService.getUser(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.dataSource.data = response;
     });
   }
@@ -82,9 +82,9 @@ export class UsersListingComponent implements OnInit{
   // For filtering the table
   filterTable(): void {
     const searchValue = this.searchQuery
-    console.log(searchValue, 'Search Value');
+    
     this.dataService.findAgentAndLeads(searchValue).subscribe((response: any) => {
-      console.log(response);
+      
       if(response.length>0){
       this.dataSource.data = response; 
       this.paginator.length = response.totalCount; 

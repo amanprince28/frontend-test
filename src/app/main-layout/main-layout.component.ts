@@ -34,7 +34,7 @@ export class MainLayoutComponent implements OnInit {
 
   showUsers(): void {
     this.checkUsers = ['AGENT', 'LEAD','ADMIN'].includes(this.userDetails?.role || '');
-    console.log(this.checkUsers,'ss');
+    
   }
 
   goToSettings() {

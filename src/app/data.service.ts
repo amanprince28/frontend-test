@@ -19,7 +19,7 @@ export class DataService {
     const params = new HttpParams()
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString());
-    console.log('Fetching data -----', params); 
+     
     return this.http.get<any[]>(this.customer, { params });
   }
 
@@ -29,7 +29,7 @@ export class DataService {
     const params = new HttpParams()
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString());
-    console.log('Fetching data -----', params); 
+    
     return this.http.get<any[]>(this.loan, { params });
   }
 
@@ -38,7 +38,7 @@ export class DataService {
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString())
     .set('filter',payload.filter);
-    console.log('Fetching data -----', params); 
+    
     return this.http.get<any[]>(this.loan, { params });
   }
 
@@ -47,7 +47,7 @@ export class DataService {
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString())
     .set('filter', payload.filter.toString());
-    console.log('Fetching data -----', params); 
+    
     return this.http.get<any[]>(this.customer, { params });
   }
 
@@ -55,7 +55,7 @@ export class DataService {
     const params = new HttpParams()
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString());
-    console.log('Fetching data -----', params); 
+    
     return this.http.get<any[]>(this.user, { params });
   }
 
@@ -69,7 +69,7 @@ export class DataService {
     .set('page', payload.page.toString())
     .set('filter', payload.page.toString())
     .set('limit', payload.limit.toString());
-    console.log('Fetching data -----', params); 
+    
     return this.http.get<any[]>(this.user, { params });
   }
 

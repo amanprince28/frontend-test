@@ -86,6 +86,7 @@ export class LoanAddEditComponent implements OnInit {
   loan_id: any;
   userDetails: any;
   userRole: any;
+  passedData: any;
 
   constructor(
     private router: Router,
@@ -93,8 +94,12 @@ export class LoanAddEditComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
+    
 
-  ) {}
+  ) {
+    this.passedData = this.router.getCurrentNavigation()?.extras.state?.['data'];
+    
+  }
 
   ngOnInit() {
     this.initializeForms();
@@ -105,8 +110,8 @@ export class LoanAddEditComponent implements OnInit {
     this.fetchCustomer();
 
     this.route.params.subscribe(async (params) => {
-      if (params['action'] === 'edit' || params['action'] === 'view') {
-        const loanData = await this.dataService.getLoanById(params['generate_id']).toPromise()
+      if (this.passedData['action'] === 'edit' || this.passedData['action'] === 'view') {
+        const loanData = await this.dataService.getLoanById(this.passedData['generate_id']).toPromise()
         this.loadAllData(loanData);
        
         this.isEditMode = params['action'] === 'edit';
@@ -207,7 +212,7 @@ export class LoanAddEditComponent implements OnInit {
   fetchUserData(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.userData = response.filter((el: any) => el?.role === 'AGENT');
     });
   }
@@ -215,7 +220,7 @@ export class LoanAddEditComponent implements OnInit {
   fetchCustomer(page: number = 0, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
-      console.log(response);
+      
       this.customerData = response.data;
     });
   }
@@ -316,7 +321,7 @@ export class LoanAddEditComponent implements OnInit {
     }, 0);
     const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
 
-    console.log(totalAcceptedAmount,actualProfit,Number(row.amount_given),'total')
+    
   
     this.agentDetailsForm.patchValue({
       agentId: row.supervisor,
@@ -407,7 +412,7 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   openAgentSearch(optionalParam?: string) {
-    console.log(optionalParam);
+    
     this.secondAgent = optionalParam === 'two';
     this.openModal('Agent Search', 'Search by Agent ID', this.userData, [
         { key: 'name', header: 'Name' },
@@ -442,7 +447,7 @@ export class LoanAddEditComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-          console.log('Selected:', result);
+          
           if (title === 'Customer Search') {
               this.customerDetailsForm.patchValue({
                   customerId: result.id,

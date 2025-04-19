@@ -126,6 +126,7 @@ export class DetailsComponent {
   createdBy: any;
   userDetailsFromStorage: any;
   leadsUsers: any;
+  passedData: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -143,6 +144,7 @@ export class DetailsComponent {
       pinNo: new FormControl(),
       remark: new FormControl(),
     });
+    this.passedData = this.router.getCurrentNavigation()?.extras.state?.['data'];
   }
 
   ngOnInit() {
@@ -254,14 +256,13 @@ export class DetailsComponent {
 
     // Initialize edit mode and load existing data if necessary
     this.route.params.subscribe((params) => {
-      console.log(params, 'params');
-      this.customerId = params['id'];
-      if (this.customerId && params) {
+      this.customerId = this.passedData['id'];
+      if (this.customerId && this.passedData) {
         this.loadCustomerData(this.customerId);
 
         //this.loadCustomerRaltionshipData(this.customerId);
         //this.loadEmployementData(this.customerId);
-        if (params['action'] === 'edit') {
+        if (this.passedData['action'] === 'edit') {
           this.isEditMode = true;
           this.isView = false;
         } else {
@@ -294,10 +295,10 @@ export class DetailsComponent {
           };
           this.uploadedFiles.push(temp);
         });
-        console.log(this.uploadedFiles, 'uploadedFiles');
+        
         this.uploadedDocumentSource.data = this.uploadedFiles;
       }
-      console.log(res);
+      
     });
   }
 
@@ -373,7 +374,7 @@ export class DetailsComponent {
   }
 
   onRowClick(row: any) {
-    // console.log(record,this.bankRecords,'ssrecord');
+    
     this.isCustRelationEditMode = true;
     this.isCustRelationEditIndex = this.dataSource.data.indexOf(row); // Store the index of the record being edited
 
@@ -529,7 +530,7 @@ export class DetailsComponent {
             this.documentsForm.value.fileDescription
           );
         });
-        console.log(formData, 'sss');
+        
         this.uploadedDocumentSource.data = [...this.uploadedFiles];
       }
 
@@ -644,7 +645,7 @@ export class DetailsComponent {
   }
 
   onCountryChange(event: any) {
-    // console.log('onCountryChange ', event)
+    
     this.dataService.getCountry(event, null).subscribe((response: any) => {
       if (response && response.length > 0) {
         const country = response[0];
@@ -671,9 +672,9 @@ export class DetailsComponent {
   }
 
   onStateChange(stateId: string): void {
-    // console.log('onStateChange ', stateId)
+    
     const selectedState = this.states.find((state) => state.id === stateId);
-    // console.log('selectedState', selectedState)
+    
     if (selectedState) {
       this.cities = selectedState.cities || [];
       if (!this.isEditMode) {
@@ -814,7 +815,7 @@ export class DetailsComponent {
         (value) => value !== null && value !== undefined && value !== ''
       )
     ) {
-      console.log(this.customerEmployemntForm, 'valuesss');
+      
       submissionData.employment = {
         annual_income: this.customerEmployemntForm.get('annual_income')?.value,
         business_type: this.customerEmployemntForm.get('business_type')?.value,
@@ -850,7 +851,7 @@ export class DetailsComponent {
       submissionData.id = this.customerId;
     }
 
-    console.log(submissionData, 'master submit');
+    
     if (this.signalData == null) {
       this.dataService.addCustomer(submissionData).subscribe(
         (response) => {
@@ -912,7 +913,7 @@ export class DetailsComponent {
     }
     if (this.uploadedFiles && this.uploadedFiles.length > 0) {
       const data = { id: this.customerId, filesData: this.uploadedFiles };
-      console.log(data, this.formDataValues, 'data');
+      
       await this.dataService.uploadFiles(data).subscribe((response) => {
         this.snackBar.open('Record Updated', 'Close', {
           duration: 3000, // Duration in milliseconds
