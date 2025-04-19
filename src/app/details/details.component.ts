@@ -582,7 +582,9 @@ export class DetailsComponent {
           car_plate: data.car_plate,
           status: data.status,
           race: data.race,
-          leadUser: data.leadUser.map((obj:any) => Object.values(obj)[0])
+          leadUser: Array.isArray(data.leadUser)
+          ? data.leadUser.map((obj: any) => obj && typeof obj === 'object' ? Object.values(obj)[0] : null)
+          : []
         });
         this.customerAddressForm.patchValue({
           same_as_permanent: customerPermanentAddress?.is_permanent,
