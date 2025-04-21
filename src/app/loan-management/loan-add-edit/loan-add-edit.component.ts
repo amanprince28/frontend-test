@@ -114,8 +114,8 @@ export class LoanAddEditComponent implements OnInit {
         const loanData = await this.dataService.getLoanById(this.passedData['generate_id']).toPromise()
         this.loadAllData(loanData);
        
-        this.isEditMode = params['action'] === 'edit';
-        if (params['action'] === 'view') {
+        this.isEditMode = this.passedData['action'] === 'edit';
+        if (this.passedData['action'] === 'view') {
           this.agentDetailsForm.disable();
           this.customerDetailsForm.disable();
           this.loanDetailsForm.disable();

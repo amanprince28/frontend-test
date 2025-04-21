@@ -60,11 +60,11 @@ export class PaymentComponent implements OnInit {
   readonly=true;
   ngOnInit(): void {
     this.loanDetailsForm = new FormGroup({
-      principalAmount: new FormControl({ value: '', disabled: this.readonly }),
-      customerName: new FormControl({ value: '', disabled: this.readonly }),
-      agentName: new FormControl({ value: '', disabled: this.readonly }),
-      leadName: new FormControl({ value: '', disabled: this.readonly }),
-      payableAmount: new FormControl({ value: '', disabled: this.readonly }),
+      principalAmount: new FormControl(''),
+      customerName: new FormControl(''),
+      agentName: new FormControl(''),
+      leadName: new FormControl(''),
+      payableAmount: new FormControl(''),
     });
 
     
@@ -135,7 +135,7 @@ export class PaymentComponent implements OnInit {
           principalAmount: response.principal_amount || '',
           customerName: response.customer?.name || '',
           agentName: response.user?.name || '',
-          leadName: response.leadName || '',
+          leadName: response.getLeadUser?.name || '',
           payableAmount:Number(response.principal_amount)-Number(response.deposit_amount)
         });
 
