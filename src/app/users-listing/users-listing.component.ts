@@ -60,11 +60,10 @@ export class UsersListingComponent implements OnInit{
     });
   }
 
-  fetchData(page: number = 0, limit: number = 5): void {
+  fetchData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit};
     this.dataService.getUser(payload).subscribe((response: any) => {
-      
-      this.dataSource.data = response;
+      this.dataSource.data = response.data;
     });
   }
 

@@ -87,10 +87,12 @@
 
     <!-- Paginator -->
     <mat-paginator
-      [pageSizeOptions]="[10, 20,30]"
+      [length]="totalRecords"
+      [pageSizeOptions]="[10, 20, 30]"
+      [pageSize]="10"
       showFirstLastButtons
-      aria-label="Select page of periodic elements"
-    >
+      aria-label="Select page of customers"
+      *ngIf="!isFiltered">
     </mat-paginator>
   </div>
 </div>

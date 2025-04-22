@@ -89,7 +89,7 @@ export class CustomerCheckComponent {
     });
   }
 
-  fetchData(page: number = 0, limit: number = 5): void {
+  fetchData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
       

@@ -114,11 +114,14 @@
       
       <!-- Paginator -->
       <mat-paginator
-        [pageSizeOptions]="[10, 20,30]"
-        showFirstLastButtons
-        aria-label="Select page of periodic elements"
-      >
-      </mat-paginator>
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage - 1"
+      [pageSizeOptions]="[10, 20, 30]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      aria-label="Select page of periodic elements">
+  </mat-paginator>
     </div>
 
   </div>

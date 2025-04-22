@@ -44,6 +44,8 @@ export class ListingComponent implements OnInit {
   searchQuery: any;
   userDetails: any;
   userRole: any;
+  totalRecords = 0;
+  isFiltered = false;
 
   constructor(
     private fb: FormBuilder,
@@ -64,32 +66,46 @@ export class ListingComponent implements OnInit {
   ngAfterViewInit(): void {
     this.dataSource.paginator = this.paginator;
     this.paginator.page.subscribe(() => {
-      this.fetchData(this.paginator.pageIndex, this.paginator.pageSize);
+      if (this.isFiltered) {
+        // If filtered, we're showing all results on one page
+        return;
+      }
+      this.fetchData(this.paginator.pageIndex + 1, this.paginator.pageSize);
     });
   }
 
-  fetchData(page: number = 0, limit: number = 5): void {
+  fetchData(page: number = 1, limit: number = 10): void {
     const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
-      
       this.dataSource.data = response.data;
+      this.totalRecords = response.totalCount || response.data.length;
+      this.paginator.length = this.totalRecords;
     });
   }
 
   filterTable(): void {
-    const searchValue = this.searchQuery
+    const searchValue = this.searchQuery;
     
+    if (!searchValue || searchValue.trim() === '') {
+      this.isFiltered = false;
+      this.fetchData();
+      return;
+    }
+
+    this.isFiltered = true;
     this.dataService.getCustomerSearch(searchValue).subscribe((response: any) => {
-      
-      if(response.length>0){
-      this.dataSource.data = response;
-      this.paginator.length = response.totalCount; 
-      }// Update total record count
-      else{
+      if (response && response.length > 0) {
+        this.dataSource.data = response;
+        this.paginator.length = response.length;
+        this.paginator.pageSize = response.length; // Show all filtered results on one page
+      } else {
         this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+        this.dataSource.data = [];
+        this.paginator.length = 0;
       }
     });
   }
+
 
   onRowClick(row: any, action: string): void {
     if (!row.id) {
@@ -128,5 +144,11 @@ export class ListingComponent implements OnInit {
         );
       }
     });
+}
+
+clearFilter(): void {
+  this.searchQuery = '';
+  this.isFiltered = false;
+  this.fetchData();
 }
 }

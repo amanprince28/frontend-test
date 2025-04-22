@@ -153,7 +153,7 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
-  fetchSupervisors(page: number = 0, limit: number = 5) {
+  fetchSupervisors(page: number = 1, limit: number = 5) {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((customers) => {
       // Filter and map only customers whose id does not match the supervisorId

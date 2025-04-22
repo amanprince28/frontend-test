@@ -209,7 +209,7 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
 
-  fetchUserData(page: number = 0, limit: number = 5): void {
+  fetchUserData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
       
@@ -217,7 +217,7 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
 
-  fetchCustomer(page: number = 0, limit: number = 5): void {
+  fetchCustomer(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       
