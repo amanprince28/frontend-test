@@ -1,128 +1,156 @@
-
 <div class="loan-management-container">
   <nav class="breadcrumb">
-    <h4>Loan Management</h4> <!-- Adjust the component name as needed -->
+    <h4>Loan Management</h4>
+    <!-- Adjust the component name as needed -->
   </nav>
-    <!-- <h5>Filter</h5> -->
-    <div class="search-filter-create">
-      <mat-form-field class="search-input" appearance="outline">
-        <input matInput [(ngModel)]="searchQuery" placeholder="Search with Loan Id/ Agent Name/Customer IC/Customer Name" name="searchQuery" (keydown.enter)="filterTable()"/>
-      </mat-form-field>
-      <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
-      <!-- <button mat-stroked-button color="accent">Export</button> -->
-      <button mat-raised-button color="primary" (click)="onAddEdit()" [disabled]="userRole === 'AGENT'">Add Loan</button>
-    </div>
-    <div class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
-        
-        <ng-container matColumnDef="loanId">
-          <th mat-header-cell *matHeaderCellDef>Loan Id </th>
-          <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
-        </ng-container>
-        <!-- Name Column -->
-        <ng-container matColumnDef="agentName">
-          <th mat-header-cell *matHeaderCellDef>Agent Name </th>
-          <td mat-cell *matCellDef="let element">{{ element.user.name }}</td>
-        </ng-container>
-    
-        <!-- IC Column -->
-        <ng-container matColumnDef="customerName">
-          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
-          <td mat-cell *matCellDef="let element">{{ element.customer.name }}</td>
-        </ng-container>
+  <!-- <h5>Filter</h5> -->
+  <div class="search-filter-create">
+    <mat-form-field class="search-input" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Search with Loan Id/ Agent Name/Customer IC/Customer Name"
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="filterTable()">
+      Filter
+    </button>
+    <!-- <button mat-stroked-button color="accent">Export</button> -->
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onAddEdit()"
+      [disabled]="userRole === 'AGENT'"
+    >
+      Add Loan
+    </button>
+  </div>
+  <div class="mat-elevation-z8">
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      class="mat-elevation-z8 demo-table"
+    >
+      <ng-container matColumnDef="loanId">
+        <th mat-header-cell *matHeaderCellDef>Loan Id</th>
+        <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="agentName">
+        <th mat-header-cell *matHeaderCellDef>Agent Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.user.name }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="customerIC">
-          <th mat-header-cell *matHeaderCellDef>Customer IC</th>
-          <td mat-cell *matCellDef="let element">{{ element.customer.ic }}</td>
-        </ng-container>
-        
-        <ng-container   matColumnDef="agentNametwo">
-          <th mat-header-cell *matHeaderCellDef>Second Agent Name </th>
-          <td mat-cell *matCellDef="let element">{{ element?.user_2?.name }}</td>
-        </ng-container>
-      
-        <ng-container matColumnDef="principleAmount">
-          <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
-          <td mat-cell *matCellDef="let element">{{ "RM " + element.principal_amount }}</td>
-        </ng-container>
+      <!-- IC Column -->
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.customer.name }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="amountGiven">
-          <th mat-header-cell *matHeaderCellDef>Amount Given</th>
-          <td mat-cell *matCellDef="let element">{{"RM "+ element.amount_given }}</td>
-        </ng-container>
+      <ng-container matColumnDef="customerIC">
+        <th mat-header-cell *matHeaderCellDef>Customer IC</th>
+        <td mat-cell *matCellDef="let element">{{ element.customer.ic }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="paymentTerm">
-          <th mat-header-cell *matHeaderCellDef>Payment Term</th>
-          <td mat-cell *matCellDef="let element">{{ element.date_period + " " + element.unit_of_date }}</td>
-        </ng-container>
+      <ng-container matColumnDef="agentNametwo">
+        <th mat-header-cell *matHeaderCellDef>Second Agent Name</th>
+        <td mat-cell *matCellDef="let element">{{ element?.user_2?.name }}</td>
+      </ng-container>
 
-        <ng-container matColumnDef="interest">
-          <th mat-header-cell *matHeaderCellDef> Interest</th>
-          <td mat-cell *matCellDef="let element">{{ element.interest + " % " }}</td>
-        </ng-container>
+      <ng-container matColumnDef="principleAmount">
+        <th mat-header-cell *matHeaderCellDef>Principal Amount</th>
+        <td mat-cell *matCellDef="let element">
+          {{ "RM " + element.principal_amount }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status</th>
-          <td mat-cell *matCellDef="let element">{{ element.status}}</td>
-        </ng-container>
+      <ng-container matColumnDef="amountGiven">
+        <th mat-header-cell *matHeaderCellDef>Amount Given</th>
+        <td mat-cell *matCellDef="let element">
+          {{ "RM " + element.amount_given }}
+        </td>
+      </ng-container>
 
-        <ng-container matColumnDef="paymentPerTerm">
-          <th mat-header-cell *matHeaderCellDef>Payment Per Term</th>
-          <td mat-cell *matCellDef="let element">{{ "RM " + element.payment_per_term  }}</td>
-        </ng-container>
+      <ng-container matColumnDef="paymentTerm">
+        <th mat-header-cell *matHeaderCellDef>Payment Term</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.date_period + " " + element.unit_of_date }}
+        </td>
+      </ng-container>
 
-        <!-- Action Column for Edit and View -->
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef>Actions</th>
-          <td mat-cell *matCellDef="let element">
-            <!-- Edit Button -->
-            <button 
-              mat-icon-button 
-              color="primary" 
-              (click)="onRowClick(element, 'edit')" 
-              [disabled]="userRole === 'AGENT'">
-              <mat-icon>edit</mat-icon>
-            </button>
-          
-            <!-- View Button (Always Enabled) -->
-            <button 
-              mat-icon-button 
-              color="accent" 
-              (click)="onRowClick(element, 'view')">
-              <mat-icon>visibility</mat-icon>
-            </button>
-          
-            <!-- Delete Button -->
-            <button 
-              mat-icon-button 
-              color="warn" 
-              (click)="onDelete(element)" 
-              [disabled]="userRole === 'AGENT' || userRole==='LEAD' || userRole==='ADMIN'">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </td>
-        </ng-container>
-    
-        <!-- Header and Row Definitions -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          
-        ></tr>
-      </table>
-      
-      <!-- Paginator -->
-      <mat-paginator
+      <ng-container matColumnDef="interest">
+        <th mat-header-cell *matHeaderCellDef>Interest</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.interest + " % " }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="paymentPerTerm">
+        <th mat-header-cell *matHeaderCellDef>Payment Per Term</th>
+        <td mat-cell *matCellDef="let element">
+          {{ "RM " + element.payment_per_term }}
+        </td>
+      </ng-container>
+
+      <!-- Action Column for Edit and View -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <!-- Edit Button -->
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="onRowClick(element, 'edit')"
+            [disabled]="userRole === 'AGENT'"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+
+          <!-- View Button (Always Enabled) -->
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="onRowClick(element, 'view')"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+
+          <!-- Delete Button -->
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="onDelete(element)"
+            [disabled]="
+              userRole === 'AGENT' ||
+              userRole === 'LEAD' ||
+              userRole === 'ADMIN'
+            "
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+
+    <mat-paginator
       [length]="totalCount"
       [pageSize]="pageSize"
-      [pageIndex]="currentPage - 1"
+      [pageIndex]="currentPage"
       [pageSizeOptions]="[10, 20, 30]"
       (page)="onPageChange($event)"
       showFirstLastButtons
-      aria-label="Select page of periodic elements">
-  </mat-paginator>
-    </div>
-
+    >
+    </mat-paginator>
   </div>
-  
+</div>

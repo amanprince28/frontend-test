@@ -87,12 +87,13 @@
 
     <!-- Paginator -->
     <mat-paginator
-      [length]="totalRecords"
-      [pageSizeOptions]="[10, 20, 30]"
-      [pageSize]="10"
-      showFirstLastButtons
-      aria-label="Select page of customers"
-      *ngIf="!isFiltered">
-    </mat-paginator>
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageIndex]="currentPage"
+    [pageSizeOptions]="[10, 20, 30]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
   </div>
 </div>

@@ -1,78 +1,107 @@
-  <div class="user-management-container">
-
+<div class="user-management-container">
   <nav class="breadcrumb">
-    <h4>User Management</h4> <!-- Adjust the component name as needed -->
+    <h4>User Management</h4>
+    <!-- Adjust the component name as needed -->
   </nav>
 
   <div class="search-filter-create">
-    
-      <mat-form-field class="search-input" appearance="outline">
-        <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keydown.enter)="filterTable()"/>
-      </mat-form-field>
-      <button mat-stroked-button color="primary" (click)="filterTable()">Filter</button>
-      <button mat-raised-button color="primary" (click)="onAddClick()" [disabled]="userRole === 'AGENT'">Add User</button>
-    
+    <mat-form-field class="search-input" appearance="outline">
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Eg. value"
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="filterTable()">
+      Filter
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onAddClick()"
+      [disabled]="userRole === 'AGENT'"
+    >
+      Add User
+    </button>
   </div>
 
   <div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource" >
-    <!--- Note that these columns can be defined in any order.
+    <table mat-table [dataSource]="dataSource">
+      <!--- Note that these columns can be defined in any order.
             The actual rendered columns are set as a property on the row definition" -->
-            <ng-container matColumnDef="customerId">
-              <th mat-header-cell *matHeaderCellDef>User Id</th>
-              <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
-            </ng-container>
-    <!-- Name Column -->
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>Name</th>
-      <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-    </ng-container>
-            <!-- The actual rendered columns are set as a property on the row definition" --> 
-  
-    <!-- Name Column -->
-    <ng-container matColumnDef="email">
-      <th mat-header-cell *matHeaderCellDef>Email</th>
-      <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-    </ng-container>
-            <!-- The actual rendered columns are set as a property on the row definition" --> 
-  
-    <!-- Name Column -->
-    <ng-container matColumnDef="role">
-      <th mat-header-cell *matHeaderCellDef>Role</th>
-      <td mat-cell *matCellDef="let element">{{ element.role }}</td>
-    </ng-container>
+      <ng-container matColumnDef="customerId">
+        <th mat-header-cell *matHeaderCellDef>User Id</th>
+        <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
+      </ng-container>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+      <!-- The actual rendered columns are set as a property on the row definition" -->
 
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let element">
-        {{ element.status ? 'Active' : 'Inactive' }}
-      </td>
-    </ng-container>
-    
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let element">
-        <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')" [disabled]="userRole === 'AGENT'">
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')">
-          <mat-icon>visibility</mat-icon>
-        </button>
-        <button mat-icon-button color="warn" (click)="onDelete(element)" [disabled]="userRole === 'AGENT'">
-          <mat-icon>delete</mat-icon>
-        </button>
-      </td>
-    </ng-container>
-  
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: displayedColumns"
-    ></tr>
-  </table>
-  <mat-paginator [pageSizeOptions]="[10, 20,30]"
-                 showFirstLastButtons
-                 aria-label="Select page of periodic elements">
-  </mat-paginator>
+      <!-- Name Column -->
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+      <!-- The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="role">
+        <th mat-header-cell *matHeaderCellDef>Role</th>
+        <td mat-cell *matCellDef="let element">{{ element.role }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.status ? "Active" : "Inactive" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-icon-button
+            color="primary"
+            (click)="onRowClick(element, 'edit')"
+            [disabled]="userRole === 'AGENT'"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="onRowClick(element, 'view')"
+          >
+            <mat-icon>visibility</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="onDelete(element)"
+            [disabled]="userRole === 'AGENT'"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage"
+      [pageSizeOptions]="[10, 20, 30]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
   </div>
-  
+</div>

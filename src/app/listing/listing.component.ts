@@ -5,10 +5,19 @@ import { Router } from '@angular/router';
 import { SignalService } from '../signal.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { DataService } from '../data.service';
-import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -28,84 +37,111 @@ import { MatDialog } from '@angular/material/dialog';
     MatPaginatorModule,
     FormsModule,
     MatIconModule,
-    
   ],
   providers: [DataService], // Ensure DataService is provided here
   templateUrl: './listing.component.html',
-  styleUrls: ['./listing.component.scss']
+  styleUrls: ['./listing.component.scss'],
 })
 export class ListingComponent implements OnInit {
-  displayedColumns: string[] = ['userId','name', 'ic', 'passport','mobileNo','ongoing',
+  displayedColumns: string[] = [
+    'userId',
+    'name',
+    'ic',
+    'passport',
+    'mobileNo',
+    'ongoing',
     'completed',
     'badDebt',
-    'badDebtCompleted', 'actions'];
+    'badDebtCompleted',
+    'actions',
+  ];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   dataSource = new MatTableDataSource<any>([]);
-  searchQuery: any;
   userDetails: any;
   userRole: any;
-  totalRecords = 0;
-  isFiltered = false;
+
+  totalCount = 0;
+  pageSize = 10;
+  currentPage = 0;
+  isLoading = false;
+  searchQuery: string = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private signalService: SignalService,
     private dataService: DataService,
-    private snackbar:MatSnackBar,
-    private dialog:MatDialog
+    private snackbar: MatSnackBar,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.userDetails = localStorage.getItem('user-details');
-    this.userDetails = JSON.parse(this.userDetails)
+    this.userDetails = JSON.parse(this.userDetails);
     this.userRole = this.userDetails?.role ?? '';
-    this.fetchData(); // Initial data fetch
+    this.fetchData(this.currentPage, this.pageSize);
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.paginator.page.subscribe(() => {
-      if (this.isFiltered) {
-        // If filtered, we're showing all results on one page
-        return;
-      }
-      this.fetchData(this.paginator.pageIndex + 1, this.paginator.pageSize);
-    });
-  }
+  // ngAfterViewInit(): void {
+  //   this.dataSource.paginator = this.paginator;
+  //   // this.paginator.page.subscribe(() => {
+  //   //   if (this.isFiltered) {
+  //   //     // If filtered, we're showing all results on one page
+  //   //     return;
+  //   //   }
+  //   //   this.fetchData(this.paginator.pageIndex + 1, this.paginator.pageSize);
+  //   // });
+  // }
 
-  fetchData(page: number = 1, limit: number = 10): void {
-    const payload = { page, limit };
-    this.dataService.getCustomer(payload).subscribe((response: any) => {
-      this.dataSource.data = response.data;
-      this.totalRecords = response.totalCount || response.data.length;
-      this.paginator.length = this.totalRecords;
+  fetchData(pageIndex: number, pageSize: number): void {
+    this.isLoading = true;
+
+    const payload = {
+      page: pageIndex + 1, // backend expects 1-based
+      limit: pageSize,
+      filter: this.searchQuery || undefined,
+    };
+
+    this.dataService.getCustomer(payload).subscribe({
+      next: (res: any) => {
+        this.dataSource.data = res.data || [];
+        this.totalCount = res.total || res.totalCount || 0;
+        this.pageSize = pageSize;
+        this.currentPage = pageIndex;
+        this.isLoading = false;
+      },
+      error: (err: any) => {
+        console.error('Error fetching data', err);
+        this.snackbar.open('Failed to load data', 'Close', { duration: 2000 });
+        this.isLoading = false;
+      },
     });
   }
 
   filterTable(): void {
-    const searchValue = this.searchQuery;
-    
-    if (!searchValue || searchValue.trim() === '') {
-      this.isFiltered = false;
-      this.fetchData();
-      return;
-    }
+    const page = this.paginator?.pageIndex || 0;
+    const limit = this.paginator?.pageSize || this.pageSize;
 
-    this.isFiltered = true;
-    this.dataService.getCustomerSearch(searchValue).subscribe((response: any) => {
-      if (response && response.length > 0) {
-        this.dataSource.data = response;
-        this.paginator.length = response.length;
-        this.paginator.pageSize = response.length; // Show all filtered results on one page
-      } else {
-        this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
-        this.dataSource.data = [];
-        this.paginator.length = 0;
-      }
-    });
+    const payload = {
+      page: page + 1, // API expects 1-based index
+      limit,
+      filter: this.searchQuery,
+    };
+    this.dataService
+      .getCustomerSearch(this.searchQuery)
+      .subscribe((response: any) => {
+        if (response && response.length > 0) {
+          this.dataSource.data = response;
+          this.totalCount = response.total || response.totalCount;
+          this.currentPage = page;
+          this.pageSize = limit;
+        } else {
+          this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
+          this.dataSource.data = [];
+          this.paginator.length = 0;
+        }
+      });
   }
-
 
   onRowClick(row: any, action: string): void {
     if (!row.id) {
@@ -129,26 +165,34 @@ export class ListingComponent implements OnInit {
       data: { message: 'Are you sure you want to delete this user?' },
       width: '400px',
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         // Call the delete API
         this.dataService.deleteCustomer(row.id).subscribe(
           () => {
-            this.snackbar.open('Customer deleted successfully', 'Close', { duration: 2000 });
-            this.fetchData(); // Reload data after deletion
+            this.snackbar.open('Customer deleted successfully', 'Close', {
+              duration: 2000,
+            });
+            this.fetchData(this.currentPage, this.pageSize);
           },
           (error: any) => {
-            this.snackbar.open('Error deleting Customer', 'Close', { duration: 2000 });
+            this.snackbar.open('Error deleting Customer', 'Close', {
+              duration: 2000,
+            });
           }
         );
       }
     });
-}
+  }
 
-clearFilter(): void {
-  this.searchQuery = '';
-  this.isFiltered = false;
-  this.fetchData();
-}
+  onPageChange(event: PageEvent): void {
+    this.fetchData(event.pageIndex, event.pageSize);
+  }
+
+  clearFilter(): void {
+    this.searchQuery = '';
+    //this.isFiltered = false;
+    this.fetchData(this.currentPage, this.pageSize);
+  }
 }
