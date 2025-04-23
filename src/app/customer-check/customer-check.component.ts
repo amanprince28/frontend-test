@@ -114,48 +114,65 @@ export class CustomerCheckComponent {
     const transformed: any[] = [];
   
     data.forEach((customer) => {
-      const groupedBySupervisor: { [key: string]: any } = {};
+      if (!customer.loans || customer.loans.length === 0) {
+        // Handle customers with no loans
+        transformed.push({
+          name: customer.customerDetails?.name ?? '',
+          ic: customer.customerDetails?.ic ?? '',
+          agent: '-', // or 'N/A'
+          ongoing: 0,
+          completed: 0,
+          badDebt: 0,
+          badDebtCompleted: 0,
+          lastPaymentDate: '-',
+          nextPaymentDate: '-'
+        });
+      } else {
+        // Handle customers with loans grouped by supervisor
+        const groupedBySupervisor: { [key: string]: any } = {};
   
-      customer.loans.forEach((loan: any) => {
-        const key = loan.supervisor_id;
+        customer.loans.forEach((loan: any) => {
+          const key = loan.supervisor_id;
   
-        if (!groupedBySupervisor[key]) {
-          groupedBySupervisor[key] = {
-            name: customer.customerDetails.name,
-            ic: customer.customerDetails.ic,
-            agent: loan.supervisor_name,
-            ongoing: 0,
-            completed: 0,
-            badDebt: 0,
-            badDebtCompleted: 0,
-            lastPaymentDate: customer.last_installment_date,
-            nextPaymentDate: customer.upcoming_installment_date,
-          };
-        }
+          if (!groupedBySupervisor[key]) {
+            groupedBySupervisor[key] = {
+              name: customer.customerDetails?.name ?? '',
+              ic: customer.customerDetails?.ic ?? '',
+              agent: loan.supervisor_name ?? null,
+              ongoing: 0,
+              completed: 0,
+              badDebt: 0,
+              badDebtCompleted: 0,
+              lastPaymentDate: customer.last_installment_date ?? '',
+              nextPaymentDate: customer.upcoming_installment_date ?? '',
+            };
+          }
   
-        switch (loan.status) {
-          case 'Normal':
-            groupedBySupervisor[key].ongoing += loan.loan_count;
-            break;
-          case 'Completed':
-            groupedBySupervisor[key].completed += loan.loan_count;
-            break;
-          case 'Bad Debt':
-            groupedBySupervisor[key].badDebt += loan.loan_count;
-            break;
-          case 'Bad Debt Completed':
-            groupedBySupervisor[key].badDebtCompleted += loan.loan_count;
-            break;
-        }
-      });
+          switch (loan.status) {
+            case 'Normal':
+              groupedBySupervisor[key].ongoing += loan.loan_count;
+              break;
+            case 'Completed':
+              groupedBySupervisor[key].completed += loan.loan_count;
+              break;
+            case 'Bad Debt':
+              groupedBySupervisor[key].badDebt += loan.loan_count;
+              break;
+            case 'Bad Debt Completed':
+              groupedBySupervisor[key].badDebtCompleted += loan.loan_count;
+              break;
+          }
+        });
   
-      Object.values(groupedBySupervisor).forEach((entry) => {
-        transformed.push(entry);
-      });
+        Object.values(groupedBySupervisor).forEach((entry) => {
+          transformed.push(entry);
+        });
+      }
     });
-  console.log(transformed,'trabs');
+  
     return transformed;
   }
+  
 
 
 
