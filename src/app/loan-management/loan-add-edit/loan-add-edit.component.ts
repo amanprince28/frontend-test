@@ -213,7 +213,7 @@ export class LoanAddEditComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
       
-      this.userData = response.filter((el: any) => el?.role === 'AGENT');
+      this.userData = response.data.filter((el: any) => el?.role === 'AGENT');
     });
   }
 
