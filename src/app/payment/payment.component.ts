@@ -151,65 +151,156 @@ export class PaymentComponent implements OnInit {
         );
 
         // Fetch Payment Data Correctly
+        // try {
+        //   this.paymentDataFromAPI = response.id
+        //   let data = await this.getPaymentListing(response.id);
+        //   data = data.sort((a:any, b:any) => {
+        //     return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        //   });    
+        //   if (data && Array.isArray(data) && data.length > 0) {
+        //     const paymenListing = data.map((el: any) => ({
+        //       paymentType: el.type,
+        //       balance: el.balance,
+        //       paymentDate: el.payment_date,
+        //       paymentAmount: el.accepted_amount,
+        //       accepted_amount: el.amount,
+        //       due_amount:el.due_amount,
+        //       bankAgentAccount: el.account_details,
+        //       installmentId: el.installment_id,
+        //       installment_date: el.payment_date,
+        //       generate_id:
+        //         el.installment && el.installment.generate_id
+        //           ? el.installment.generate_id
+        //           : '',
+        //       loan_id: response.id,
+        //     }));
+        //     this.paymentData = [...this.paymentData, ...paymenListing];
+        //     //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
+           
+        //     const idSet = new Set(
+        //       this.paymentData.map((item) => item.id).filter(Boolean)
+        //     );
+
+        //     // Step 2: Filter out objects where `id` exists in `installmentId`
+        //     const filteredData = this.paymentData.filter(
+        //       (item) =>
+        //         !(
+        //           'id' in item &&
+        //           idSet.has(item.id) &&
+        //           this.paymentData.some((d) => d.installmentId === item.id)
+        //         )
+        //     );
+        //     this.paymentData = filteredData;
+
+        //     if (response && response.user_2) {
+              
+              
+        //       const data = { ...response, paymentdata: this.paymentData }; // Corrected assignment
+              
+        //       this.loanSharingData = this.transformInstallments(data);
+              
+        //       this.dataSourceAgent1 = this.loanSharingData.user1.payments;
+        //       this.dataSourceAgent2 = this.loanSharingData.user2.payments;
+        //   }
+
+        //   } else {
+        //     console.warn('No payment data found');
+        //     this.paymentData = [];
+        //   }
+        // } catch (error) {
+        //   this.snackbar.open('Error fetching payment listing', 'Close', { duration: 2000 });
+        //   // console.error('Error fetching payment listing:', error);
+        // }
         try {
-          this.paymentDataFromAPI = response.id
+          this.paymentDataFromAPI = response.id;
           let data = await this.getPaymentListing(response.id);
-          data = data.sort((a:any, b:any) => {
+          
+          data = data.sort((a: any, b: any) => {
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-          });    
+          });
+
+          
+        
           if (data && Array.isArray(data) && data.length > 0) {
-            const paymenListing = data.map((el: any) => ({
+            const paymentListing = data.map((el: any) => ({
               paymentType: el.type,
               balance: el.balance,
               paymentDate: el.payment_date,
               paymentAmount: el.amount,
               accepted_amount: el.amount,
+              due_amount: el.amount,
               bankAgentAccount: el.account_details,
               installmentId: el.installment_id,
               installment_date: el.payment_date,
-              generate_id:
-                el.installment && el.installment.generate_id
-                  ? el.installment.generate_id
-                  : '',
+              generate_id: el.installment?.generate_id || '',
               loan_id: response.id,
             }));
-            this.paymentData = [...this.paymentData, ...paymenListing];
-            //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
-           
-            const idSet = new Set(
-              this.paymentData.map((item) => item.id).filter(Boolean)
-            );
+            
+            
+            // Step 1: Find the 'out' object
+            const outPayment = paymentListing.find((el: any) => el.paymentType?.toLowerCase() === 'out');
+        
+            if (outPayment) {
+              let runningBalance = Number(outPayment.balance);
+        
+              // Step 2: Calculate new balance for each payment row
+              const updatedPaymentListing = this.paymentData.map((el: any, index: number, arr: any[]) => {
+                if (index === 0) {
+                  // For the first item
+                  el.balance = runningBalance - Number(el.due_amount || 0);
+                } else {
+                  // Add previous due_amount to current due_amount, then subtract from runningBalance
+                  const prevDueAmount = Number(arr[index - 1]?.balance || 0);
+                  const currDueAmount = Number(el.due_amount || 0);
+              
+                  el.balance = prevDueAmount - currDueAmount;
+              
+                  // Update running balance for next iteration
+                  runningBalance = el.balance;
+                }
+                return el;
+              });
+              
+              //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
+              // Add to existing this.paymentData
+              this.paymentData = [ ...updatedPaymentListing,...paymentListing];
 
-            // Step 2: Filter out objects where `id` exists in `installmentId`
-            const filteredData = this.paymentData.filter(
-              (item) =>
-                !(
-                  'id' in item &&
-                  idSet.has(item.id) &&
-                  this.paymentData.some((d) => d.installmentId === item.id)
-                )
-            );
-            this.paymentData = filteredData;
+              
+        
+              // Optional filtering if you still want to filter duplicates based on id and installmentId
+              const idSet = new Set(this.paymentData.map((item) => item.id).filter(Boolean));
+        
+              const filteredData = this.paymentData.filter(
+                (item) =>
+                  !(
+                    'id' in item &&
+                    idSet.has(item.id) &&
+                    this.paymentData.some((d) => d.installmentId === item.id)
+                  )
+              );
+        
+              this.paymentData = filteredData;
 
-            if (response && response.user_2) {
               
-              
-              const data = { ...response, paymentdata: this.paymentData }; // Corrected assignment
-              
-              this.loanSharingData = this.transformInstallments(data);
-              
-              this.dataSourceAgent1 = this.loanSharingData.user1.payments;
-              this.dataSourceAgent2 = this.loanSharingData.user2.payments;
-          }
-
+        
+              if (response && response.user_2) {
+                const finalData = { ...response, paymentdata: this.paymentData };
+                this.loanSharingData = this.transformInstallments(finalData);
+        
+                this.dataSourceAgent1 = this.loanSharingData.user1.payments;
+                this.dataSourceAgent2 = this.loanSharingData.user2.payments;
+              }
+            } else {
+              console.warn('No OUT payment found to calculate balance.');
+            }
           } else {
             console.warn('No payment data found');
             this.paymentData = [];
           }
         } catch (error) {
           this.snackbar.open('Error fetching payment listing', 'Close', { duration: 2000 });
-          // console.error('Error fetching payment listing:', error);
         }
+        
       }else {
           this.snackbar.open('No Data Found', 'Close', { duration: 2000 });
         }
@@ -232,12 +323,16 @@ export class PaymentComponent implements OnInit {
   }
 
   saveInstallmentListing() {
-    this.installmentData = this.installmentData.map((el: any) => ({
-      ...el,
-      due_amount: typeof el.due_amount === 'number' ? String(el.due_amount) : el.due_amount,
-      accepted_amount: typeof el.accepted_amount === 'number' ? String(el.accepted_amount) : el.accepted_amount,
-    }));
-  
+    this.installmentData = this.installmentData.map((el: any) => {
+      const { loan_id,balance, ...rest } = el; // destructure and remove loan_id
+      return {
+        ...rest,
+        due_amount: typeof el.due_amount === 'number' ? String(el.due_amount) : el.due_amount,
+        accepted_amount: typeof el.accepted_amount === 'number' ? String(el.accepted_amount) : el.accepted_amount,
+      };
+    });
+    
+    
     this.dataService
       .updateInstallment(this.searchQuery, this.installmentData)
       .subscribe((data) => {
@@ -272,33 +367,48 @@ export class PaymentComponent implements OnInit {
 
   savePaymentListing() {
     let payload: any[] = []; // Initialize the array properly
-   
-
+  
     if (!this.paymentData || !Array.isArray(this.paymentData)) {
       console.error('paymentData is undefined or not an array');
       return;
     }
-
+  
     this.paymentData.forEach((el: any) => {
-      if (el.paymentType != 'Out') {
+      if (el.paymentType !== 'Out') {
         const temp = {
           type: el.paymentType,
-          payment_date: el.paymentDate || '', // Ensure a valid value
-          balance: String(el.balance), // Default to 0 if undefined
-          receiving_date: new Date(), // Consider formatting if needed
-          status: el.status || 'Pending', // Default status
-          account_details: el.bankAgentAccount || '', // Ensure a valid value
-          amount: String(el.paymentAmount), // Default to 0 if undefined
-          loan_id: el.loan_id || null, // Ensure a valid value
-          installment_id: el.id || null, // Ensure a valid value
+          payment_date: el.paymentDate || '', 
+          balance: String(el.balance ?? 0), // Safe fallback
+          receiving_date: new Date(),
+          status: el.status || 'Pending',
+          account_details: el.bankAgentAccount || '',
+          amount: String(el.paymentAmount ?? 0),
+          loan_id: el.loan_id || null,
+          installment_id: el.id || null,
         };
-        payload.push(temp);
+  
+        // Check: skip adding if 'type', 'payment_date' or 'amount' is null, undefined or empty
+        if (
+          temp.type && temp.payment_date && temp.amount &&
+          temp.type.trim() !== '' && temp.payment_date.trim() !== '' && temp.amount.trim() !== ''
+        ) {
+          payload.push(temp);
+        }
       }
     });
-
+  
+    console.log(payload, 'payload');
+  
+    if (payload.length === 0) {
+      console.warn('No valid payments to save.');
+      this.snackbar.open('No valid payments to save.', 'Close', {
+        duration: 3000,
+      });
+      return;
+    }
+  
     this.dataService.addPayment(payload).subscribe({
       next: (data) => {
-      
         this.snackbar.open('Payment added successfully', 'Close', {
           duration: 3000,
         });
@@ -311,6 +421,7 @@ export class PaymentComponent implements OnInit {
       },
     });
   }
+  
 
   addLoanSharingData(data: any) {
     this.loanSharingData = [...this.loanSharingData, { ...data }];
@@ -336,7 +447,7 @@ export class PaymentComponent implements OnInit {
       paymentType: record.paymentType,
       installmentId: record.generate_id,
       paymentDate: record.installment_date,
-      paymentAmount: record.accepted_amount,
+      paymentAmount: record.due_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
       installment_id: record.id,

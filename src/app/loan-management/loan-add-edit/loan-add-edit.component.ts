@@ -304,6 +304,7 @@ export class LoanAddEditComponent implements OnInit {
       loan_remark: new FormControl(''),
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
+      loan_date: new FormControl('',Validators.required),
       repayment_term: new FormControl(''),
       actual_profit:new FormControl({ value: '', disabled: true }),
       estimated_profit:new FormControl({ value: 0, disabled: true }),
@@ -319,7 +320,7 @@ export class LoanAddEditComponent implements OnInit {
     const amount = Number(item.amount) || 0;
     return sum + amount;
     }, 0);
-    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
+    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given)+ Number(row.deposit_amount) || 0);
 
     
   
@@ -350,7 +351,8 @@ export class LoanAddEditComponent implements OnInit {
       unit_of_date: row.unit_of_date,
       repayment_term: row.repayment_term,
       status:row.status,
-      actual_profit:actualProfit
+      actual_profit:actualProfit,
+      loan_date:row.loan_date
     });
   }
 

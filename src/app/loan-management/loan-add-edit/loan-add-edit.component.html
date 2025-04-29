@@ -159,6 +159,20 @@
             <input formControlName="actual_profit" matInput [readonly]="readonly" />
           </mat-form-field>
 
+          <mat-form-field appearance="fill">
+            <mat-label>Loan Date</mat-label>
+            <input
+              matInput
+              [matDatepicker]="picker1"
+              formControlName="loan_date"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker1"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #picker1></mat-datepicker>
+          </mat-form-field>
+
           <mat-form-field appearance="fill" class="quarter-width">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">

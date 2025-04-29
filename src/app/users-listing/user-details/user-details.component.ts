@@ -157,7 +157,7 @@ export class UserDetailsComponent implements OnInit {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((customers) => {
       // Filter and map only customers whose id does not match the supervisorId
-      this.customerList = customers
+      this.customerList = customers.data
         .map((customer: any) => ({
           id: customer.id,
           value: customer.id,
