@@ -30,6 +30,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericModalComponent } from '../../generic-modal/generic-modal.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../../common/custom-date-adapter';
+
 
 
 @Component({
@@ -56,6 +59,11 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
     MatProgressSpinnerModule,
     MatSnackBarModule
   ],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+  ]
 })
 export class LoanAddEditComponent implements OnInit {
   isEditMode: boolean = false;
@@ -320,7 +328,7 @@ export class LoanAddEditComponent implements OnInit {
     const amount = Number(item.amount) || 0;
     return sum + amount;
     }, 0);
-    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given)+ Number(row.deposit_amount) || 0);
+    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
 
     
   

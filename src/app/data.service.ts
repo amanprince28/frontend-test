@@ -7,8 +7,8 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'http://54.151.165.48/backend';
-  //private apiUrl = 'http://localhost:3000';
+  //private apiUrl = 'http://54.151.165.48/backend';
+  private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -126,6 +126,11 @@ export class DataService {
     const url = this.apiUrl + '/payment';
     return this.http.post<any>(url, payment);
   }
+
+  updatePayment(id: string, payload: any): Observable<any> {
+    return this.http.put(`/payment/${id}`, payload);
+  }
+  
 
   getPaymentByLoanId(id: string): Observable<any> {
     return this.http.get<any[]>(`${this.apiUrl}/payment/get-by-loan/${id}`);
