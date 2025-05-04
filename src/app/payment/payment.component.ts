@@ -24,6 +24,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, generate } from 'rxjs';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../common/custom-date-adapter';
+
 
 interface PaymentRecord {
   paymentType: string;
@@ -33,7 +36,8 @@ interface PaymentRecord {
   balance?: number | string;
   bankAgentAccount?: string;
   id?: number;
-  installmentId:string;
+  installmentId: string;
+  paymentDate:string;
   loan_id?: number;
   isEdited?: boolean;
   isNew?: boolean;
@@ -57,6 +61,11 @@ interface PaymentRecord {
     MatTableModule,
     MatIconModule,
     MatSelectModule,
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
@@ -95,7 +104,7 @@ export class PaymentComponent implements OnInit {
       due_amount: new FormControl(null),
       accepted_amount: new FormControl(),
       status: new FormControl(null),
-      receiving_date:new FormControl(null)
+      receiving_date: new FormControl(null),
     });
 
     this.paymentForm = new FormGroup({
@@ -106,6 +115,7 @@ export class PaymentComponent implements OnInit {
       balance: new FormControl(),
       bankAgentAccount: new FormControl(null),
       generate_id: new FormControl(),
+      payment_date:new FormControl(),
     });
     this.paymentStatus = ['Paid', 'Unpaid', 'Contra', 'Void', 'Late', 'Delete'];
     this.paymentType = ['In', 'Out'];
@@ -125,6 +135,7 @@ export class PaymentComponent implements OnInit {
   displayedPaymentColumns: string[] = [
     'paymentType',
     'installmentId',
+    'installmentDate',
     'paymentDate',
     'paymentAmount',
     'balance',
@@ -169,8 +180,6 @@ export class PaymentComponent implements OnInit {
           (data: any) => data?.status?.toLowerCase() === 'paid'
         );
 
-        console.log(this.paymentData,'insatllment paid');
-
         try {
           this.paymentDataFromAPI = response.id;
           let data = await this.getPaymentListing(response.id);
@@ -192,8 +201,8 @@ export class PaymentComponent implements OnInit {
               due_amount: el.amount,
               bankAgentAccount: el.account_details,
               installmentId: el.installment_id,
-              generate_id:el.generate_id,
-              installment_date: el.payment_date,
+              generate_id: el.generate_id,
+              installment_date: el.installment_date,
               loan_id: response.id,
             }));
             // Step 1: Find the 'out' object
@@ -223,12 +232,10 @@ export class PaymentComponent implements OnInit {
                   return el;
                 }
               );
-              console.log(updatedPaymentListing,paymentListing,'2nddd')
+
               //this.paymentData = this.paymentData.filter(item => item.id == item.installment_id);
               // Add to existing this.paymentData
               this.paymentData = [...updatedPaymentListing, ...paymentListing];
-
-              console.log(this.paymentData,'final listing')
 
               // Optional filtering if you still want to filter duplicates based on id and installmentId
               const idSet = new Set(
@@ -320,51 +327,54 @@ export class PaymentComponent implements OnInit {
 
   onAddPayment() {
     if (this.paymentForm.invalid) return;
-  
+    
     const data = this.paymentForm.value;
     if (this.selectedPaymentIndex !== null) {
       // Update the existing record
       this.paymentData[this.selectedPaymentIndex] = {
         ...this.paymentData[this.selectedPaymentIndex],
         ...data,
-        isEdited: true // Mark as edited
+        isEdited: true, // Mark as edited
       };
       this.paymentData = [...this.paymentData]; // Trigger UI update
       this.selectedPaymentIndex = null;
     } else {
       // Add new record
-      this.paymentData = [...this.paymentData, { 
-        ...data, 
-        isNew: true // Mark as new
-      }];
+      this.paymentData = [
+        ...this.paymentData,
+        {
+          ...data,
+          isNew: true, // Mark as new
+        },
+      ];
     }
-  
+
     this.paymentForm.reset();
     this.cdr.detectChanges();
   }
-  
 
   async savePaymentListing() {
     // Filter only edited or new records
     const recordsToSave = this.paymentData.filter(
-      record => record.isEdited || record.isNew
+      (record) => record.isEdited || record.isNew
     );
-  
+
     if (recordsToSave.length === 0) {
       this.snackbar.open('No changes to save.', 'Close', {
         duration: 3000,
       });
       return;
     }
-  
+
     const payload = recordsToSave
-      .filter(el => el.paymentType !== 'Out')
-      .map(el => {
+      .filter((el) => el.paymentType !== 'Out')
+      .map((el) => {
         const paymentDate = el.paymentDate ? new Date(el.paymentDate) : null;
-        const amount = el.paymentAmount !== undefined && el.paymentAmount !== null
-          ? String(el.paymentAmount)
-          : '';
-  
+        const amount =
+          el.paymentAmount !== undefined && el.paymentAmount !== null
+            ? String(el.paymentAmount)
+            : '';
+
         return {
           type: el.paymentType,
           payment_date: paymentDate,
@@ -373,18 +383,20 @@ export class PaymentComponent implements OnInit {
           account_details: el.bankAgentAccount || '',
           amount,
           loan_id: el.loan_id || null,
-          installment_id: el.id ?el.id: el.installmentId,
-          generate_id:el.generate_id
+          installment_id: el.id ? el.id : el.installmentId,
+          generate_id: el.generate_id,
+          installment_date:el.installment_date
         };
       })
-      .filter(temp => 
-        temp.type && 
-        temp.payment_date && 
-        temp.amount && 
-        temp.type.trim() !== '' && 
-        temp.amount.trim() !== ''
+      .filter(
+        (temp) =>
+          temp.type &&
+          temp.payment_date &&
+          temp.amount &&
+          temp.type.trim() !== '' &&
+          temp.amount.trim() !== ''
       );
-  
+
     if (payload.length === 0) {
       this.snackbar.open('No valid payments to save.', 'Close', {
         duration: 3000,
@@ -392,37 +404,35 @@ export class PaymentComponent implements OnInit {
       return;
     }
 
-    console.log(payload,'payy')
-  
     try {
       const response = await firstValueFrom(
         this.dataService.addPayment(payload)
       );
-  
+
       if (response && Array.isArray(response.data)) {
         // Update paymentData with response data
-        this.paymentData = this.paymentData.map(payment => {
+        this.paymentData = this.paymentData.map((payment) => {
           // Find matching response for this payment
           const savedPayment = response.data.find(
             (sp: any) => sp.installment_id === payment.id
           );
-          
+
           if (savedPayment) {
             return {
               ...payment,
               generate_id: savedPayment.generate_id,
               isEdited: false, // Reset edit flag
-              isNew: false      // Reset new flag
+              isNew: false, // Reset new flag
             };
           }
           return payment;
         });
       }
-  
+
       this.snackbar.open('Payment added successfully', 'Close', {
         duration: 3000,
       });
-  
+
       // Update agent payments if needed
       if (this.agent2 != null) {
         await this.updateAgentPayments();
@@ -434,40 +444,45 @@ export class PaymentComponent implements OnInit {
       });
     }
   }
-  
+
   private async updateAgentPayments() {
     try {
       const apiData = await firstValueFrom(
         this.dataService.getPaymentByLoanId(this.paymentDataFromAPI)
       );
-  
-      const filteredApiData = apiData.filter((el: any) => el.paymentType != 'Out');
-      
-      console.log(filteredApiData,'after save');
+
+      const filteredApiData = apiData.filter(
+        (el: any) => el.paymentType != 'Out'
+      );
+
       // Update agent1 payments
       if (this.loanSharingData.user1?.payments) {
-        this.loanSharingData.user1.payments = this.loanSharingData.user1.payments.map((agentPayment:any) => {
-          const matchingApiPayment = filteredApiData.find(
-            (apiPayment:any) => apiPayment.generate_id === agentPayment.generate_id
-          );
-          return matchingApiPayment 
-            ? { ...agentPayment, paymentType: matchingApiPayment.type }
-            : agentPayment;
-        });
+        this.loanSharingData.user1.payments =
+          this.loanSharingData.user1.payments.map((agentPayment: any) => {
+            const matchingApiPayment = filteredApiData.find(
+              (apiPayment: any) =>
+                apiPayment.generate_id === agentPayment.generate_id
+            );
+            return matchingApiPayment
+              ? { ...agentPayment, paymentType: matchingApiPayment.type }
+              : agentPayment;
+          });
       }
-  
+
       // Update agent2 payments
       if (this.loanSharingData.user2?.payments) {
-        this.loanSharingData.user2.payments = this.loanSharingData.user2.payments.map((agentPayment:any) => {
-          const matchingApiPayment = filteredApiData.find(
-            (apiPayment:any) => apiPayment.generate_id === agentPayment.generate_id
-          );
-          return matchingApiPayment 
-            ? { ...agentPayment, paymentType: matchingApiPayment.paymentType }
-            : agentPayment;
-        });
+        this.loanSharingData.user2.payments =
+          this.loanSharingData.user2.payments.map((agentPayment: any) => {
+            const matchingApiPayment = filteredApiData.find(
+              (apiPayment: any) =>
+                apiPayment.generate_id === agentPayment.generate_id
+            );
+            return matchingApiPayment
+              ? { ...agentPayment, paymentType: matchingApiPayment.type }
+              : agentPayment;
+          });
       }
-  
+
       // Update data sources
       this.dataSourceAgent1 = this.loanSharingData.user1?.payments || [];
       this.dataSourceAgent2 = this.loanSharingData.user2?.payments || [];
@@ -478,22 +493,21 @@ export class PaymentComponent implements OnInit {
     }
   }
 
-  
-
   onPaymentEdit(record: PaymentRecord, index: number) {
+    console.log(record,'record')
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index;
-    console.log(record,'rre');
+
     // Patch form
     this.paymentForm.patchValue({
       paymentType: record.paymentType,
       installmentId: record.installmentId,
-      paymentDate: record.installment_date,
+      paymentDate: record.paymentDate?record.paymentDate:record.installment_date,
       paymentAmount: record.due_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
       installment_id: record.installmentId,
-      generate_id:record.generate_id?record.generate_id:null
+      generate_id: record.generate_id
     });
   }
 
@@ -505,7 +519,7 @@ export class PaymentComponent implements OnInit {
       due_amount: record.due_amount,
       accepted_amount: record.accepted_amount, // Correct the field name
       status: record.status,
-      receiving_date:new Date(),
+      receiving_date: new Date(),
     });
   }
 
@@ -585,7 +599,7 @@ export class PaymentComponent implements OnInit {
           paymentType: installment.paymentType,
           paymentDate: formattedDate,
           sharedAmount: sharedAmount,
-          generate_id:installment.generate_id
+          generate_id: installment.generate_id,
         });
 
         user2Payments.push({
@@ -593,12 +607,10 @@ export class PaymentComponent implements OnInit {
           paymentType: installment.paymentType,
           paymentDate: formattedDate,
           sharedAmount: sharedAmount,
-          generate_id:installment.generate_id
+          generate_id: installment.generate_id,
         });
       }
     }
-
-    console.log(user1Payments,user2Payments,'loan share');
 
     return {
       user1: {
@@ -611,5 +623,4 @@ export class PaymentComponent implements OnInit {
       },
     };
   }
-
 }

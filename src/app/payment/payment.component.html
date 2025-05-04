@@ -81,8 +81,7 @@
               <button 
               mat-raised-button 
               color="primary" 
-              type="submit" 
-              [disabled]="!enableInsatllmentInsert">
+              type="submit" >
               Insert
             </button>
             </form>
@@ -139,7 +138,7 @@
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Installment ID</mat-label>
-                <input matInput formControlName="installmentId" />
+                <input matInput formControlName="generate_id" />
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Payment Date</mat-label>
@@ -183,10 +182,17 @@
               </td>
             </ng-container>
 
+            <ng-container matColumnDef="installmentDate">
+              <th mat-header-cell *matHeaderCellDef>Installment Date</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.installment_date | date: 'dd/MM/yyyy' }}
+              </td>
+            </ng-container>
+
             <ng-container matColumnDef="paymentDate">
               <th mat-header-cell *matHeaderCellDef>Payment Date</th>
               <td mat-cell *matCellDef="let element">
-                {{ element.installment_date | date: 'dd/MM/yyyy' }}
+                {{ element.paymentDate | date: 'dd/MM/yyyy' }}
               </td>
             </ng-container>
 

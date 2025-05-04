@@ -1,98 +1,169 @@
+@use '@angular/material' as mat;
+
 .example-container {
-  width: 100%;
-  height: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  background-color: white; /* Set background color to white */
-}
-
-.example-sidenav {
-  padding: 20px;
-  background-color: white; /* Set background color to white */
-  color: black; /* Set text color to black */
-}
-
-.toolbar {
-  display: flex;
-  color: white;
-}
-.blue-background {
-  background-color: #3f51b5; /* Blue background color */
-  width: 100%; /* Ensure the background spans the entire toolbar width */
-}
-
-.my-app-title {
-  font-size: 20px;
-  font-weight: bold;
-  flex-grow: 1; /* Make the title grow to fill available space */
-   /* Center the text horizontally */
-}
-
-
-.content {
-  background-color: white; /* Set content background to white */
-  padding: 20px;
-  color: black; /* Set text color to black */
-}
-
-/* Style heading and text colors */
-h1, h2, h3, h4, h5, h6, p, a {
-  color: black; /* Set headings, text, and links to black */
-}
-
-.example-spacer {
-  flex: 1 1 auto;
-}
-
-.profile-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: black; /* Ensure profile button text is black */
-}
-
-mat-icon {
-  color: black; /* Ensure icons like the menu and profile icon are black */
-}
-
-/* Ensure profile menu items (Logout, Profile) are black */
-mat-menu-item {
-  color: black; /* Set profile and logout menu items to black */
-}
-
-mat-menu-item mat-icon {
-  color: black; /* Ensure the icons inside the menu are black as well */
-}
-
-/* Ensure menu items are displayed as a block (full-width) and stack vertically */
-.example-sidenav {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+
+  @media (max-width: 600px) {
+    height: auto;
+    min-height: 100vh;
+  }
 }
 
-/* Styling for each menu item */
-.menu-item {
-  display: block;
-  padding: 10px;
-  text-decoration: none;
-  color: black;
-  width: 100%; /* Ensures full-width */
+.mat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: mat.get-color-from-palette(mat.$indigo-palette, 500);
+  color: white;
+  padding: 0 16px;
+  height: 64px;
+  @include mat.elevation(4);
+
+  .menu-button {
+    color: white;
+    margin-right: 16px;
+  }
+
+  .app-title {
+    font-size: 20px;
+    font-weight: 500;
+    margin-left: 8px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .profile-section {
+    display: flex;
+    align-items: center;
+
+    .profile-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      font-weight: 400;
+      text-transform: none;
+      padding: 0 12px;
+      height: 100%;
+
+      mat-icon {
+        color: white;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    height: 56px;
+    padding: 0 8px;
+
+    .app-title {
+      font-size: 18px;
+    }
+
+    .profile-button {
+      padding: 0 8px;
+      gap: 4px;
+    }
+  }
 }
 
-.menu-item:hover {
-  background-color: lightgray; /* Optional hover effect */
+.example-sidenav {
+  width: 240px;
+  background: white;
+  box-shadow: 3px 0 6px rgba(0, 0, 0, 0.1);
+
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    padding: 16px 0;
+    border-bottom: 1px solid mat.get-color-from-palette(mat.$gray-palette, 200);
+
+    .menu-logo {
+      width: 75px;
+      height: 50px;
+      object-fit: contain;
+    }
+  }
+
+  .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    color: mat.get-color-from-palette(mat.$gray-palette, 800);
+    text-decoration: none;
+    transition: background-color 0.2s;
+
+    mat-icon {
+      margin-right: 16px;
+      color: mat.get-color-from-palette(mat.$indigo-palette, 500);
+    }
+
+    &:hover {
+      background-color: mat.get-color-from-palette(mat.$indigo-palette, 50);
+    }
+
+    &.router-link-active {
+      background-color: mat.get-color-from-palette(mat.$indigo-palette, 100);
+      color: mat.get-color-from-palette(mat.$indigo-palette, 700);
+      border-left: 4px solid mat.get-color-from-palette(mat.$indigo-palette, 500);
+    }
+  }
+
+  @media (max-width: 600px) {
+    width: 200px;
+  }
 }
 
-.logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 5px;
-  margin-bottom: 5px;
-  border-bottom: 1px solid #e0e0e0;
+.content {
+  flex: 1;
+  padding: 24px;
+  background-color: white;
+  overflow: auto;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
 }
 
-.menu-logo {
-  width: 75px; /* Fixed width */
-  height: 50px; /* Fixed height */
-  object-fit: contain; /* Ensure the logo scales nicely within the container */
+.profile-menu {
+  .mat-menu-item {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    line-height: 40px;
+
+    mat-icon {
+      margin-right: 16px;
+      color: mat.get-color-from-palette(mat.$gray-palette, 600);
+    }
+  }
+}
+
+@media (max-width: 959px) {
+  .example-sidenav {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  @media (max-width: 600px) {
+    .example-sidenav {
+      top: 56px;
+    }
+  }
+
+  .mat-drawer-backdrop.mat-drawer-shown {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
 }

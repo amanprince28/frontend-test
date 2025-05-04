@@ -333,10 +333,18 @@ export class LoanAddEditComponent implements OnInit {
     
   
     this.agentDetailsForm.patchValue({
-      agentId: row.supervisor,
-      agentName: row.user.name,
+      agentId: row.user.id,
+      agentName: (row.user.name).toUpperCase(),
       agentLead: row.agentLead,
     });
+    if(row.user_2){
+      this.secondAgent = true;
+      this.agentDetailsForm.patchValue({
+        agentId1: row.user_2.id,
+        agentName1: (row.user_2.name.toUpperCase()),
+        
+      });
+    }
     this.customerDetailsForm.patchValue({
       customerId: row.customer.id,
       customerName: row.customer.name,

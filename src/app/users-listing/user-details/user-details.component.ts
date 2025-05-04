@@ -153,11 +153,10 @@ export class UserDetailsComponent implements OnInit {
     });
   }
 
-  fetchSupervisors(page: number = 1, limit: number = 5) {
-    const payload = { page, limit };
-    this.dataService.getUser(payload).subscribe((customers) => {
+  fetchSupervisors() {
+    this.dataService.getLeadsAdmiin().subscribe((customers) => {
       // Filter and map only customers whose id does not match the supervisorId
-      this.customerList = customers.data
+      this.customerList = customers
         .map((customer: any) => ({
           id: customer.id,
           value: customer.id,
@@ -166,6 +165,7 @@ export class UserDetailsComponent implements OnInit {
         }));
     });
   }
+  
 
   onCustomerSubmit() {
     // Prepare submission data

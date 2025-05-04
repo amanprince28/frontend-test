@@ -1,11 +1,9 @@
 <mat-drawer-container class="example-container" autosize>
   <mat-drawer #drawer opened class="example-sidenav" mode="side">
-    <!-- Add a logo instead of the side menu text -->
     <div class="logo-container">
       <img src="assets/logo.jpeg" alt="Logo" class="menu-logo">
     </div>
   
-    <!-- Menu items with icons -->
     <a class="menu-item" [routerLink]="['users']" routerLinkActive="router-link-active" *ngIf="!checkUsers">
       <mat-icon>person</mat-icon>
       Users
@@ -31,37 +29,35 @@
       Payment 
     </a>
   </mat-drawer>
-  <mat-toolbar class="toolbar blue-background">
-    <button
-      (click)="drawer.toggle()"
-      mat-icon-button
-      class="example-icon"
-      aria-label="Example icon-button with menu icon"
-    >
+
+  <mat-toolbar class="mat-toolbar">
+    <button mat-icon-button (click)="drawer.toggle()" class="menu-button">
       <mat-icon>menu</mat-icon>
     </button>
-    <span class="my-app-title">My App</span>
-    <span class="example-spacer"></span>
-
-    <button mat-button [matMenuTriggerFor]="profileMenu" style="color:black" class="profile-button">
-      <mat-icon>account_circle</mat-icon>
-      {{userName}}
-    </button>
-    <mat-menu #profileMenu="matMenu">
-     
-      <button mat-menu-item (click)="changePassword()">
-        <mat-icon>User</mat-icon>
-        Change Password
+    
+    <span class="app-title">My App</span>
+    
+    <span class="spacer"></span> <!-- This pushes everything after it to the right -->
+    
+    <div class="profile-section">
+      <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
+        <mat-icon>account_circle</mat-icon>
+        {{userName}}
       </button>
-
-      <button mat-menu-item (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Logout
-      </button>
-    </mat-menu>
+      <mat-menu #profileMenu="matMenu" class="profile-menu">
+        <button mat-menu-item (click)="changePassword()">
+          <mat-icon>vpn_key</mat-icon>
+          Change Password
+        </button>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          Logout
+        </button>
+      </mat-menu>
+    </div>
   </mat-toolbar>
 
-  <div class="container-fluid content">
+  <div class="content">
     <router-outlet></router-outlet>
   </div>
 </mat-drawer-container>
