@@ -22,7 +22,7 @@
       mat-raised-button
       color="primary"
       (click)="onAddEdit()"
-      [disabled]="userRole === 'AGENT'"
+      [disabled]="userRole === 'AGENT' || userRole ==='LEAD'"
     >
       Add Loan
     </button>

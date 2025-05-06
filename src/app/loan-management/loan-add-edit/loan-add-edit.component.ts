@@ -220,15 +220,13 @@ export class LoanAddEditComponent implements OnInit {
   fetchUserData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
-      
-      this.userData = response.data.filter((el: any) => el?.role === 'AGENT');
+      this.userData = response.data.filter((el: any) => el?.role === 'AGENT' || el?.role ==='LEAD');
     });
   }
 
   fetchCustomer(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
-    this.dataService.getCustomer(payload).subscribe((response: any) => {
-      
+    this.dataService.getCustomer(payload).subscribe((response: any) => { 
       this.customerData = response.data;
     });
   }
@@ -237,7 +235,6 @@ export class LoanAddEditComponent implements OnInit {
     const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const application_fee = this.loanDetailsForm.get('application_fee')?.value;
-    
   
     if (
       principal_amount == null ||
@@ -430,15 +427,20 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   openAgentSearch(optionalParam?: string) {
-    
     this.secondAgent = optionalParam === 'two';
-    this.openModal('Agent Search', 'Search by Agent ID', this.userData, [
+    this.openModal(
+      'Agent Search',
+      'Search by Agent ID',
+      this.userData,
+      [
         { key: 'name', header: 'Name' },
         { key: 'role', header: 'Role' },
         { key: 'status', header: 'Status' }
-    ]);
-}
-
+      ],
+      'agent'
+    );
+  }
+  
   openCustomerSearch() {
     this.openModal(
       'Customer Search',
@@ -446,50 +448,53 @@ export class LoanAddEditComponent implements OnInit {
       this.customerData,
       [
         { key: 'name', header: 'Name' },
-        { key: 'ic', header: 'IC' },
-      ]
+        { key: 'ic', header: 'IC' }
+      ],
+      'customer'
     );
   }
-
+  
   openModal(
     title: string,
     searchPlaceholder: string,
     items: any[],
-    columns: any[]
+    columns: any[],
+    type: 'agent' | 'customer'
   ) {
     const dialogRef = this.dialog.open(GenericModalComponent, {
       width: '70%',
-      data: { title, searchPlaceholder, items, columns },
+      height:'70%',
+      data: { title, searchPlaceholder, items, columns, type },
       panelClass: 'custom-dialog-container',
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-          
-          if (title === 'Customer Search') {
-              this.customerDetailsForm.patchValue({
-                  customerId: result.id,
-                  customerName: result.name,
-                  mobile: result.mobile_no,
-                  customerAddress: result.customerAddress,
-                  customerIc: result.ic
-              });
+        if (title === 'Customer Search') {
+          this.customerDetailsForm.patchValue({
+            customerId: result.id,
+            customerName: result.name,
+            mobile: result.mobile_no,
+            customerAddress: result.customerAddress,
+            customerIc: result.ic
+          });
+        } else {
+          if (this.secondAgent) {
+            this.agentDetailsForm.patchValue({
+              agentId1: result.id,
+              agentName1: result.name
+            });
           } else {
-              if (this.secondAgent) {
-                  this.agentDetailsForm.patchValue({
-                      agentId1: result.id,
-                      agentName1: result.name
-                  });
-              } else {
-                  this.agentDetailsForm.patchValue({
-                      agentId: result.id,
-                      agentName: result.name,
-                      email: result.email,
-                      role: result.role
-                  });
-              }
+            this.agentDetailsForm.patchValue({
+              agentId: result.id,
+              agentName: result.name,
+              email: result.email,
+              role: result.role
+            });
           }
+        }
       }
-  });
+    });
   }
+  
 }

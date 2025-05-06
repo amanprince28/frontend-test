@@ -178,11 +178,11 @@ export class DetailsComponent {
     // Customer Address
     this.customerAddressForm = new FormGroup({
       cus_same_as_permanent: new FormControl(false),
-      perm_address_line: new FormControl(null, Validators.required),
-      perm_country: new FormControl(null, Validators.required),
-      perm_state: new FormControl(null, Validators.required),
-      perm_city: new FormControl(null, Validators.required),
-      perm_postal_code: new FormControl(null, Validators.required),
+      perm_address_line: new FormControl(null),
+      perm_country: new FormControl(null),
+      perm_state: new FormControl(null),
+      perm_city: new FormControl(null),
+      perm_postal_code: new FormControl(null),
       corr_postal_code: new FormControl(null,),
       corr_address_line: new FormControl(null),
       corr_country: new FormControl(null),
@@ -557,9 +557,10 @@ export class DetailsComponent {
       this.remarkDataSource.data = this.signalData?.remarks;
       this.dataSource.data = this.signalData?.relations;
       if (
-        this.signalData &&
-        this.signalData.customer_address &&
-        this.signalData.customer_address.length > 0
+        this.signalData 
+        // &&
+        // this.signalData.customer_address &&
+        // this.signalData.customer_address.length > 0
       ) {
         const customerCorrAddress =
           this.signalData?.customer_address?.length > 1

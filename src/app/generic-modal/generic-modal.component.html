@@ -10,23 +10,27 @@
   <div class="search-row">
     <mat-form-field appearance="fill" class="search-bar">
       <mat-label>Search By</mat-label>
-      <mat-select [(value)]="selectedKey" placeholder="Select Field">
+      <!-- <mat-select [(value)]="selectedKey" placeholder="Select Field">
         <mat-option *ngFor="let field of searchFields" [value]="field.key">
           {{ field.label }}
         </mat-option>
-      </mat-select>
+      </mat-select> -->
+      <input matInput [(ngModel)]="searchQuery" placeholder="Eg. value" name="searchQuery" (keydown.enter)="filterTable()"/>
     </mat-form-field>
     
-    <mat-form-field appearance="fill" class="search-bar" *ngIf="selectedKey">
+    <!-- <mat-form-field appearance="fill" class="search-bar" *ngIf="selectedKey">
       <mat-label>Enter {{ selectedKey | titlecase }}</mat-label>
       <input matInput [formControl]="searchControl" placeholder="Enter value" />
-    </mat-form-field>
+    </mat-form-field> -->
     
-    <button mat-raised-button color="primary" (click)="filterData()">Search</button>
-    
+    <!-- <button mat-raised-button color="primary" (click)="filterData()">Search</button> -->
   </div>
 
-  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div *ngIf="isLoading" class="loading-indicator">
+    <mat-spinner diameter="50"></mat-spinner>
+  </div>
+
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="!isLoading">
     <!-- Checkbox Column for Single Select -->
     <ng-container matColumnDef="select">
       <mat-header-cell *matHeaderCellDef> Select </mat-header-cell>
@@ -46,15 +50,23 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowSelect(row)"></mat-row>
+    <mat-row 
+      *matRowDef="let row; columns: displayedColumns;" 
+      (click)="onRowSelect(row)"
+      [class.selected-row]="isSelected(row)">
+    </mat-row>
   </mat-table>
 
   <!-- Pagination -->
   <mat-paginator
-    [pageSizeOptions]="[10, 20,30]"
-    showFirstLastButtons
-    aria-label="Select page of periodic elements">
-  </mat-paginator>
+  [length]="totalCount"
+  [pageSize]="pageSize"
+  [pageIndex]="currentPage"
+  [pageSizeOptions]="[10, 20, 30]"
+  (page)="onPageChange($event)"
+  showFirstLastButtons
+>
+</mat-paginator>
 </div>
 
 <div class="modal-footer">

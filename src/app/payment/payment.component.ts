@@ -90,7 +90,12 @@ export class PaymentComponent implements OnInit {
   readonly = true;
   agent2: any;
   agent1: any;
+  userRole: string = '';
+  userDetails: any;
   ngOnInit(): void {
+    const user = localStorage.getItem('user-details');
+    this.userDetails = user ? JSON.parse(user) : null;
+    this.userRole = this.userDetails?.role || '';
     this.loanDetailsForm = new FormGroup({
       principalAmount: new FormControl(''),
       customerName: new FormControl(''),

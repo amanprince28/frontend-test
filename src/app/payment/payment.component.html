@@ -81,7 +81,7 @@
               <button 
               mat-raised-button 
               color="primary" 
-              type="submit" >
+              type="submit" [disabled]="userRole === 'AGENT' || userRole ==='LEAD'" >
               Insert
             </button>
             </form>
@@ -118,7 +118,7 @@
             </table>
           </div>
           <div class="action-buttons">
-            <button mat-raised-button color="primary" (click)="saveInstallmentListing()">
+            <button mat-raised-button color="primary" (click)="saveInstallmentListing()"  [disabled]="userRole === 'AGENT' || userRole ==='LEAD'">
               Save
             </button>
           </div>
@@ -158,9 +158,14 @@
                 <mat-label>Bank / Agent / Account No</mat-label>
                 <input matInput formControlName="bankAgentAccount" />
               </mat-form-field>
-              <button mat-raised-button color="primary" type="submit" [disabled]="!enablePaymentInsert">
-                Insert
-              </button>
+              <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!enablePaymentInsert || userRole === 'AGENT' || userRole === 'LEAD'">
+              Insert
+            </button>
+            
             </form>
       
             <table
@@ -239,7 +244,7 @@
           </table>
           </div>
           <div class="action-buttons">
-            <button mat-raised-button color="primary" (click)="savePaymentListing()">
+            <button mat-raised-button color="primary" (click)="savePaymentListing()" [disabled]="userRole === 'AGENT' || userRole ==='LEAD'">
               Save
             </button>
           </div>
