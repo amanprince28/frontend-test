@@ -594,7 +594,7 @@ export class PaymentComponent implements OnInit {
         const sharedAmount = installment.accepted_amount / 2;
 
         // Format the date to dd-mm-yyyy
-        const formattedDate = new Date(installment.installment_date)
+        const formattedDate = new Date(installment.paymentDate)
           .toLocaleDateString('en-GB')
           .split('/')
           .join('-');
