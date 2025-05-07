@@ -112,14 +112,14 @@ export class UsersListingComponent implements OnInit {
 
     this.dataService.getUser(payload).subscribe({
       next: (response: any) => {
-        const sortedData = [...response.data].sort((a, b) => {
-          if (a.status === b.status) {
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-          }
-          return a.status === false ? -1 : 1;
-        });
+        // const sortedData = [...response.data].sort((a, b) => {
+        //   if (a.status === b.status) {
+        //     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        //   }
+        //   return a.status === false ? -1 : 1;
+        // });
 
-        this.dataSource.data = sortedData;
+        this.dataSource.data = response.data;
 
         this.totalCount = response.total || response.totalCount || 0;
         this.pageSize = pageSize;

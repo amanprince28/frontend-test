@@ -83,7 +83,7 @@ export class GenericModalComponent implements OnInit{
     // const limit = pageSize;
   
     if (this.data.type === 'agent') {
-      this.dataService.getUser(payload).subscribe({
+      this.dataService.getActiveUser(payload).subscribe({
         next: (response: any) => {
           const filtered = response.data.filter((el: any) => el.role === 'AGENT' || el.role === 'LEAD');
           

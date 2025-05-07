@@ -60,6 +60,14 @@ export class DataService {
     return this.http.get<any[]>(this.user, { params });
   }
 
+  getActiveUser(payload: any): Observable<any> {
+    const params = new HttpParams()
+    .set('page', payload.page.toString())
+    .set('limit', payload.limit.toString());
+    
+    return this.http.get<any[]>(this.user+'/activeUser', { params });
+  }
+
   getLoanStatusByPassport(passportNumber: string): Observable<any> {
     return this.http.get<any>(`${this.loan}/user-status/${passportNumber}`);
   }
