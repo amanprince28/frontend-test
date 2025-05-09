@@ -303,7 +303,7 @@ export class LoanAddEditComponent implements OnInit {
       principal_amount: new FormControl('', Validators.required),
       deposit_amount: new FormControl('', Validators.required),
       application_fee: new FormControl('', Validators.required),
-      interest: new FormControl('', Validators.required),
+      interest: new FormControl(''),
       amount_given: new FormControl({ value: '', disabled: true }),
       payment_per_term: new FormControl({ value: '', disabled: true }),
       loan_remark: new FormControl(''),

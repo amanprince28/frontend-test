@@ -66,8 +66,8 @@
 
       <!-- Actions Column -->
       <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element">
+        <th mat-header-cell *matHeaderCellDef style="width: 180px;">Actions</th>
+        <td mat-cell *matCellDef="let element" style="width: 180px;">
           <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')" [disabled]="userRole === 'AGENT'">
             <mat-icon>edit</mat-icon>
           </button>
