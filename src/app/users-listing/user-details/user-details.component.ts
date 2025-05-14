@@ -77,7 +77,10 @@ export class UserDetailsComponent implements OnInit {
     this.userForm = new FormGroup({
       name: new FormControl('', Validators.required),
       email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', Validators.required),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/)
+      ]),      
       role: new FormControl('', Validators.required),
       supervisor: new FormControl(''), // Supervisor dropdown control
       status: new FormControl(true) // Initialize status as true (active by default)

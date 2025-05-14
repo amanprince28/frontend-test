@@ -372,7 +372,6 @@ export class PaymentComponent implements OnInit {
     }
 
     const payload = recordsToSave
-      .filter((el) => el.paymentType !== 'Out')
       .map((el) => {
         const paymentDate = el.paymentDate ? new Date(el.paymentDate) : null;
         const amount =
@@ -499,22 +498,37 @@ export class PaymentComponent implements OnInit {
   }
 
   onPaymentEdit(record: PaymentRecord, index: number) {
-    console.log(record,'record')
+    console.log(record, 'record');
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index;
-
-    // Patch form
+  
+    // Patch the form values
     this.paymentForm.patchValue({
       paymentType: record.paymentType,
       installmentId: record.installmentId,
-      paymentDate: record.paymentDate?record.paymentDate:record.installment_date,
+      paymentDate: record.paymentDate ? record.paymentDate : record.installment_date,
       paymentAmount: record.due_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
       installment_id: record.installmentId,
       generate_id: record.generate_id
     });
+  
+    // Enable all fields first
+    Object.keys(this.paymentForm.controls).forEach(field => {
+      this.paymentForm.get(field)?.enable();
+    });
+  
+    // If paymentType is 'Out', disable all except bankAgentAccount
+    if (record.paymentType === 'Out') {
+      Object.keys(this.paymentForm.controls).forEach(field => {
+        if (field !== 'bankAgentAccount') {
+          this.paymentForm.get(field)?.disable();
+        }
+      });
+    }
   }
+  
 
   onEdit(record: any, index: number) {
     this.enableInsatllmentInsert = true;
