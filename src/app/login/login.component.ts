@@ -64,7 +64,10 @@ export class LoginComponent {
           this.isLoading = false; // Stop Spinner
           if (err.status === 401) {
             this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
-          } else {
+          } if (err.status === 400) {
+            this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
+          }
+           else {
             this.snackBar.open('Login Failed. Please try again.', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
           }
         },
