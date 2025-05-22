@@ -18,7 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { DataService } from '../../data.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
-import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @Component({
@@ -38,7 +38,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatTableModule,
     MatCard,
     MatCardContent,
-    MatCardTitle,MatSlideToggleModule
+    MatCardTitle,MatSlideToggleModule,
+    MatCardHeader
   ],
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
@@ -135,7 +136,7 @@ export class UserDetailsComponent implements OnInit {
       this.userForm.patchValue({
         name: this.signalData?.name,
         email: this.signalData?.email,
-        password: this.signalData?.password,
+        password: 'Qw@1234567890000000000000',
         role: this.signalData?.role,
         status: this.signalData?.status // Bind the status properly
       });
@@ -198,7 +199,8 @@ export class UserDetailsComponent implements OnInit {
     if (this.isEditMode) {
       // If editing an existing user, exclude password and add ID
       submissionData.id = this.customerId;
-      delete submissionData.password;
+      if(submissionData.password === 'Qw@1234567890000000000000'){
+      delete submissionData.password;}
       this.dataService.updateUser(submissionData).subscribe((response) => {
         this.router.navigate(['/users']);
       });

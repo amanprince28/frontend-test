@@ -1,0 +1,125 @@
+<div class="listing-management-container">
+  <!-- Breadcrumb and Title -->
+  <nav class="breadcrumb">
+    <h4 class="breadcrumb-title">Customer Management</h4>
+  </nav>
+
+  <!-- Search and Action Buttons -->
+  <div class="search-filter-create">
+    <mat-form-field class="search-input" appearance="outline">
+      <mat-label>Search customers</mat-label>
+      <input matInput [(ngModel)]="searchQuery" 
+             placeholder="Search by name, IC, or mobile..." 
+             name="searchQuery" 
+             (keydown.enter)="filterTable()"/>
+      <button mat-icon-button matSuffix (click)="filterTable()" aria-label="Search">
+        <mat-icon>search</mat-icon>
+      </button>
+    </mat-form-field>
+
+    <div class="action-buttons">
+      <button mat-stroked-button color="primary" class="filter-button" (click)="filterTable()">
+        <span class="button-text">Filter</span>
+      </button>
+      <button mat-raised-button color="primary" class="add-button" (click)="onAddClick()" 
+              [disabled]="userRole === 'AGENT' || userRole === 'LEAD'">
+        <span class="button-text">Add Customer</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-container mat-elevation-z8">
+    <div class="table-wrapper">
+      <table mat-table [dataSource]="dataSource" class="customer-table">
+        
+        <!-- Customer ID Column -->
+        <ng-container matColumnDef="userId">
+          <th mat-header-cell *matHeaderCellDef>Customer ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.generate_id || '-' }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name || '-' }}</td>
+        </ng-container>
+
+        <!-- IC Column -->
+        <ng-container matColumnDef="ic">
+          <th mat-header-cell *matHeaderCellDef>IC</th>
+          <td mat-cell *matCellDef="let element">{{ element.ic || '-' }}</td>
+        </ng-container>
+
+        <!-- Passport Column -->
+        <ng-container matColumnDef="passport">
+          <th mat-header-cell *matHeaderCellDef>Passport</th>
+          <td mat-cell *matCellDef="let element">{{ element.passport || '-' }}</td>
+        </ng-container>
+
+        <!-- Mobile Column -->
+        <ng-container matColumnDef="mobileNo">
+          <th mat-header-cell *matHeaderCellDef>Mobile</th>
+          <td mat-cell *matCellDef="let element">{{ element.mobile_no || '-' }}</td>
+        </ng-container>
+
+        <!-- Ongoing Loans Column -->
+        <ng-container matColumnDef="ongoing">
+          <th mat-header-cell *matHeaderCellDef>Ongoing</th>
+          <td mat-cell *matCellDef="let element">{{ element.normalStatusCounts || '0' }}</td>
+        </ng-container>
+
+        <!-- Completed Loans Column -->
+        <ng-container matColumnDef="completed">
+          <th mat-header-cell *matHeaderCellDef>Completed</th>
+          <td mat-cell *matCellDef="let element">{{ element.onGoingStatusCounts || '0' }}</td>
+        </ng-container>
+
+        <!-- Bad Debt Column -->
+        <ng-container matColumnDef="badDebt">
+          <th mat-header-cell *matHeaderCellDef>Bad Debt</th>
+          <td mat-cell *matCellDef="let element">{{ element.badDebtStatusCounts || '0' }}</td>
+        </ng-container>
+
+        <!-- Bad Debt Completed Column -->
+        <ng-container matColumnDef="badDebtCompleted">
+          <th mat-header-cell *matHeaderCellDef>Bad Debt Completed</th>
+          <td mat-cell *matCellDef="let element">{{ element.badDebtCompletedStatusCounts || '0' }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="actions-header">Actions</th>
+          <td mat-cell *matCellDef="let element" class="actions-cell">
+            <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')" 
+                    [disabled]="userRole === 'AGENT'" matTooltip="Edit">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')" matTooltip="View">
+              <mat-icon>visibility</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="onDelete(element)" matTooltip="Delete"
+                    [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN'">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Header and Row Definitions -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" 
+            (click)="onRowClick(row, 'view')" class="customer-row"></tr>
+      </table>
+    </div>
+
+    <!-- Paginator -->
+    <mat-paginator [length]="totalCount"
+                   [pageSize]="pageSize"
+                   [pageIndex]="currentPage"
+                   [pageSizeOptions]="[5, 10, 20]"
+                   (page)="onPageChange($event)"
+                   showFirstLastButtons
+                   class="customer-paginator">
+    </mat-paginator>
+  </div>
+</div>

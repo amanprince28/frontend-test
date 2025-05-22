@@ -29,30 +29,29 @@ export class PasswordChangeComponent implements OnInit {
       currentPassword: new FormControl('', [Validators.required]),
       newPassword: new FormControl('', [
         Validators.required,
-        Validators.minLength(6),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/)
       ]),
       confirmPassword: new FormControl('', [Validators.required]),
     },
     { validators: this.passwordMatchValidator }
   );
+
   userDetails: any;
 
   constructor() {}
 
   ngOnInit(): void {
-    this.userDetails = localStorage.getItem('user-details');
-    this.userDetails = JSON.parse(this.userDetails);
+    const stored = localStorage.getItem('user-details');
+    this.userDetails = stored ? JSON.parse(stored) : null;
   }
 
   passwordMatchValidator(form: AbstractControl): { [key: string]: boolean } | null {
     const newPassword = form.get('newPassword')?.value;
     const confirmPassword = form.get('confirmPassword')?.value;
-  
-    if (newPassword && confirmPassword && newPassword !== confirmPassword) {
-      return { passwordsMismatch: true };
-    }
-  
-    return null;
+
+    return newPassword && confirmPassword && newPassword !== confirmPassword
+      ? { passwordsMismatch: true }
+      : null;
   }
 
   onSubmit(): void {
@@ -62,13 +61,13 @@ export class PasswordChangeComponent implements OnInit {
       });
       return;
     }
-  
+
     const { currentPassword, newPassword } = this.passwordForm.value;
-  
+
     this.dataService.changePassword(currentPassword, newPassword).subscribe(
       (response) => {
         this.snackBar.open(response.message, 'Close', { duration: 2000 });
-        this.resetForm(); // Use the resetForm method instead of direct reset
+        this.resetForm();
       },
       (error) => {
         this.snackBar.open(error.error.message || 'Failed to change password', 'Close', {
@@ -79,7 +78,6 @@ export class PasswordChangeComponent implements OnInit {
     );
   }
 
-  // New method to properly reset the form
   private resetForm(): void {
     this.passwordForm.reset();
     Object.keys(this.passwordForm.controls).forEach(key => {

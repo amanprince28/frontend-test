@@ -1,99 +1,104 @@
 <div class="user-management-container">
   <nav class="breadcrumb">
     <h4>User Management</h4>
-    <!-- Adjust the component name as needed -->
   </nav>
 
-  <div class="search-filter-create">
-    <mat-form-field class="search-input" appearance="outline">
-      <input
-        matInput
-        [(ngModel)]="searchQuery"
-        placeholder="Eg. value"
-        name="searchQuery"
-        (keydown.enter)="filterTable()"
-      />
-    </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="filterTable()">
-      Filter
-    </button>
-    <button
+  <div class="controls-container">
+    <div class="search-filter-group">
+      <mat-form-field class="search-input" appearance="outline">
+        <input
+          matInput
+          [(ngModel)]="searchQuery"
+          placeholder="Eg. value"
+          name="searchQuery"
+          (keydown.enter)="filterTable()"
+        />
+      </mat-form-field>
+      <button mat-stroked-button color="primary" (click)="filterTable()" class="filter-btn">
+        Filter
+      </button>
+      <button
       mat-raised-button
       color="primary"
       (click)="onAddClick()"
       [disabled]="userRole === 'AGENT'"
+      class="add-btn"
     >
       Add User
     </button>
+    </div>
+   
   </div>
 
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource">
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-      <ng-container matColumnDef="customerId">
-        <th mat-header-cell *matHeaderCellDef>User Id</th>
-        <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
-      </ng-container>
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
-      </ng-container>
-      <!-- The actual rendered columns are set as a property on the row definition" -->
+  <div class="table-container mat-elevation-z8">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="user-table">
+        <ng-container matColumnDef="customerId">
+          <th mat-header-cell *matHeaderCellDef>User Id</th>
+          <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
+        </ng-container>
+        
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>Email</th>
-        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
-      </ng-container>
-      <!-- The actual rendered columns are set as a property on the row definition" -->
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef>Email</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
 
-      <!-- Name Column -->
-      <ng-container matColumnDef="role">
-        <th mat-header-cell *matHeaderCellDef>Role</th>
-        <td mat-cell *matCellDef="let element">{{ element.role }}</td>
-      </ng-container>
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef>Role</th>
+          <td mat-cell *matCellDef="let element">{{ element.role }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>Status</th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.status ? "Active" : "Inactive" }}
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.status ? "Active" : "Inactive" }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let element">
-          <button
-            mat-icon-button
-            color="primary"
-            (click)="onRowClick(element, 'edit')"
-            [disabled]="userRole === 'AGENT'"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="accent"
-            (click)="onRowClick(element, 'view')"
-          >
-            <mat-icon>visibility</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            color="warn"
-            (click)="onDelete(element)"
-            [disabled]="userRole === 'AGENT'"
-          >
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let element" class="actions-cell">
+            <div class="action-buttons">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="onRowClick(element, 'edit')"
+                [disabled]="userRole === 'AGENT'"
+                aria-label="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="onRowClick(element, 'view')"
+                aria-label="View"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onDelete(element)"
+                [disabled]="userRole === 'AGENT'"
+                aria-label="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
-    </table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+    
     <mat-paginator
       [length]="totalCount"
       [pageSize]="pageSize"
@@ -101,6 +106,7 @@
       [pageSizeOptions]="[10, 20, 30]"
       (page)="onPageChange($event)"
       showFirstLastButtons
+      class="custom-paginator"
     >
     </mat-paginator>
   </div>

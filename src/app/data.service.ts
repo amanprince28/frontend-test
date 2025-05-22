@@ -7,6 +7,7 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
+  //private apiUrl = 'https://www.cs-season.com/backend';
   //private apiUrl = 'http://54.151.165.48/backend';
   private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
@@ -220,5 +221,7 @@ export class DataService {
     return this.http.put(`${this.apiUrl}/auth/change-password`, body); // Changed POST to PUT
   }
 
-
+  fixProfitAll(): Observable<any>{
+    return this.http.get<any[]>(this.loan+'/calculate-profits');
+  }
 }

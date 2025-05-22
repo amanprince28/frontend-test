@@ -1,42 +1,169 @@
+@use '@angular/material' as mat;
+
 .loan-management-container {
-    padding: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1.5rem;
+}
+
+.header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.breadcrumb {
+  h2 {
+    margin: 0;
+    color: mat.get-color-from-palette(mat.$indigo-palette, 700);
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+}
+
+.controls-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-filter-group {
+  display: flex;
+  flex: 1;
+  min-width: 250px;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0; // Fix for flexbox overflow issues
+}
+
+.filter-btn {
+  white-space: nowrap;
+}
+
+.add-btn-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add-btn {
+  white-space: nowrap;
+}
+
+.table-wrapper {
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+}
+
+.loan-table {
+  width: 100%;
   
-    h2 {
-      margin-bottom: 16px;
-      color: #545a72;
+  .mat-header-cell {
+    font-weight: 500;
+    background-color: mat.get-color-from-palette(mat.$indigo-palette, 50);
+    color: mat.get-color-from-palette(mat.$indigo-palette, 700);
+  }
+  
+  .mat-cell, .mat-header-cell {
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    
+    &:not(.actions-cell) {
+      min-width: 100px;
     }
+  }
   
-    .search-filter-create {
+  .actions-cell {
+    .action-buttons {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 16px;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+  }
+}
+
+.custom-paginator {
+  border-top: 1px solid mat.get-color-from-palette(mat.$gray-palette, 200);
+  margin-top: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .loan-table {
+    .mat-cell, .mat-header-cell {
+      padding: 0.5rem;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .controls-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
   
-      .search-input {
-        flex: 1;
-        margin-right: 10px;
-      }
+  .search-filter-group {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
   
-      button {
-        margin-right: 10px;
+  .search-input {
+    width: 100%;
+  }
+  
+  .filter-btn, .add-btn {
+    width: 100%;
+  }
+  
+  .loan-table {
+    .mat-cell, .mat-header-cell {
+      &:not(.actions-cell) {
+        min-width: 80px;
       }
     }
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-management-container {
+    padding: 0.75rem;
+    gap: 1rem;
+  }
   
-    .loan-table {
-      width: 100%;
-      mat-header-cell {
-        color: #757575;
-        font-weight: bold;
-      }
+  .breadcrumb h2 {
+    font-size: 1.25rem;
+  }
   
-      mat-cell {
-        color: #333;
-      }
-    }
+  .mat-paginator-range-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .mat-paginator-page-size {
+    margin-bottom: 0.5rem;
   }
 
-  .breadcrumb {
-    font-size: 14px;
-    color: #757575;
-    margin-bottom: 8px;
+  .loan-table {
+    .mat-cell, .mat-header-cell {
+      padding: 0.5rem;
+      font-size: 0.75rem;
+    }
   }
-  
+}

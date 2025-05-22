@@ -1,54 +1,149 @@
 .loan-add-container {
-  padding: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+  box-sizing: border-box;
 
   h2 {
-    color: #545a72;
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+    font-size: 1.5rem;
   }
 
   .card {
-    padding: 20px;
-    margin-bottom: 20px;
+    flex: 1;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
+    overflow: auto;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   }
 
   .section {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
+
+    h5 {
+      margin: 0 0 0.75rem 0;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 1.1rem;
+    }
   }
 
   .fields-row {
     display: flex;
-    gap: 16px;
-    justify-content: space-between;
-    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: flex-start;
 
     mat-form-field {
-      flex: 1;
-      position: relative;
+      flex: 1 1 calc(25% - 1rem);
+      min-width: 150px;
+    }
+
+    .search-field {
+      flex: 2 1 calc(40% - 1rem);
     }
 
     .clickable-icon {
       cursor: pointer;
-      font-size: 24px;
-      color: #1976d2;
+      color: #3f51b5;
+      margin: 0.5rem 0.5rem 0 0.5rem;
+      align-self: center;
     }
+  }
 
-    .search-field {
-      display: flex;
-      align-items: center;
-      position: relative;
+  .action-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1rem 0;
 
-      button {
-        position: absolute;
-        right: 5px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
+    button {
+      min-width: 120px;
+      padding: 0.5rem 1rem;
+    }
+  }
+
+  .saving-state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .saving-text {
+      font-size: 0.875rem;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 992px) {
+    .fields-row {
+      mat-form-field {
+        flex: 1 1 calc(50% - 1rem);
+      }
+
+      .search-field {
+        flex: 2 1 calc(60% - 1rem);
       }
     }
   }
-}
 
-input[readonly] {
-  font-weight: bolder;
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+
+    .card {
+      padding: 0.75rem;
+    }
+
+    .fields-row {
+      flex-direction: column;
+      gap: 0.75rem;
+
+      mat-form-field {
+        flex: 1 1 100%;
+        width: 100%;
+        min-width: unset;
+      }
+
+      .search-field {
+        flex: 1 1 100%;
+      }
+
+      .clickable-icon {
+        margin: 0.25rem 0;
+        align-self: flex-start;
+      }
+    }
+
+    .action-buttons {
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+
+      button {
+        width: 100%;
+        min-width: unset;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    .section {
+      margin-bottom: 1rem;
+
+      h5 {
+        font-size: 1rem;
+      }
+    }
+
+    .fields-row {
+      margin-bottom: 0.75rem;
+    }
+  }
 }

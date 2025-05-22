@@ -1,63 +1,68 @@
-<mat-drawer-container class="example-container" autosize>
-  <mat-drawer #drawer opened class="example-sidenav" mode="side">
-    <div class="logo-container">
-      <img src="assets/logo.jpeg" alt="Logo" class="menu-logo">
+<mat-drawer-container class="app-container" autosize>
+  <mat-drawer #drawer class="app-sidenav" mode="side" [opened]="isDrawerOpen">
+    <div class="sidenav-header">
+      <img src="assets/logo.jpeg" alt="Logo" class="sidenav-logo">
     </div>
   
-    <a class="menu-item" [routerLink]="['users']" routerLinkActive="router-link-active" *ngIf="!checkUsers">
-      <mat-icon>person</mat-icon>
-      Users
-    </a>
+    <nav class="sidenav-menu">
+      <a class="menu-item" [routerLink]="['users']" routerLinkActive="active" *ngIf="!checkUsers" 
+         (click)="closeDrawerOnMobile()">
+        <mat-icon>person</mat-icon>
+        <span class="menu-label">Users</span>
+      </a>
   
-    <a class="menu-item" [routerLink]="['listing']" routerLinkActive="router-link-active">
-      <mat-icon>group</mat-icon>
-      Customer
-    </a>
+      <a class="menu-item" [routerLink]="['listing']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>group</mat-icon>
+        <span class="menu-label">Customer</span>
+      </a>
 
-    <a class="menu-item" [routerLink]="['loan']" routerLinkActive="router-link-active">
-      <mat-icon>money</mat-icon>
-      Loan
-    </a>
+      <a class="menu-item" [routerLink]="['loan']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>money</mat-icon>
+        <span class="menu-label">Loan</span>
+      </a>
 
-    <a class="menu-item" [routerLink]="['customer-check']" routerLinkActive="router-link-active">
-      <mat-icon>group</mat-icon>
-      Customer Check
-    </a>
+      <a class="menu-item" [routerLink]="['customer-check']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>group</mat-icon>
+        <span class="menu-label">Customer Check</span>
+      </a>
 
-    <a class="menu-item" [routerLink]="['payment']" routerLinkActive="router-link-active">
-      <mat-icon>money</mat-icon>
-      Payment 
-    </a>
+      <a class="menu-item" [routerLink]="['payment']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>money</mat-icon>
+        <span class="menu-label">Payment</span>
+      </a>
+    </nav>
   </mat-drawer>
 
-  <mat-toolbar class="mat-toolbar">
-    <button mat-icon-button (click)="drawer.toggle()" class="menu-button">
-      <mat-icon>menu</mat-icon>
-    </button>
-    
-    <span class="app-title">My App</span>
-    
-    <span class="spacer"></span> <!-- This pushes everything after it to the right -->
-    
-    <div class="profile-section">
-      <button mat-button [matMenuTriggerFor]="profileMenu" class="profile-button">
-        <mat-icon>account_circle</mat-icon>
-        {{userName}}
+  <div class="app-content">
+    <mat-toolbar class="app-toolbar">
+      <button mat-icon-button (click)="toggleDrawer()" class="menu-button" aria-label="Toggle menu">
+        <mat-icon>menu</mat-icon>
       </button>
-      <mat-menu #profileMenu="matMenu" class="profile-menu">
-        <button mat-menu-item (click)="changePassword()">
-          <mat-icon>vpn_key</mat-icon>
-          Change Password
+      
+      <span class="app-title">My App</span>
+      
+      <span class="spacer"></span>
+      
+      <div class="user-menu">
+        <button mat-button [matMenuTriggerFor]="profileMenu" class="user-button">
+          <mat-icon class="user-icon">account_circle</mat-icon>
+          <span class="user-name">{{userName}}</span>
         </button>
-        <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          Logout
-        </button>
-      </mat-menu>
-    </div>
-  </mat-toolbar>
+        <mat-menu #profileMenu="matMenu" class="user-dropdown">
+          <button mat-menu-item (click)="changePassword()">
+            <mat-icon>vpn_key</mat-icon>
+            <span>Change Password</span>
+          </button>
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
 
-  <div class="content">
-    <router-outlet></router-outlet>
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
   </div>
 </mat-drawer-container>

@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu'; 
@@ -17,6 +17,8 @@ import { CommonModule } from '@angular/common';
 export class MainLayoutComponent implements OnInit {
   title = 'Loan ';
   showFiller = false;
+  @ViewChild('drawer') drawer!: MatDrawer;
+  isDrawerOpen = true;
   userDetails: any
   userName: any;
   checkUsers: any;
@@ -30,6 +32,28 @@ export class MainLayoutComponent implements OnInit {
     this.userDetails = JSON.parse(this.userDetails)
     this.userName = this.userDetails?.name ?? '';    
     this.showUsers();
+    this.checkScreenSize();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event) {
+    this.checkScreenSize();
+  }
+
+
+  checkScreenSize() {
+    const isSmallScreen = window.innerWidth < 960;
+    this.isDrawerOpen = !isSmallScreen;
+  }
+
+  toggleDrawer() {
+    this.drawer.toggle();
+  }
+
+  closeDrawerOnMobile() {
+    if (window.innerWidth < 960) {
+      this.drawer.close();
+    }
   }
 
   showUsers(): void {

@@ -22,7 +22,6 @@ import { MatIconModule } from '@angular/material/icon';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatIconModule
-
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
@@ -41,12 +40,8 @@ export class LoginComponent {
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [
-        Validators.required,
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9]).{8,}$/)
-      ]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
-    
   }
 
   onSubmit(): void {

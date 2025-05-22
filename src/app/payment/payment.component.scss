@@ -1,105 +1,260 @@
+/* Main Container */
 .loan-management-container {
-  .loan-details-form {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1.5rem;
+  min-height: 90vh;
+  background-color: #f5f7fa;
+  box-sizing: border-box;
+}
 
-    mat-form-field {
-      flex: 1 1 calc(25% - 16px);
-      min-width: 200px;
+/* Header Section */
+.header-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-      &.quarter-width {
-        flex: 0 0 calc(25% - 16px);
-        max-width: calc(25% - 16px);
-      }
-    }
-  }
+.breadcrumb h4 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 500;
+}
 
-  .form-container form {
-    margin-top: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-
-    mat-form-field {
-      flex: 1 1 calc(25% - 16px);
-      min-width: 200px;
-    }
-  }
-
-  .mat-tab-group {
-    margin-top: 24px;
-
-    .form-container {
-      margin-bottom: 24px;
-
-      form {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-
-        mat-form-field {
-          flex: 1 1 calc(25% - 16px);
-          min-width: 200px;
-        }
-      }
-
-      .action-buttons {
-        margin-top: 16px;
-        display: flex;
-        justify-content: flex-end;
-
-        button {
-          margin-left: 8px;
-        }
-      }
-    }
-  }
-
-  .action-buttons {
-    margin-top: 16px;
-    display: flex;
-    justify-content: center;
-
-    button {
-      margin-left: 8px;
-    }
-  }
-
-  table {
-    width: 100%;
-    margin-top: 24px;
-  }
+/* Search Form */
+.search-form {
+  width: 100%;
 }
 
 .search-filter-create {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: stretch;
+}
 
-  .search-input {
-    flex: 1;
-    margin-right: 10px;
-  }
-
-  button {
-    margin-right: 10px;
+.search-input {
+  width: 100%;
+  
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
   }
 }
 
-.breadcrumb {
-  font-size: 14px;
-  color: #757575;
-  margin-bottom: 8px;
+.search-button {
+  width: 100%;
+  height: 56px;
+}
+
+/* Loan Card */
+.loan-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+  
+  mat-card-header {
+    padding: 1rem 1rem 0;
+    background-color: #f8f9fa;
+    
+    mat-card-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #2c3e50;
+    }
+  }
+  
+  mat-card-content {
+    padding: 1rem;
+  }
+}
+
+/* Form Styles */
+.loan-details-form,
+.installment-form,
+.payment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.form-field {
+  flex: 1 1 calc(50% - 0.5rem);
+  min-width: 250px;
+  
+  .mat-form-field-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+.quarter-width {
+  flex: 1 1 calc(25% - 0.75rem);
+}
+
+.mat-form-field {
+  width: 100%;
+
+  &.mat-form-field-appearance-outline .mat-form-field-outline {
+    background-color: white;
+    border-radius: 5px;
+  }
+}
+
+/* Tab Group */
+.mat-tab-group {
+  margin-top: 1.5rem;
+  
+  .mat-tab-header {
+    margin-bottom: 1rem;
+  }
+}
+
+.tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+/* Tables */
+.table-container {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: 8px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  
+  th {
+    background-color: #3f51b5;
+    color: black;
+    font-weight: 500;
+  }
+  
+  td, th {
+    padding: 12px 16px;
+    text-align: left;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+  
+  tr:hover {
+    background-color: #e9ecef;
+  }
+}
+
+.sharing-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sharing-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  
+  h6 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1rem;
+    color: #495057;
+    font-weight: 500;
+  }
+}
+
+/* Buttons */
+.action-button {
+  height: 56px;
+  margin-top: 0.5rem;
+  
+  .mat-button-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  
+  button {
+    min-width: 120px;
+  }
+}
+
+/* Icons */
+.mat-icon.mat-prefix {
+  margin-right: 8px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+  .search-filter-create {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .search-input {
+    flex: 1;
+  }
+  
+  .search-button {
+    width: auto;
+    min-width: 120px;
+  }
+  
+  .sharing-container {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  
+  .sharing-table {
+    flex: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .form-field {
+    flex: 1 1 100%;
+  }
+  
+  .quarter-width {
+    flex: 1 1 100%;
+  }
+  
+  .action-button {
+    width: 100%;
+  }
+  
+  .data-table {
+    min-width: 600px;
+  }
+}
+
+/* Custom Styles for Disabled Fields */
+.custom-disabled .mat-input-element:disabled {
+  color: #3f51b5;
+  -webkit-text-fill-color: #3f51b5;
 }
 
 input[readonly] {
   font-weight: bolder;
   font-size: larger;
-}
-
-.custom-disabled .mat-input-element:disabled {
-  color: #3f51b5; /* Example color */
-  -webkit-text-fill-color: #3f51b5;
+  color: #212529;
 }

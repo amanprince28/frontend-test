@@ -1,22 +1,26 @@
-<div class="customer-form">
-  <mat-card>
-    <mat-card-title>User - Add</mat-card-title>
+<div class="customer-form-container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>User - Add</mat-card-title>
+    </mat-card-header>
+    
     <mat-card-content>
-      <!-- Customer Details -->
-      <h3>User Details</h3>
-      <form [formGroup]="userForm">
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+      <form [formGroup]="userForm" class="user-form">
+        <h5 class="section-title">User Details</h5>
+        
+        <div class="form-grid">
+          <!-- Row 1 -->
+          <mat-form-field appearance="outline" class="form-field">
             <mat-label>Name</mat-label>
             <input matInput placeholder="Enter name" formControlName="name">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline" class="form-field">
             <mat-label>Email</mat-label>
             <input matInput type="email" placeholder="Enter Email" formControlName="email">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline" class="form-field">
             <mat-label>Password</mat-label>
             <input matInput placeholder="Enter Password" type="password" formControlName="password">
             <mat-error *ngIf="userForm.get('password')?.hasError('required')">
@@ -27,10 +31,8 @@
             </mat-error>
           </mat-form-field>
           
-        </div>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+          <!-- Row 2 -->
+          <mat-form-field appearance="outline" class="form-field">
             <mat-label>Role</mat-label>
             <mat-select formControlName="role">
               <mat-option *ngFor="let role of role" [value]="role.value">
@@ -39,33 +41,34 @@
             </mat-select>
           </mat-form-field>
 
-          
-        
-        <!-- Supervisor Dropdown (Only for Agent or Lead) -->
-        <div *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'" class="quarter-width">
-          <mat-form-field appearance="outline" >
-            <mat-label>Supervisor</mat-label>
-            <mat-select formControlName="supervisor">
-              <mat-option *ngFor="let supervisor of superVisorList" [value]="supervisor.value">
-                {{ supervisor.viewValue }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+          <!-- Conditional Supervisor Field -->
+          <ng-container *ngIf="userForm.get('role')?.value === 'AGENT' || userForm.get('role')?.value === 'LEAD'">
+            <mat-form-field appearance="outline" class="form-field">
+              <mat-label>Supervisor</mat-label>
+              <mat-select formControlName="supervisor">
+                <mat-option *ngFor="let supervisor of superVisorList" [value]="supervisor.value">
+                  {{ supervisor.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+
+          <div class="form-field toggle-field">
+            <mat-slide-toggle formControlName="status" class="status-toggle">
+              User Status
+            </mat-slide-toggle>
+          </div>
         </div>
 
-        <div class="quarter-width">
-          <mat-slide-toggle formControlName="status">Customer Status</mat-slide-toggle>
+        <div class="form-actions">
+          <button mat-raised-button color="primary" (click)="onCustomerSubmit()" [disabled]="userRole === 'AGENT'">
+            Save
+          </button>
+          <button mat-raised-button (click)="onCustomerCancel()">
+            Cancel
+          </button>
         </div>
-        </div>
-
       </form>
-
-      <!-- Tabs for Other Sections -->
-
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" (click)="onCustomerSubmit()" [disabled]="userRole === 'AGENT'">Save</button>
-        <button mat-raised-button (click)="onCustomerCancel()">Cancel</button>
-      </div>
     </mat-card-content>
   </mat-card>
 </div>

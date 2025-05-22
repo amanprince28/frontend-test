@@ -203,4 +203,5 @@ export class UsersListingComponent implements OnInit {
   onPageChange(event: PageEvent): void {
     this.fetchData(event.pageIndex, event.pageSize);
   }
+
 }
