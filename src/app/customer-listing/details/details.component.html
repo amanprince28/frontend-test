@@ -573,48 +573,49 @@
               <div class="col-sm-3 d-flex justify-content-end">
                 <button mat-raised-button type="submit" color="primary" [disabled]="isView" (click)="onRemarksSubmit()">Insert</button>
               </div>
-              <div class="mat-elevation-z8">
-                <table mat-table [dataSource]="remarkDataSource">
-                  <!-- Name Column -->
               
-                  <ng-container matColumnDef="remarks">
-                    <th mat-header-cell *matHeaderCellDef>Remarks</th>
-                    <td mat-cell *matCellDef="let element">{{ element.remark }}</td>
-                  </ng-container>
-
-                  <ng-container matColumnDef="createdAt">
-                    <th mat-header-cell *matHeaderCellDef>Created Date</th>
-                    <td mat-cell *matCellDef="let element">{{ element.createdAt }}</td>
-                  </ng-container>
-                  
-                  <ng-container matColumnDef="createdBy">
-                    <th mat-header-cell *matHeaderCellDef>Created By</th>
-                    <td mat-cell *matCellDef="let element">{{ element.createdBy }}</td>
-                  </ng-container>
-              
-                  <!-- Actions Column -->
-                  <ng-container matColumnDef="actions">
-                    <th mat-header-cell *matHeaderCellDef>Actions</th>
-                    <td mat-cell *matCellDef="let record; let i = index">
-                      <button mat-button color="accent" (click)="onRemarksEdit(record, i)"><mat-icon>edit</mat-icon></button>
-                      <button mat-button color="warn" (click)="onRemarksDelete(record, i)"><mat-icon>delete</mat-icon></button>
-                    </td>
-                  </ng-container>
-              
-                  <!-- Table Rows -->
-                  <tr mat-header-row *matHeaderRowDef="displayedColumnsRemark"></tr>
-                  <tr mat-row *matRowDef="let row; columns: displayedColumnsRemark;"></tr>
-                </table>
-              
-                <mat-paginator
-                  [pageSizeOptions]="[10, 20,30]"
-                  showFirstLastButtons
-                  aria-label="Select page of periodic elements"
-                >
-                </mat-paginator>
-              </div>
             </div>
           </form>
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="remarkDataSource">
+              <!-- Name Column -->
+          
+              <ng-container matColumnDef="remarks">
+                <th mat-header-cell *matHeaderCellDef>Remarks</th>
+                <td mat-cell *matCellDef="let element">{{ element.remark }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                <td mat-cell *matCellDef="let element">{{ element.createdAt }}</td>
+              </ng-container>
+              
+              <ng-container matColumnDef="createdBy">
+                <th mat-header-cell *matHeaderCellDef>Created By</th>
+                <td mat-cell *matCellDef="let element">{{ element.createdBy }}</td>
+              </ng-container>
+          
+              <!-- Actions Column -->
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <td mat-cell *matCellDef="let record; let i = index">
+                  <button mat-button color="accent" (click)="onRemarksEdit(record, i)"><mat-icon>edit</mat-icon></button>
+                  <button mat-button color="warn" (click)="onRemarksDelete(record, i)"><mat-icon>delete</mat-icon></button>
+                </td>
+              </ng-container>
+          
+              <!-- Table Rows -->
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsRemark"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsRemark;"></tr>
+            </table>
+          
+            <mat-paginator
+              [pageSizeOptions]="[10, 20,30]"
+              showFirstLastButtons
+              aria-label="Select page of periodic elements"
+            >
+            </mat-paginator>
+          </div>
         </mat-tab>
         
 

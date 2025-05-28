@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from '../data.service';
 
@@ -16,6 +17,7 @@ import { DataService } from '../data.service';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
+    MatIconModule,
   ],
   templateUrl: './password-change.component.html',
   styleUrls: ['./password-change.component.scss']
@@ -36,6 +38,9 @@ export class PasswordChangeComponent implements OnInit {
     { validators: this.passwordMatchValidator }
   );
 
+  hideNewPassword = true;
+  hideConfirmPassword = true;
+
   userDetails: any;
 
   constructor() {}
@@ -43,6 +48,14 @@ export class PasswordChangeComponent implements OnInit {
   ngOnInit(): void {
     const stored = localStorage.getItem('user-details');
     this.userDetails = stored ? JSON.parse(stored) : null;
+  }
+
+  toggleNewPasswordVisibility(): void {
+    this.hideNewPassword = !this.hideNewPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.hideConfirmPassword = !this.hideConfirmPassword;
   }
 
   passwordMatchValidator(form: AbstractControl): { [key: string]: boolean } | null {

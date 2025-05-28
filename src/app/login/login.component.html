@@ -2,6 +2,7 @@
   <div class="login-box">
     <h2>Login</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Username Field -->
       <mat-form-field appearance="outline" class="form-control">
         <mat-label>Username</mat-label>
         <input matInput type="text" formControlName="email" placeholder="Enter your username" />
@@ -10,11 +11,25 @@
         <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
       </mat-form-field>
 
+      <!-- Password Field -->
       <mat-form-field appearance="outline" class="form-control">
         <mat-label>Password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" placeholder="Enter your password" />
+        <input 
+          matInput 
+          [type]="hide ? 'password' : 'text'" 
+          formControlName="password" 
+          placeholder="Enter your password"
+          (keydown.enter)="onSubmit()" 
+        />
         <mat-icon matPrefix>lock</mat-icon>
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <button 
+          mat-icon-button 
+          matSuffix 
+          (click)="togglePasswordVisibility($event)" 
+          [attr.aria-label]="'Toggle password visibility'" 
+          [attr.aria-pressed]="!hide"
+          type="button"
+        >
           <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
         <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
@@ -25,9 +40,20 @@
         </mat-error>
       </mat-form-field>
       
-      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="login-button">
+      <!-- Submit Button -->
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit" 
+        [disabled]="loginForm.invalid || isLoading"  
+        class="login-button"
+      >
         <span>Login</span>
-        <mat-progress-spinner *ngIf="isLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
+        <mat-progress-spinner 
+          *ngIf="isLoading" 
+          mode="indeterminate" 
+          diameter="20">
+        </mat-progress-spinner>
       </button>
     </form>
   </div>

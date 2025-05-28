@@ -22,7 +22,16 @@
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Password</mat-label>
-            <input matInput placeholder="Enter Password" type="password" formControlName="password">
+            <input matInput 
+                   [type]="hidePassword ? 'password' : 'text'" 
+                   placeholder="Enter Password" 
+                   formControlName="password">
+            <button mat-icon-button 
+                    matSuffix 
+                    (click)="togglePasswordVisibility()" 
+                    type="button">
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
             <mat-error *ngIf="userForm.get('password')?.hasError('required')">
               Password is required
             </mat-error>
@@ -30,6 +39,7 @@
               Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one special character.
             </mat-error>
           </mat-form-field>
+          
           
           <!-- Row 2 -->
           <mat-form-field appearance="outline" class="form-field">

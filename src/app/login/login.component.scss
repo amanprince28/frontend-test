@@ -5,7 +5,7 @@
   align-items: center;
   min-height: 100vh;
   padding: 1rem;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  background: linear-gradient(135deg, #b6eeea 0%, #c4d3f3 100%);
 }
 
 /* Login box styles */
@@ -84,40 +84,60 @@ mat-error {
   font-size: 0.8rem;
 }
 
-/* Responsive adjustments */
+/* Compact adjustments for small screens */
 @media (max-width: 600px) {
+  .login-container {
+    padding: 0.5rem;
+  }
+
   .login-box {
-    padding: 2rem 1.5rem;
+    padding: 1.75rem 1.25rem;
     border-radius: 12px;
-    gap: 1.5rem;
-  }
-  
-  .login-box h2 {
-    font-size: 1.75rem;
-  }
-  
-  .login-form {
     gap: 1.25rem;
+  }
+
+  .login-box h2 {
+    font-size: 1.5rem;
+  }
+
+  .login-form {
+    gap: 1rem;
+  }
+
+  .login-button {
+    height: 44px;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+  }
+
+  mat-error {
+    font-size: 0.75rem;
   }
 }
 
 @media (max-width: 400px) {
-  .login-container {
-    padding: 0.5rem;
-  }
-  
   .login-box {
-    padding: 1.5rem 1.25rem;
+    padding: 1.25rem 1rem;
     border-radius: 10px;
+    gap: 1rem;
   }
-  
+
   .login-box h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
-  
+
   .login-button {
-    height: 44px;
-    font-size: 0.9rem;
+    height: 42px;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  .mat-icon.mat-prefix {
+    margin-right: 4px;
+  }
+
+  .mat-form-field {
+    font-size: 0.85rem;
   }
 }
 

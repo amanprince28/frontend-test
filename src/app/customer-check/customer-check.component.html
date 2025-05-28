@@ -1,83 +1,113 @@
-<div class="user-management-container">
-
+<div class="loan-management-container">
+  <div class="header-section">
     <nav class="breadcrumb">
-      <h4 >Customer Check </h4> <!-- Adjust the component name as needed -->
+      <h4>Customer Check</h4>
     </nav>
-  
-    <div class="search-filter-create">
-      
-        <mat-form-field class="search-input" appearance="outline">
-          <input matInput [(ngModel)]="searchQuery" placeholder="Customer Name/Customer IC/Passport" name="searchQuery" (keydown.enter)="filterTable()"/>
+
+    <div class="controls-container">
+      <div class="search-filter-group">
+        <mat-form-field appearance="outline" class="search-input">
+          <input
+            matInput
+            [(ngModel)]="searchQuery"
+            placeholder="Customer Name/Customer IC/Passport"
+            name="searchQuery"
+            (keydown.enter)="filterTable()"
+          />
         </mat-form-field>
-        <button mat-stroked-button color="primary" (click)="filterTable()">Search</button>
-        <!-- <button mat-raised-button color="primary" (click)="onAddClick()">Add User</button> -->
-      
+        <button
+          mat-stroked-button
+          color="primary"
+          (click)="filterTable()"
+          class="filter-btn"
+        >
+          Search
+        </button>
+      </div>
     </div>
-  
-    <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dataSource" >
-      <!--- Note that these columns can be defined in any order.
-              The actual rendered columns are set as a property on the row definition" -->
-     <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Customer Name</th>
-        <td mat-cell *matCellDef="let element">{{ element?.name}}</td>
-      </ng-container>
+  </div>
 
-      <ng-container matColumnDef="ic">
-        <th mat-header-cell *matHeaderCellDef>Customer Ic</th>
-        <td mat-cell *matCellDef="let element">{{ element?.ic }}</td>
-      </ng-container>
-      <!-- Name Column -->
-      <ng-container matColumnDef="agent">
-        <th mat-header-cell *matHeaderCellDef>Agent</th>
-        <td mat-cell *matCellDef="let element">{{ element?.agent }}</td>
-      </ng-container>
-              <!-- The actual rendered columns are set as a property on the row definition" --> 
-    
-      <!-- Name Column -->
-      <ng-container matColumnDef="ongoing">
-        <th mat-header-cell *matHeaderCellDef>Ongoing</th>
-        <td mat-cell *matCellDef="let element">{{ element?.ongoing }}</td>
-      </ng-container>
-              <!-- The actual rendered columns are set as a property on the row definition" --> 
-    
-      <!-- Name Column -->
-      <ng-container matColumnDef="completed">
-        <th mat-header-cell *matHeaderCellDef>Completed</th>
-        <td mat-cell *matCellDef="let element">{{ element?.completed }}</td>
-      </ng-container>
+  <div class="table-wrapper mat-elevation-z8">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="loan-table">
+        <!-- Customer Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let element">{{ element?.name || "-" }}</td>
+        </ng-container>
 
-      <ng-container matColumnDef="badDebt">
-        <th mat-header-cell *matHeaderCellDef>Bad Debt</th>
-        <td mat-cell *matCellDef="let element">{{ element?.badDebt }}</td>
-      </ng-container>
+        <!-- Customer IC Column -->
+        <ng-container matColumnDef="ic">
+          <th mat-header-cell *matHeaderCellDef>Customer IC</th>
+          <td mat-cell *matCellDef="let element">{{ element?.ic || "-" }}</td>
+        </ng-container>
 
+        <!-- Agent Column -->
+        <ng-container matColumnDef="agent">
+          <th mat-header-cell *matHeaderCellDef>Agent</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.agent || "-" }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="badDebtCompleted">
-        <th mat-header-cell *matHeaderCellDef>Bad Debt Completed</th>
-        <td mat-cell *matCellDef="let element">{{ element?.badDebtCompleted }}</td>
-      </ng-container>
+        <!-- Ongoing Column -->
+        <ng-container matColumnDef="ongoing">
+          <th mat-header-cell *matHeaderCellDef>Ongoing</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.ongoing || "0" }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="lastPaymentDate">
-        <th mat-header-cell *matHeaderCellDef>Last Payment Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.lastPaymentDate }}</td>
-      </ng-container>
+        <!-- Completed Column -->
+        <ng-container matColumnDef="completed">
+          <th mat-header-cell *matHeaderCellDef>Completed</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.completed || "0" }}
+          </td>
+        </ng-container>
 
-      <ng-container matColumnDef="nextPaymentDate">
-        <th mat-header-cell *matHeaderCellDef>Next Payment Date</th>
-        <td mat-cell *matCellDef="let element">{{ element.nextPaymentDate }}</td>
-      </ng-container>
-  
-    
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-      ></tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10, 20,30]"
-                   showFirstLastButtons
-                   aria-label="Select page of periodic elements">
+        <!-- Bad Debt Column -->
+        <ng-container matColumnDef="badDebt">
+          <th mat-header-cell *matHeaderCellDef>Bad Debt</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.badDebt || "0" }}
+          </td>
+        </ng-container>
+
+        <!-- Bad Debt Completed Column -->
+        <ng-container matColumnDef="badDebtCompleted">
+          <th mat-header-cell *matHeaderCellDef>Bad Debt Completed</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.badDebtCompleted || "0" }}
+          </td>
+        </ng-container>
+
+        <!-- Last Payment Date Column -->
+        <ng-container matColumnDef="lastPaymentDate">
+          <th mat-header-cell *matHeaderCellDef>Last Payment Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.lastPaymentDate || "-" }}
+          </td>
+        </ng-container>
+
+        <!-- Next Payment Date Column -->
+        <ng-container matColumnDef="nextPaymentDate">
+          <th mat-header-cell *matHeaderCellDef>Next Payment Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element?.nextPaymentDate || "-" }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 20, 30]"
+      showFirstLastButtons
+      aria-label="Select page of periodic elements"
+    >
     </mat-paginator>
-    </div>
-    
+  </div>
+</div>

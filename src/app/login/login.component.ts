@@ -28,15 +28,14 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  isLoading: boolean = false; // Spinner Control
   hide = true;
-
+  isLoading = false;
 
   constructor(
     private fb: FormBuilder,
-    private router: Router,
     private dataService: DataService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -46,34 +45,50 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      this.isLoading = true; // Start Spinner
+      this.isLoading = true;
       const credentials = this.loginForm.value;
 
       this.dataService.login(credentials).subscribe({
         next: (resp) => {
-          this.isLoading = false; // Stop Spinner
+          this.isLoading = false;
           if (resp.access_token) {
             localStorage.setItem('user-details', JSON.stringify(resp));
-            this.snackBar.open('✅ Login Successful', 'Close', { duration: 3000, panelClass: 'success-snackbar' });
+            this.snackBar.open('✅ Login Successful', 'Close', {
+              duration: 3000,
+              panelClass: 'success-snackbar'
+            });
             this.router.navigateByUrl('/listing');
           } else {
-            this.snackBar.open(resp.message || 'Invalid Credentials', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
+            this.snackBar.open(resp.message || 'Invalid Credentials', 'Close', {
+              duration: 3000,
+              panelClass: 'error-snackbar'
+            });
           }
         },
         error: (err) => {
-          this.isLoading = false; // Stop Spinner
-          if (err.status === 401) {
-            this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
-          } if (err.status === 400) {
-            this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
+          this.isLoading = false;
+          if (err.status === 401 || err.status === 400) {
+            this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', {
+              duration: 3000,
+              panelClass: 'error-snackbar'
+            });
+          } else {
+            this.snackBar.open('Login Failed. Please try again.', 'Close', {
+              duration: 3000,
+              panelClass: 'error-snackbar'
+            });
           }
-           else {
-            this.snackBar.open('Login Failed. Please try again.', 'Close', { duration: 3000, panelClass: 'error-snackbar' });
-          }
-        },
+        }
       });
     } else {
-      this.snackBar.open('⚠️ Please fill all required fields correctly.', 'Close', { duration: 3000 });
+      this.snackBar.open('⚠️ Please fill all required fields correctly.', 'Close', {
+        duration: 3000
+      });
     }
+  }
+
+  togglePasswordVisibility(event: MouseEvent): void {
+    event.preventDefault(); // Just for safety
+    this.hide = !this.hide;
   }
 }

@@ -1,38 +1,42 @@
-<div class="listing-management-container">
-  <!-- Breadcrumb and Title -->
-  <nav class="breadcrumb">
-    <h4 class="breadcrumb-title">Customer Management</h4>
-  </nav>
-
-  <!-- Search and Action Buttons -->
-  <div class="search-filter-create">
-    <mat-form-field class="search-input" appearance="outline">
-      <mat-label>Search customers</mat-label>
-      <input matInput [(ngModel)]="searchQuery" 
-             placeholder="Search by name, IC, or mobile..." 
-             name="searchQuery" 
-             (keydown.enter)="filterTable()"/>
-      <button mat-icon-button matSuffix (click)="filterTable()" aria-label="Search">
-        <mat-icon>search</mat-icon>
-      </button>
-    </mat-form-field>
-
-    <div class="action-buttons">
-      <button mat-stroked-button color="primary" class="filter-button" (click)="filterTable()">
-        <span class="button-text">Filter</span>
-      </button>
-      <button mat-raised-button color="primary" class="add-button" (click)="onAddClick()" 
-              [disabled]="userRole === 'AGENT' || userRole === 'LEAD'">
-        <span class="button-text">Add Customer</span>
-      </button>
+<div class="loan-management-container">
+  <div class="header-section">
+    <nav class="breadcrumb">
+      <h4>Customer Management</h4>
+    </nav>
+    
+    <div class="controls-container">
+      <div class="search-filter-group">
+        <mat-form-field appearance="outline" class="search-input">
+          <input
+            matInput
+            [(ngModel)]="searchQuery"
+            placeholder="Search by name, IC, or mobile..."
+            name="searchQuery"
+            (keydown.enter)="filterTable()"
+          />
+        </mat-form-field>
+        <button mat-stroked-button color="primary" (click)="filterTable()" class="filter-btn">
+          Filter
+        </button>
+      </div>
+      
+      <div class="add-btn-container">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onAddClick()"
+          [disabled]="userRole === 'AGENT' || userRole ==='LEAD'"
+          class="add-btn"
+        >
+          Add Customer
+        </button>
+      </div>
     </div>
   </div>
 
-  <!-- Data Table -->
-  <div class="table-container mat-elevation-z8">
-    <div class="table-wrapper">
-      <table mat-table [dataSource]="dataSource" class="customer-table">
-        
+  <div class="table-wrapper mat-elevation-z8">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="loan-table">
         <!-- Customer ID Column -->
         <ng-container matColumnDef="userId">
           <th mat-header-cell *matHeaderCellDef>Customer ID</th>
@@ -89,37 +93,52 @@
 
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef class="actions-header">Actions</th>
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element" class="actions-cell">
-            <button mat-icon-button color="primary" (click)="onRowClick(element, 'edit')" 
-                    [disabled]="userRole === 'AGENT'" matTooltip="Edit">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="accent" (click)="onRowClick(element, 'view')" matTooltip="View">
-              <mat-icon>visibility</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="onDelete(element)" matTooltip="Delete"
-                    [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN'">
-              <mat-icon>delete</mat-icon>
-            </button>
+            <div class="action-buttons">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="onRowClick(element, 'edit')"
+                [disabled]="userRole === 'AGENT'"
+                matTooltip="Edit"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="accent"
+                (click)="onRowClick(element, 'view')"
+                matTooltip="View"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onDelete(element)"
+                [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN'"
+                matTooltip="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
           </td>
         </ng-container>
 
-        <!-- Header and Row Definitions -->
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns" 
-            (click)="onRowClick(row, 'view')" class="customer-row"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
 
-    <!-- Paginator -->
-    <mat-paginator [length]="totalCount"
-                   [pageSize]="pageSize"
-                   [pageIndex]="currentPage"
-                   [pageSizeOptions]="[5, 10, 20]"
-                   (page)="onPageChange($event)"
-                   showFirstLastButtons
-                   class="customer-paginator">
-    </mat-paginator>
+    <mat-paginator
+      [length]="totalCount"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage"
+      [pageSizeOptions]="[10, 20, 30]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="custom-paginator"
+    ></mat-paginator>
   </div>
 </div>

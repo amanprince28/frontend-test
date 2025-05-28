@@ -250,10 +250,13 @@
     .remarks-textarea {
       min-height: 100px;
     }
-    
-    .remarks-table {
-      margin-top: 16px;
+    table{
+      width: 100%;
     }
+    
+    // .remarks-table {
+    //   margin-top: 16px;
+    // }
   }
   
   /* Tables Styling */
@@ -297,8 +300,159 @@
     }
   }
   
-  /* Responsive Adjustments */
-  @media (max-width: 1024px) {
+
+  @media (max-width: 768px) {
+    padding: 4px 2px;
+    zoom: 0.95; // Slightly zoom out the entire form
+
+    mat-card {
+      mat-card-title {
+        padding: 8px 6px;
+        font-size: 1.1rem;
+      }
+      
+      mat-card-content {
+        padding: 6px;
+      }
+    }
+
+    .heading-text {
+      margin: 8px 0 6px;
+      font-size: 0.9rem;
+      padding-bottom: 4px;
+    }
+
+    .form-row, .row {
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    mat-tab-group {
+      margin-top: 12px;
+      
+      .mat-tab-label {
+        min-width: 70px;
+        padding: 0 6px !important;
+        font-size: 0.7rem;
+        height: 36px;
+      }
+    }
+
+    mat-form-field {
+      font-size: 13px;
+      
+      .mat-form-field-infix {
+        padding: 0.4em 0;
+        font-size: 13px;
+      }
+      
+      .mat-input-element {
+        transform: scale(0.95);
+        transform-origin: left;
+      }
+      
+      .mat-form-field-label {
+        transform: scale(0.95) translateY(-1.2em);
+      }
+      
+      &.mat-form-field-should-float .mat-form-field-label {
+        transform: scale(0.9) translateY(-1.5em) perspective(100px);
+      }
+    }
+
+    .action-buttons {
+      margin-top: 12px;
+      gap: 6px;
+      
+      button {
+        min-width: 90px;
+        padding: 4px 8px;
+        font-size: 0.8rem;
+        flex: 1 1 calc(50% - 6px);
+      }
+    }
+
+    /* Tables */
+    .mat-elevation-z8 {
+      table {
+        td.mat-cell, th.mat-header-cell {
+          padding: 6px 8px !important;
+          font-size: 0.7rem;
+        }
+        
+        .mat-column-actions {
+          width: 70px;
+          
+          button mat-icon {
+            font-size: 16px !important;
+          }
+        }
+      }
+    }
+
+    /* Documents Tab */
+    .documents-tab {
+      gap: 8px;
+      
+      .upload-container {
+        padding: 8px;
+        
+        .button-container button {
+          min-width: 90px;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    /* Form Fields - More compact */
+    .mat-form-field-appearance-outline {
+      .mat-form-field-outline-gap {
+        width: 94%; // Slightly narrower gap for outline fields
+      }
+      
+      .mat-form-field-flex {
+        padding: 0 0.5em;
+      }
+      
+      .mat-form-field-infix {
+        padding: 0.5em 0;
+      }
+    }
+
+    /* Special scaling for select and other form controls */
+    .mat-select {
+      font-size: 13px;
+      
+      .mat-select-value {
+        transform: scale(0.95);
+        transform-origin: left;
+      }
+    }
+
+    /* Checkboxes and radios */
+    .mat-checkbox, .mat-radio-button {
+      transform: scale(0.9);
+    }
+
+    /* Date picker inputs */
+    .mat-datepicker-toggle {
+      width: 24px;
+      
+      .mat-icon-button {
+        width: 24px;
+        height: 24px;
+        line-height: 24px;
+        
+        .mat-datepicker-toggle-default-icon {
+          width: 18px;
+        }
+      }
+    }
+  }
+
+  
+  /* Tablet adjustments (unchanged from original) */
+  @media (min-width: 769px) and (max-width: 1024px) {
     .form-row, .row {
       > div, mat-form-field {
         flex: 1 1 calc(50% - 16px);
@@ -313,93 +467,22 @@
     }
   }
   
-  @media (max-width: 768px) {
-    .customer-form {
-      padding: 8px;
-    }
-    
-    mat-card {
-      box-shadow: none;
-      border-radius: 0;
-    }
-    
-    .form-row, .row {
-      > div, mat-form-field {
-        flex: 1 1 100%;
-      }
-    }
-    
-    mat-tab-group {
-      .mat-tab-header {
-        overflow-x: auto;
-        padding-bottom: 8px;
-      }
-      
-      .mat-tab-label {
-        min-width: auto;
-        font-size: 12px;
-        padding: 0 8px !important;
-      }
-    }
-    
-    .action-buttons {
-      flex-direction: column;
-      gap: 8px;
-      
-      button {
-        width: 100%;
-      }
-    }
-    
-    .documents-tab {
-      .button-container {
-        flex-direction: column;
-        
-        button {
-          width: 100%;
-        }
-      }
-    }
-    
-    .mat-elevation-z8 {
-      border: 1px solid #e0e0e0;
-      box-shadow: none;
-      
-      table {
-        min-width: 600px;
-      }
-    }
+  /* Larger screens (unchanged from original) */
+  @media (min-width: 1025px) {
+    /* All original desktop styles are preserved */
   }
-  
-  @media (max-width: 480px) {
-    .mat-tab-label {
-      font-size: 11px;
-      padding: 0 6px !important;
+
+  table {
+
+    th {
+      background: #2c3e50; // Dark blue for header
+      color: white; // Text color
     }
-    
-    mat-form-field {
-      font-size: 14px;
+    td {   
+      color: #333; // Text color
     }
-    
-    .mat-card-title {
-      font-size: 1.3rem;
-      padding: 12px;
-    }
-    
-    .mat-cell, .mat-header-cell {
-      padding: 8px 12px !important;
-      font-size: 12px;
-    }
-    
-    .mat-column-actions {
-      button {
-        min-width: 24px !important;
-        padding: 0 2px !important;
-        
-        mat-icon {
-          font-size: 18px !important;
-        }
-      }
+    tr:hover td {
+      background: #f1f1f1; // Hover effect for rows
     }
   }
 }

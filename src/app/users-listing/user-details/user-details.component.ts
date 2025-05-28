@@ -20,6 +20,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-details',
@@ -39,7 +40,8 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatCard,
     MatCardContent,
     MatCardTitle,MatSlideToggleModule,
-    MatCardHeader
+    MatCardHeader,
+    MatIconModule
   ],
   templateUrl: './user-details.component.html',
   styleUrls: ['./user-details.component.scss'],
@@ -61,6 +63,9 @@ export class UserDetailsComponent implements OnInit {
   superVisorList: any[]=[];
   userDetails: any;
   userRole: any;
+
+  hidePassword: boolean = true;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -170,6 +175,9 @@ export class UserDetailsComponent implements OnInit {
     });
   }
   
+  togglePasswordVisibility() {
+    this.hidePassword = !this.hidePassword;
+  }
 
   onCustomerSubmit() {
     // Prepare submission data
