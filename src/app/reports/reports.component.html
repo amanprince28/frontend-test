@@ -16,90 +16,68 @@
       <mat-form-field appearance="outline">
         <mat-label>Loan Created From</mat-label>
         <input matInput [matDatepicker]="picker1" formControlName="fromDate" />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker1"
-        ></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
         <mat-label>Loan Created To</mat-label>
         <input matInput [matDatepicker]="picker2" formControlName="toDate" />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="picker2"
-        ></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
 
       <div class="action-buttons">
         <button mat-raised-button color="primary" type="submit">Submit</button>
-        <button
-          mat-raised-button
-          color="accent"
-          (click)="exportXLSX()"
-          type="button"
-        >
-          Export To Xls
-        </button>
+        <button mat-raised-button color="accent" type="button" (click)="exportXLSX()">Export To XLS</button>
       </div>
     </form>
 
-    <div class="report-table">
-      <div
-        *ngIf="
-          showTable &&
-          ((selectedReportType === 'loan' && loanReportData.length === 0) ||
-            (selectedReportType === 'payment' &&
-              paymentReportData.length === 0))
-        "
-        class="no-data-message"
-      >
-        No Data Available, Please Select Different Dates.
-      </div>
+    <div class="report-table" *ngIf="showTable">
+      <div *ngIf="errorMessage" class="no-data-message">{{ errorMessage }}</div>
+
+      <!-- Loan Report Table -->
       <table
         *ngIf="selectedReportType === 'loan'"
         mat-table
-        [dataSource]="loanReportData"
+        [dataSource]="loanDataSource"
         class="mat-elevation-z2"
+        matSort
       >
         <ng-container matColumnDef="sucessDate">
-          <th mat-header-cell *matHeaderCellDef>SUCCESS DATE</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>SUCCESS DATE</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.loanCreatedDate | date : "dd-MM-yyyy" }}
+            {{ element.loanCreatedDate | date: 'dd-MM-yyyy' }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="loanId">
-          <th mat-header-cell *matHeaderCellDef>LOAN ID</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>LOAN ID</th>
           <td mat-cell *matCellDef="let element">{{ element.loanId }}</td>
         </ng-container>
 
         <ng-container matColumnDef="customerName">
-          <th mat-header-cell *matHeaderCellDef>NAME</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>NAME</th>
           <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
         </ng-container>
 
         <ng-container matColumnDef="loanAmount">
-          <th mat-header-cell *matHeaderCellDef>LOAN AMOUNT</th>
-          <td mat-cell *matCellDef="let element">
-            RM {{ element.loanAmount }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>LOAN AMOUNT</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.loanAmount }}</td>
         </ng-container>
 
         <ng-container matColumnDef="out">
-          <th mat-header-cell *matHeaderCellDef>OUT</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>OUT</th>
           <td mat-cell *matCellDef="let element">RM {{ element.out }}</td>
         </ng-container>
 
         <ng-container matColumnDef="deposit">
-          <th mat-header-cell *matHeaderCellDef>DEPOSIT</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>DEPOSIT</th>
           <td mat-cell *matCellDef="let element">RM {{ element.deposit }}</td>
         </ng-container>
 
         <ng-container matColumnDef="onHand">
-          <th mat-header-cell *matHeaderCellDef>ON HAND</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ON HAND</th>
           <td mat-cell *matCellDef="let element">RM {{ element.onHand }}</td>
         </ng-container>
 
@@ -107,9 +85,9 @@
           <th mat-header-cell *matHeaderCellDef>PAYMENT DATE</th>
           <td mat-cell *matCellDef="let element">
             <div *ngFor="let payment of element.loanData.payment">
-              <span *ngIf="payment.type === 'In'">{{
-                payment.payment_date | date : "dd-MM-yyyy"
-              }}</span>
+              <span *ngIf="payment.type === 'In'">
+                {{ payment.payment_date | date: 'dd-MM-yyyy' }}
+              </span>
             </div>
           </td>
         </ng-container>
@@ -118,90 +96,93 @@
           <th mat-header-cell *matHeaderCellDef>AMOUNT</th>
           <td mat-cell *matCellDef="let element">
             <div *ngFor="let payment of element.loanData.payment">
-              <span *ngIf="payment.type === 'In'"
-                >RM {{ payment.amount }}.00</span
-              >
+              <span *ngIf="payment.type === 'In'">RM {{ payment.amount }}.00</span>
             </div>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef>STATUS</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.paymentStatus }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>STATUS</th>
+          <td mat-cell *matCellDef="let element">{{ element.paymentStatus }}</td>
         </ng-container>
 
         <ng-container matColumnDef="estimatedProfit">
-          <th mat-header-cell *matHeaderCellDef>Estimated Profit</th>
-          <td mat-cell *matCellDef="let element">
-            RM {{ element.estimatedProfit }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Estimated Profit</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.estimatedProfit }}</td>
         </ng-container>
 
         <ng-container matColumnDef="actualProfit">
-          <th mat-header-cell *matHeaderCellDef>Actual Profit</th>
-          <td mat-cell *matCellDef="let element">
-            RM {{ element.actualProfit }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Actual Profit</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.actualProfit }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="loanDisplayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: loanDisplayedColumns"></tr>
       </table>
 
+      <mat-paginator
+        *ngIf="selectedReportType === 'loan'"
+        #loanPaginator
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 25, 50]"
+        showFirstLastButtons
+      ></mat-paginator>
+
+      <!-- Payment Report Table -->
       <table
         *ngIf="selectedReportType === 'payment'"
         mat-table
-        [dataSource]="paymentReportData"
+        [dataSource]="paymentDataSource"
         class="mat-elevation-z2"
+        matSort
       >
         <ng-container matColumnDef="loanCreatedDate">
-          <th mat-header-cell *matHeaderCellDef>Loan Created Date</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan Created Date</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.loanCreatedDate | date : "dd-MM-yyyy" }}
+            {{ element.loanCreatedDate | date: 'dd-MM-yyyy' }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="loanId">
-          <th mat-header-cell *matHeaderCellDef>Loan ID</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan ID</th>
           <td mat-cell *matCellDef="let element">{{ element.loanId }}</td>
         </ng-container>
 
         <ng-container matColumnDef="agentName">
-          <th mat-header-cell *matHeaderCellDef>Agent</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Agent</th>
           <td mat-cell *matCellDef="let element">{{ element.agentName }}</td>
         </ng-container>
 
         <ng-container matColumnDef="customerName">
-          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Customer Name</th>
           <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
         </ng-container>
 
         <ng-container matColumnDef="totalPaymentIn">
-          <th mat-header-cell *matHeaderCellDef>Payment In</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.totalPaymentIn }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment In</th>
+          <td mat-cell *matCellDef="let element">{{ element.totalPaymentIn }}</td>
         </ng-container>
 
         <ng-container matColumnDef="totalPaymentOut">
-          <th mat-header-cell *matHeaderCellDef>Payment Out</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.totalPaymentOut }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment Out</th>
+          <td mat-cell *matCellDef="let element">{{ element.totalPaymentOut }}</td>
         </ng-container>
 
         <ng-container matColumnDef="bankAgentAccountNo">
-          <th mat-header-cell *matHeaderCellDef>Bank A/C No.</th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.bankAgentAccountNo }}
-          </td>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Bank A/C No.</th>
+          <td mat-cell *matCellDef="let element">{{ element.bankAgentAccountNo }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="paymentDisplayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: paymentDisplayedColumns"></tr>
       </table>
+      <mat-paginator
+        *ngIf="selectedReportType === 'payment'"
+        #paymentPaginator
+        [pageSize]="10"
+        [pageSizeOptions]="[10, 25, 50]"
+        showFirstLastButtons
+      ></mat-paginator>
     </div>
   </div>
 </div>

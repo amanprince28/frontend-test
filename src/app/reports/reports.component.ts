@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -7,11 +6,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DataService } from '../data.service';
 
 @Component({
@@ -27,13 +29,15 @@ import { DataService } from '../data.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    HttpClientModule,
-    MatProgressSpinnerModule
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    HttpClientModule
   ],
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss']
 })
-export class ReportsComponent {
+export class ReportsComponent implements AfterViewInit {
   form = this.fb.group({
     reportType: [''],
     fromDate: [null],
@@ -70,57 +74,70 @@ export class ReportsComponent {
     'bankAgentAccountNo'
   ];
 
-  loanReportData: any[] = [];
-  paymentReportData: any[] = [];
+  loanDataSource = new MatTableDataSource<any>();
+  paymentDataSource = new MatTableDataSource<any>();
 
-  constructor(private fb: FormBuilder, private http: HttpClient,private dataService:DataService) {}
+  @ViewChild('loanPaginator') loanPaginator!: MatPaginator;
+  @ViewChild('paymentPaginator') paymentPaginator!: MatPaginator;
+
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(private fb: FormBuilder, private http: HttpClient, private dataService: DataService) {}
+
+  ngAfterViewInit(): void {
+    this.loanDataSource.sort = this.sort;
+    this.paymentDataSource.sort = this.sort;
+  }
 
   onSubmit() {
     if (!this.form.value.reportType) {
       this.showTable = false;
       return;
     }
-  
+
     this.selectedReportType = this.form.value.reportType as 'loan' | 'payment';
     this.isLoading = true;
     this.errorMessage = '';
     this.showTable = false;
-  
+
     const { fromDate, toDate } = this.form.value;
-  
+
     const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : undefined;
     const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : undefined;
-  
+
     this.dataService.getReport(this.selectedReportType, formattedFromDate, formattedToDate).subscribe({
       next: (response: any) => {
         if (this.selectedReportType === 'loan') {
-          this.loanReportData = response && response.length > 0 ? 
-            response.map((loan:any) => {
-              const totalPayments = loan.loanData.payment
-                  .filter((p:any) => p.type === 'In')
-                  .reduce((sum:any, p:any) => sum + Number(p.amount), 0);
-              
-              const outAmount = Number(loan.out.replace(/[^0-9.]/g, ''));
-              const depositAmount = Number(loan.deposit.replace(/[^0-9.]/g, ''));
-              const onHandAmount = (outAmount - depositAmount).toFixed(2);
-  
-              return {
-                  ...loan,
-                  paymentStatus: totalPayments >= outAmount ? 'Fully Paid' : 
-                               totalPayments > 0 ? 'Partial Paid' : 'Unpaid',
-                  onHand: onHandAmount
-              };
-            }) : [];
+          const data = response?.length > 0 ? response.map((loan: any) => {
+            const totalPayments = loan.loanData.payment
+              .filter((p: any) => p.type === 'In')
+              .reduce((sum: number, p: any) => sum + Number(p.amount), 0);
+
+            const outAmount = Number(loan.out.replace(/[^0-9.]/g, ''));
+            const depositAmount = Number(loan.deposit.replace(/[^0-9.]/g, ''));
+            const onHandAmount = (outAmount - depositAmount).toFixed(2);
+
+            return {
+              ...loan,
+              paymentStatus: totalPayments >= outAmount ? 'Fully Paid' :
+                totalPayments > 0 ? 'Partial Paid' : 'Unpaid',
+              onHand: onHandAmount
+            };
+          }) : [];
+
+          this.loanDataSource.data = data;
+          setTimeout(() => this.loanDataSource.paginator = this.loanPaginator);
         } else {
-          this.paymentReportData = response && response.length > 0 ? response : [];
+          const data = response || [];
+          this.paymentDataSource.data = data;
+          setTimeout(() => this.paymentDataSource.paginator = this.paymentPaginator);
         }
-        
+
         this.showTable = true;
         this.isLoading = false;
-        
-        // Show message if no data
-        if ((this.selectedReportType === 'loan' && this.loanReportData.length === 0) ||
-            (this.selectedReportType === 'payment' && this.paymentReportData.length === 0)) {
+
+        if ((this.selectedReportType === 'loan' && this.loanDataSource.data.length === 0) ||
+            (this.selectedReportType === 'payment' && this.paymentDataSource.data.length === 0)) {
           this.errorMessage = 'No data available, please select different dates.';
         }
       },
@@ -134,25 +151,25 @@ export class ReportsComponent {
 
   exportXLSX() {
     if (!this.selectedReportType) return;
-  
-    const data = this.selectedReportType === 'loan' ? this.loanReportData : this.paymentReportData;
-    if (data.length === 0) {
-      this.errorMessage = 'No data available to export, please select different dates.';
 
+    const data = this.selectedReportType === 'loan' ? this.loanDataSource.data : this.paymentDataSource.data;
+
+    if (data.length === 0) {
+      this.errorMessage = 'No data available to export.';
       return;
     }
-  
+
     try {
-      const exportData = this.selectedReportType === 'loan' 
-        ? this.prepareLoanExportData() 
+      const exportData = this.selectedReportType === 'loan'
+        ? this.prepareLoanExportData()
         : this.preparePaymentExportData();
-  
+
       const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(exportData);
       const workbook: XLSX.WorkBook = {
         Sheets: { data: worksheet },
         SheetNames: ['data']
       };
-    
+
       const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
       this.saveAsExcelFile(excelBuffer, `${this.selectedReportType}-report`);
       this.errorMessage = '';
@@ -161,21 +178,19 @@ export class ReportsComponent {
       console.error('Export error:', error);
     }
   }
-  
+
   private prepareLoanExportData(): any[] {
-    return this.loanReportData.map(loan => {
-      // Get all payment dates and amounts
+    return this.loanDataSource.data.map(loan => {
       const payments = loan.loanData.payment
         .filter((p: any) => p.type === 'In')
         .map((p: any) => ({
           date: p.payment_date ? new Date(p.payment_date).toISOString().split('T')[0] : '',
           amount: `RM ${p.amount}.00`
         }));
-  
-      // Combine payment dates and amounts into strings
-      const paymentDates = payments.map((p:any) => p.date).join('\n');
-      const paymentAmounts = payments.map((p:any) => p.amount).join('\n');
-  
+
+      const paymentDates = payments.map((p: any) => p.date).join('\n');
+      const paymentAmounts = payments.map((p: any) => p.amount).join('\n');
+
       return {
         'SUCCESS DATE': loan.loanCreatedDate ? new Date(loan.loanCreatedDate).toISOString().split('T')[0] : '',
         'LOAN ID': loan.loanId,
@@ -192,9 +207,9 @@ export class ReportsComponent {
       };
     });
   }
-  
+
   private preparePaymentExportData(): any[] {
-    return this.paymentReportData.map(payment => ({
+    return this.paymentDataSource.data.map(payment => ({
       'Loan Created Date': payment.loanCreatedDate ? new Date(payment.loanCreatedDate).toISOString().split('T')[0] : '',
       'Loan ID': payment.loanId,
       'Agent': payment.agentName,
@@ -204,10 +219,10 @@ export class ReportsComponent {
       'Bank A/C No.': payment.bankAgentAccountNo
     }));
   }
-  
+
   private saveAsExcelFile(buffer: any, fileName: string): void {
-    const blob = new Blob([buffer], { 
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' 
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8'
     });
     FileSaver.saveAs(blob, `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
