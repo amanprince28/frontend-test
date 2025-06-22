@@ -224,4 +224,22 @@ export class DataService {
   fixProfitAll(): Observable<any>{
     return this.http.get<any[]>(this.loan+'/calculate-profits');
   }
+
+  getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string): Observable<any> {
+    const url = this.apiUrl + '/report';
+  
+    const body: any = {
+      report_type,
+    };
+  
+    if (fromDate) {
+      body.loan_data_from = fromDate;
+    }
+    if (toDate) {
+      body.loan_data_to = toDate;
+    }
+  
+    return this.http.post<any>(url, body);
+  }
+  
 }

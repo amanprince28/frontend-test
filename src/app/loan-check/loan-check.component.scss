@@ -73,6 +73,22 @@
   }
 }
 
+.search-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 1rem;
+  
+    mat-form-field {
+      width: 200px;
+    }
+  
+    button {
+      height: 56px;
+    }
+  }
+
 .header-section {
   display: flex;
   flex-direction: column;
@@ -307,3 +323,14 @@
     }
   }
 }
+  
+  .dark-red {
+    background-color: #8b0000;
+    color: #fff;
+  }
+  
+  .pink-red {
+    background-color: pink;
+    color: #000;
+  }
+  

@@ -139,14 +139,13 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-width: 0; // Prevent flex overflow
+  min-width: 0;
 }
 
 .main-content {
   flex: 1;
-  padding: 1.5rem;
   background: white;
-  overflow-x: hidden; // Prevent horizontal scrolling
+  overflow-x: hidden;
 }
 
 .user-dropdown {
@@ -166,73 +165,206 @@
   }
 }
 
-/* Responsive adjustments */
-@media (max-width: 959px) {
-  .app-sidenav {
-    position: fixed;
-    top: 4rem;
-    bottom: 0;
-    z-index: 1000;
-    width: 14rem;
+/* ============================================= */
+/* 480px Breakpoint (Very Small Phones) */
+/* ============================================= */
+@media (max-width: 480px) {
+  html {
+    font-size: 14px;
   }
 
-  .mat-drawer-backdrop.mat-drawer-shown {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-}
-
-@media (max-width: 600px) {
   .app-toolbar {
-    height: 3.5rem;
+    height: 3rem;
     padding: 0 0.5rem;
 
+    .menu-button {
+      margin-right: 0.5rem;
+      min-width: 36px;
+      padding: 0 8px;
+    }
+
     .app-title {
-      font-size: 1rem;
+      font-size: 0.9rem;
       max-width: 40vw;
     }
 
     .user-button {
       padding: 0 0.25rem;
-      gap: 0.25rem;
 
       .user-name {
-        font-size: 0.75rem;
-        max-width: 80px;
+        display: none;
       }
     }
   }
 
   .app-sidenav {
-    top: 3.5rem;
     width: 12rem;
-  }
+    top: 3rem;
 
-  .main-content {
-    padding: 0.75rem;
-  }
+    .sidenav-header {
+      padding: 0.5rem 0;
 
-  .sidenav-menu .menu-item {
-    padding: 0.5rem 0.75rem;
-    margin: 0 0.25rem;
-
-    mat-icon {
-      margin-right: 0.75rem;
+      .sidenav-logo {
+        width: 4rem;
+      }
     }
-  }
-}
 
-@media (max-width: 400px) {
-  .app-toolbar {
-    .app-title {
-      display: none;
-    }
-    
-    .spacer {
-      flex: 0.5 1 auto;
+    .sidenav-menu .menu-item {
+      padding: 0.5rem;
+      margin: 0 0.25rem;
+      font-size: 0.85rem;
+
+      mat-icon {
+        margin-right: 0.5rem;
+        font-size: 1rem;
+      }
     }
   }
 
   .main-content {
     padding: 0.5rem;
+  }
+}
+
+/* ============================================= */
+/* 360px Breakpoint (Extremely Small Phones) */
+/* ============================================= */
+@media (max-width: 360px) {
+  html {
+    font-size: 13px;
+    transform: scale(0.95);
+    transform-origin: top left;
+    width: calc(100% / 0.95);
+    height: calc(100% / 0.95);
+  }
+
+  .app-container {
+    min-height: calc(100vh / 0.95);
+  }
+
+  .app-toolbar {
+    height: 2.75rem;
+    padding: 0 0.25rem;
+
+    .menu-button {
+      margin-right: 0.25rem;
+      min-width: 32px;
+      padding: 0 4px;
+    }
+
+    .app-title {
+      font-size: 0.8rem;
+      max-width: 35vw;
+    }
+
+    .spacer {
+      min-width: 0.25rem;
+    }
+  }
+
+  .app-sidenav {
+    width: 10rem;
+    top: 2.75rem;
+
+    .sidenav-menu .menu-item {
+      padding: 0.4rem;
+      margin: 0 0.1rem;
+      font-size: 0.8rem;
+
+      mat-icon {
+        margin-right: 0.4rem;
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  .main-content {
+    padding: 0.25rem;
+  }
+}
+
+/* ============================================= */
+/* Landscape Mode Optimizations */
+/* ============================================= */
+@media (max-width: 480px) and (orientation: landscape) {
+  html {
+    transform: scale(0.85);
+    transform-origin: top left;
+    width: calc(100% / 0.85);
+    height: calc(100% / 0.85);
+  }
+
+  .app-container {
+    min-height: calc(100vh / 0.85);
+  }
+
+  .app-toolbar {
+    height: 2.5rem;
+    padding: 0;
+
+    .app-title {
+      display: none;
+    }
+
+    .user-button {
+      .user-icon {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .app-sidenav {
+    width: 9rem;
+    top: 2.5rem;
+
+    .sidenav-menu .menu-item {
+      padding: 0.3rem 0.5rem;
+      font-size: 0.75rem;
+
+      mat-icon {
+        margin-right: 0.3rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  .main-content {
+    padding: 0;
+  }
+}
+
+@media (max-width: 360px) and (orientation: landscape) {
+  html {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: calc(100% / 0.8);
+    height: calc(100% / 0.8);
+  }
+
+  .app-container {
+    min-height: calc(100vh / 0.8);
+  }
+
+  .app-toolbar {
+    height: 2.25rem;
+
+    .menu-button {
+      min-width: 28px;
+    }
+  }
+
+  .app-sidenav {
+    width: 8rem;
+    top: 2.25rem;
+
+    .sidenav-menu .menu-item {
+      padding: 0.25rem 0.4rem;
+      font-size: 0.7rem;
+
+      mat-icon {
+        margin-right: 0.25rem;
+        font-size: 0.75rem;
+      }
+    }
   }
 }

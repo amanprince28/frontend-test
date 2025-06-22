@@ -1,0 +1,74 @@
+<div class="expense-container">
+    <div class="breadcrumb-header">
+        <h5>Expenses Module</h5>
+        <!-- <nav class="breadcrumb">
+          <span>Dashboard</span> / <span>Finance</span> / <strong>Expenses</strong>
+        </nav> -->
+      </div>
+      
+    <div class="selectors">
+      <mat-form-field appearance="outline">
+        <mat-select placeholder="Select Agents" 
+                    [ngModel]="selectedAgents()" 
+                    (ngModelChange)="onAgentsChange($event)"
+                    multiple>
+          <mat-option *ngFor="let agent of agents()" [value]="agent">
+            {{ agent }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-select placeholder="Select Year" 
+                    [ngModel]="selectedYear()" 
+                    (ngModelChange)="onYearChange($event)">
+          <mat-option *ngFor="let year of ['2024', '2025']" [value]="year">
+            {{ year }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  
+    <div *ngIf="selectedAgents().length > 0" class="selected-agents">
+      <mat-chip *ngFor="let agent of selectedAgents()">{{ agent }}</mat-chip>
+    </div>
+  
+    <div *ngIf="isLoading()" class="loading-spinner">
+      <mat-spinner diameter="40"></mat-spinner>
+      <span>Loading data...</span>
+    </div>
+  
+    <div *ngIf="isDataLoaded()" class="table-container">
+      <table mat-table [dataSource]="expenses()" class="mat-elevation-z2 full-width-table">
+        <!-- Agent Column -->
+        <ng-container matColumnDef="agent">
+          <th mat-header-cell *matHeaderCellDef>Agent</th>
+          <td mat-cell *matCellDef="let element">{{ element.agent }}</td>
+        </ng-container>
+        
+        <!-- Month Columns -->
+        <ng-container *ngFor="let month of months" [matColumnDef]="month">
+          <th mat-header-cell *matHeaderCellDef>{{ month }}</th>
+          <td mat-cell *matCellDef="let element">
+            <input matInput type="number" 
+                  [value]="element[month]" 
+                  (input)="updateExpense(element.agent, month, $event)" />
+          </td>
+        </ng-container>
+  
+        <tr mat-header-row *matHeaderRowDef="tableColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableColumns()"></tr>
+      </table>
+  
+      <div style="display: flex; justify-content: center; margin-top: 1rem;">
+        <button mat-raised-button color="primary" (click)="saveExpenses()">
+          Save Expenses
+        </button>
+      </div>
+      
+    </div>
+  
+    <div *ngIf="!isLoading() && (selectedAgents().length === 0 || !selectedYear())" class="selection-prompt">
+      <p>Please select at least one agent and a year to view expenses</p>
+    </div>
+</div>

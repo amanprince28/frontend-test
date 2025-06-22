@@ -11,6 +11,9 @@ import { PasswordChangeComponent } from './password-change/password-change.compo
 import { CustomerCheckComponent } from './customer-check/customer-check.component';
 import { PaymentComponent } from './payment/payment.component';
 import { RoleGuard } from './common/auth.guard';
+import { ReportsComponent } from './reports/reports.component';
+import { ExpenseComponent } from './expense/expense.component';
+import { LoanCheckComponent } from './loan-check/loan-check.component';
 
 
 export const routes: Routes = [
@@ -31,6 +34,9 @@ export const routes: Routes = [
       {path:'change-password',component:PasswordChangeComponent,canActivate:[RoleGuard] },
       {path:'customer-check',component:CustomerCheckComponent,canActivate:[RoleGuard] },
       {path:'payment',component:PaymentComponent,canActivate:[RoleGuard] },
+      {path:'reports',component:ReportsComponent,canActivate:[RoleGuard] },
+      {path:'expense',component:ExpenseComponent,},
+      {path:'loan-check',component:LoanCheckComponent},
     ]
   }
 ];

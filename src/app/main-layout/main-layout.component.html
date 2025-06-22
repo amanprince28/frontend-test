@@ -30,6 +30,21 @@
         <mat-icon>money</mat-icon>
         <span class="menu-label">Payment</span>
       </a>
+
+      <a class="menu-item" [routerLink]="['reports']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>report</mat-icon>
+        <span class="menu-label">Reporting</span>
+      </a>
+
+      <!-- <a class="menu-item" [routerLink]="['expense']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>money</mat-icon>
+        <span class="menu-label">Expenses</span>
+      </a>
+
+      <a class="menu-item" [routerLink]="['loan-check']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>check</mat-icon>
+        <span class="menu-label">Loan Check</span>
+      </a> -->
     </nav>
   </mat-drawer>
 

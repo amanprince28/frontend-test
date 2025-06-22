@@ -1,0 +1,207 @@
+<div class="reporting-container">
+  <div class="user-management-container">
+    <nav class="breadcrumb">
+      <h4>Reporting</h4>
+    </nav>
+
+    <form [formGroup]="form" class="report-form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Report Type</mat-label>
+        <mat-select formControlName="reportType">
+          <mat-option value="loan">Loan Report</mat-option>
+          <mat-option value="payment">Payment Report</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Loan Created From</mat-label>
+        <input matInput [matDatepicker]="picker1" formControlName="fromDate" />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker1"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker1></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Loan Created To</mat-label>
+        <input matInput [matDatepicker]="picker2" formControlName="toDate" />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker2"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker2></mat-datepicker>
+      </mat-form-field>
+
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" type="submit">Submit</button>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="exportXLSX()"
+          type="button"
+        >
+          Export To Xls
+        </button>
+      </div>
+    </form>
+
+    <div class="report-table">
+      <div
+        *ngIf="
+          showTable &&
+          ((selectedReportType === 'loan' && loanReportData.length === 0) ||
+            (selectedReportType === 'payment' &&
+              paymentReportData.length === 0))
+        "
+        class="no-data-message"
+      >
+        No Data Available, Please Select Different Dates.
+      </div>
+      <table
+        *ngIf="selectedReportType === 'loan'"
+        mat-table
+        [dataSource]="loanReportData"
+        class="mat-elevation-z2"
+      >
+        <ng-container matColumnDef="sucessDate">
+          <th mat-header-cell *matHeaderCellDef>SUCCESS DATE</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.loanCreatedDate | date : "dd-MM-yyyy" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="loanId">
+          <th mat-header-cell *matHeaderCellDef>LOAN ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.loanId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerName">
+          <th mat-header-cell *matHeaderCellDef>NAME</th>
+          <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="loanAmount">
+          <th mat-header-cell *matHeaderCellDef>LOAN AMOUNT</th>
+          <td mat-cell *matCellDef="let element">
+            RM {{ element.loanAmount }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="out">
+          <th mat-header-cell *matHeaderCellDef>OUT</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.out }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="deposit">
+          <th mat-header-cell *matHeaderCellDef>DEPOSIT</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.deposit }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="onHand">
+          <th mat-header-cell *matHeaderCellDef>ON HAND</th>
+          <td mat-cell *matCellDef="let element">RM {{ element.onHand }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="paymentDate">
+          <th mat-header-cell *matHeaderCellDef>PAYMENT DATE</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngFor="let payment of element.loanData.payment">
+              <span *ngIf="payment.type === 'In'">{{
+                payment.payment_date | date : "dd-MM-yyyy"
+              }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef>AMOUNT</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngFor="let payment of element.loanData.payment">
+              <span *ngIf="payment.type === 'In'"
+                >RM {{ payment.amount }}.00</span
+              >
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>STATUS</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.paymentStatus }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estimatedProfit">
+          <th mat-header-cell *matHeaderCellDef>Estimated Profit</th>
+          <td mat-cell *matCellDef="let element">
+            RM {{ element.estimatedProfit }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actualProfit">
+          <th mat-header-cell *matHeaderCellDef>Actual Profit</th>
+          <td mat-cell *matCellDef="let element">
+            RM {{ element.actualProfit }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="loanDisplayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: loanDisplayedColumns"></tr>
+      </table>
+
+      <table
+        *ngIf="selectedReportType === 'payment'"
+        mat-table
+        [dataSource]="paymentReportData"
+        class="mat-elevation-z2"
+      >
+        <ng-container matColumnDef="loanCreatedDate">
+          <th mat-header-cell *matHeaderCellDef>Loan Created Date</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.loanCreatedDate | date : "dd-MM-yyyy" }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="loanId">
+          <th mat-header-cell *matHeaderCellDef>Loan ID</th>
+          <td mat-cell *matCellDef="let element">{{ element.loanId }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="agentName">
+          <th mat-header-cell *matHeaderCellDef>Agent</th>
+          <td mat-cell *matCellDef="let element">{{ element.agentName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="customerName">
+          <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+          <td mat-cell *matCellDef="let element">{{ element.customerName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPaymentIn">
+          <th mat-header-cell *matHeaderCellDef>Payment In</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.totalPaymentIn }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPaymentOut">
+          <th mat-header-cell *matHeaderCellDef>Payment Out</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.totalPaymentOut }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="bankAgentAccountNo">
+          <th mat-header-cell *matHeaderCellDef>Bank A/C No.</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.bankAgentAccountNo }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="paymentDisplayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: paymentDisplayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</div>

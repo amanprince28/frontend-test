@@ -54,6 +54,8 @@ export class LoanManagementComponent implements OnInit {
     'interest',
     'paymentPerTerm',
     'status',
+    'loanDate',
+    'nextPaymentdate',
     'actions',
   ];
 

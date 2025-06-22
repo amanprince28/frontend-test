@@ -6,6 +6,30 @@
   min-height: 100vh;
   padding: 1rem;
   background: linear-gradient(135deg, #b6eeea 0%, #c4d3f3 100%);
+  transform-origin: center center;
+  overflow: hidden;
+  width: 100vw;
+  box-sizing: border-box;
+
+  /* Landscape mode scaling */
+  @media (max-width: 900px) and (orientation: landscape) {
+    transform: scale(0.9);
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 700px) and (orientation: landscape) {
+    transform: scale(0.8);
+    padding: 0.25rem;
+  }
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    transform: scale(0.7);
+    padding: 0.1rem;
+  }
+
+  @media (max-width: 400px) and (orientation: landscape) {
+    transform: scale(0.6);
+  }
 }
 
 /* Login box styles */
@@ -19,6 +43,24 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  box-sizing: border-box;
+
+  /* Adjustments for landscape scaling */
+  @media (max-width: 900px) and (orientation: landscape) {
+    padding: 2rem;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 700px) and (orientation: landscape) {
+    padding: 1.5rem;
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    padding: 1rem;
+    gap: 1rem;
+    max-width: 380px;
+  }
 }
 
 .login-box h2 {
@@ -27,6 +69,18 @@
   font-size: 2rem;
   font-weight: 600;
   text-align: center;
+
+  @media (max-width: 900px) and (orientation: landscape) {
+    font-size: 1.8rem;
+  }
+
+  @media (max-width: 700px) and (orientation: landscape) {
+    font-size: 1.6rem;
+  }
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    font-size: 1.4rem;
+  }
 }
 
 /* Form styles */
@@ -34,11 +88,27 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 900px) and (orientation: landscape) {
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 700px) and (orientation: landscape) {
+    gap: 1rem;
+  }
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    gap: 0.75rem;
+  }
 }
 
 /* Form field styles */
 .mat-form-field {
   width: 100%;
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    font-size: 0.9rem;
+  }
 }
 
 .mat-form-field-appearance-outline .mat-form-field-outline {
@@ -53,6 +123,11 @@
 .mat-icon.mat-prefix {
   margin-right: 8px;
   color: rgba(0, 0, 0, 0.54);
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    margin-right: 4px;
+    transform: scale(0.9);
+  }
 }
 
 /* Button styles */
@@ -67,6 +142,25 @@
   align-items: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  @media (max-width: 900px) and (orientation: landscape) {
+    height: 44px;
+    font-size: 0.95rem;
+    padding: 10px 22px;
+  }
+
+  @media (max-width: 700px) and (orientation: landscape) {
+    height: 40px;
+    font-size: 0.9rem;
+    padding: 8px 20px;
+  }
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    height: 36px;
+    font-size: 0.85rem;
+    padding: 6px 16px;
+    gap: 6px;
+  }
 }
 
 .login-button:hover {
@@ -77,15 +171,24 @@
 /* Spinner styles */
 mat-progress-spinner {
   margin-left: 8px;
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    margin-left: 4px;
+    transform: scale(0.8);
+  }
 }
 
 /* Error message styles */
 mat-error {
   font-size: 0.8rem;
+
+  @media (max-width: 500px) and (orientation: landscape) {
+    font-size: 0.7rem;
+  }
 }
 
-/* Compact adjustments for small screens */
-@media (max-width: 600px) {
+/* Portrait mode adjustments (unchanged from original) */
+@media (max-width: 600px) and (orientation: portrait) {
   .login-container {
     padding: 0.5rem;
   }
@@ -115,7 +218,7 @@ mat-error {
   }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 400px) and (orientation: portrait) {
   .login-box {
     padding: 1.25rem 1rem;
     border-radius: 10px;

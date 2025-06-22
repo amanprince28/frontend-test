@@ -105,6 +105,16 @@
           <td mat-cell *matCellDef="let element">RM {{ element.payment_per_term }}</td>
         </ng-container>
 
+        <ng-container matColumnDef="loanDate">
+          <th mat-header-cell *matHeaderCellDef>Loan Created Date</th>
+          <td mat-cell *matCellDef="let element">{{ element.loan_date| date: 'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="nextPaymentdate">
+          <th mat-header-cell *matHeaderCellDef>Next Payment Date</th>
+          <td mat-cell *matCellDef="let element">{{ element.nextPaymentdate }}</td>
+        </ng-container>
+
         <!-- Actions Column -->
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>

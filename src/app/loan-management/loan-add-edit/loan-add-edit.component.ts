@@ -86,6 +86,8 @@ export class LoanAddEditComponent implements OnInit {
     { status: 'Normal' },
     { status: 'Bad Debt' },
     { status: 'Bad Debt Completed' },
+    { status: 'Partially Paid' },
+    
   ];
   customerId: any;
 

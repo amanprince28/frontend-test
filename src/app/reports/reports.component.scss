@@ -1,0 +1,47 @@
+.reporting-container {
+    padding: 1rem;
+  
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+  
+    .report-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+  
+      mat-form-field {
+        flex: 1 1 200px;
+        min-width: 200px;
+      }
+  
+      .action-buttons {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+    }
+  
+    .report-table {
+      margin-top: 2rem;
+      overflow-x: auto;
+  
+      table {
+        width: 100%;
+        min-width: 800px;
+      }
+    }
+  }
+  
+  .no-data-message {
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    color: #f44336; // or any color you prefer
+    background-color: #ffebee;
+    border-radius: 4px;
+    margin: 20px 0;
+  }
