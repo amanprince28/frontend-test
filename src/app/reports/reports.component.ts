@@ -66,6 +66,7 @@ export class ReportsComponent implements AfterViewInit {
 
   paymentDisplayedColumns = [
     'paymntin_out',
+    'type',
     'agentName',
     'loanId',
     'customerName',
@@ -211,13 +212,15 @@ export class ReportsComponent implements AfterViewInit {
 
   private preparePaymentExportData(): any[] {
     return this.paymentDataSource.data.map(payment => ({
-      'Loan Created Date': payment.loanCreatedDate ? new Date(payment.loanCreatedDate).toISOString().split('T')[0] : '',
-      'Loan ID': payment.loanId,
+      'Payment In/Out': payment.paymntin_out ? new Date(payment.paymntin_out).toISOString().split('T')[0] : '',
+      'Type':payment.paymentType,
       'Agent': payment.agentName,
+      'Loan ID': payment.loanId,
       'Customer Name': payment.customerName,
       'Payment In': payment.totalPaymentIn,
       'Payment Out': payment.totalPaymentOut,
-      'Bank A/C No.': payment.bankAgentAccountNo
+      'Bank A/C No.': payment.bankAgentAccountNo,
+      'Remarks':payment.remarks
     }));
   }
 

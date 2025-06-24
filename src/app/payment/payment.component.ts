@@ -146,8 +146,8 @@ export class PaymentComponent implements OnInit {
     'paymentDate',
     'paymentAmount',
     'balance',
-    'remarks',
     'bankAgentAccount',
+    'remarks',
     'actions',
   ];
   displayedColumns: string[] = ['paymentType', 'paymentDate', 'sharedAmount'];

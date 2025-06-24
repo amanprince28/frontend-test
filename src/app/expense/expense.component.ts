@@ -145,7 +145,7 @@ export class ExpenseComponent {
       }
       this.mockExpensesDatabase[agent][year] = { ...expense };
     });
-    
+    console.log(expenses,'ex')
     alert(`Expenses saved for ${agents.join(', ')} (${year})`);
   }
 
