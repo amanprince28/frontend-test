@@ -56,6 +56,10 @@ export class MainLayoutComponent implements OnInit {
     }
   }
 
+  canViewReporting(): boolean {
+    return this.userDetails?.role === 'SUPER_ADMIN' || this.userDetails?.role === 'ADMIN';
+  }
+
   showUsers(): void {
     this.checkUsers = ['AGENT', 'LEAD','ADMIN'].includes(this.userDetails?.role || '');
     

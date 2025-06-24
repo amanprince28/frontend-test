@@ -35,6 +35,7 @@ interface PaymentRecord {
   due_amount?: number | string;
   balance?: number | string;
   bankAgentAccount?: string;
+  remarks?: string,
   id?: number;
   installmentId: string;
   paymentDate:string;
@@ -121,6 +122,7 @@ export class PaymentComponent implements OnInit {
       bankAgentAccount: new FormControl(null),
       generate_id: new FormControl(),
       payment_date:new FormControl(),
+      remarks:new FormControl(),
     });
     this.paymentStatus = ['Paid', 'Unpaid', 'Contra', 'Void', 'Late', 'Delete'];
     this.paymentType = ['In', 'Out'];
@@ -144,6 +146,7 @@ export class PaymentComponent implements OnInit {
     'paymentDate',
     'paymentAmount',
     'balance',
+    'remarks',
     'bankAgentAccount',
     'actions',
   ];
@@ -205,6 +208,7 @@ export class PaymentComponent implements OnInit {
               accepted_amount: el.amount,
               due_amount: el.amount,
               bankAgentAccount: el.account_details,
+              remarks: el.remarks,
               installmentId: el.installment_id,
               generate_id: el.generate_id,
               installment_date: el.installment_date,
@@ -385,6 +389,7 @@ export class PaymentComponent implements OnInit {
           balance: String(el.balance ?? 0),
           status: el.status || 'null',
           account_details: el.bankAgentAccount || '',
+          remarks: el.remarks,
           amount,
           loan_id: el.loan_id || null,
           installment_id: el.id ? el.id : el.installmentId,
@@ -498,7 +503,7 @@ export class PaymentComponent implements OnInit {
   }
 
   onPaymentEdit(record: PaymentRecord, index: number) {
-    console.log(record, 'record');
+    
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index;
   
@@ -510,6 +515,7 @@ export class PaymentComponent implements OnInit {
       paymentAmount: record.due_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
+      remarks: record.remarks,
       installment_id: record.installmentId,
       generate_id: record.generate_id
     });
@@ -522,7 +528,7 @@ export class PaymentComponent implements OnInit {
     // If paymentType is 'Out', disable all except bankAgentAccount
     if (record.paymentType === 'Out') {
       Object.keys(this.paymentForm.controls).forEach(field => {
-        if (field !== 'bankAgentAccount') {
+        if (field !== 'bankAgentAccount' && field !=='remarks') {
           this.paymentForm.get(field)?.disable();
         }
       });

@@ -9,7 +9,7 @@ export class LoanCheckService {
 
   getInstallments(agents: string[], from: Date, to: Date) {
 
-    console.log(agents,from,to,'ttt');
+    
     const mockData = [
       {
         agent: 'Sky',

@@ -65,13 +65,14 @@ export class ReportsComponent implements AfterViewInit {
   ];
 
   paymentDisplayedColumns = [
-    'loanCreatedDate',
-    'loanId',
+    'paymntin_out',
     'agentName',
+    'loanId',
     'customerName',
     'totalPaymentIn',
     'totalPaymentOut',
-    'bankAgentAccountNo'
+    'bankAgentAccountNo',
+    'remarks'
   ];
 
   loanDataSource = new MatTableDataSource<any>();

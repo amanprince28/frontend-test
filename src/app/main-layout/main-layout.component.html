@@ -1,37 +1,73 @@
 <mat-drawer-container class="app-container" autosize>
   <mat-drawer #drawer class="app-sidenav" mode="side" [opened]="isDrawerOpen">
     <div class="sidenav-header">
-      <img src="assets/logo.jpeg" alt="Logo" class="sidenav-logo">
+      <img src="assets/logo.jpeg" alt="Logo" class="sidenav-logo" />
     </div>
-  
+
     <nav class="sidenav-menu">
-      <a class="menu-item" [routerLink]="['users']" routerLinkActive="active" *ngIf="!checkUsers" 
-         (click)="closeDrawerOnMobile()">
+      <a
+        class="menu-item"
+        [routerLink]="['users']"
+        routerLinkActive="active"
+        *ngIf="!checkUsers"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>person</mat-icon>
         <span class="menu-label">Users</span>
       </a>
-  
-      <a class="menu-item" [routerLink]="['listing']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+
+      <a
+        class="menu-item"
+        [routerLink]="['listing']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>group</mat-icon>
         <span class="menu-label">Customer</span>
       </a>
 
-      <a class="menu-item" [routerLink]="['loan']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+      <a
+        class="menu-item"
+        [routerLink]="['loan']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>money</mat-icon>
         <span class="menu-label">Loan</span>
       </a>
 
-      <a class="menu-item" [routerLink]="['customer-check']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+      <a
+        class="menu-item"
+        [routerLink]="['customer-check']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>group</mat-icon>
         <span class="menu-label">Customer Check</span>
       </a>
 
-      <a class="menu-item" [routerLink]="['payment']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+      <a
+        class="menu-item"
+        [routerLink]="['payment']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>money</mat-icon>
         <span class="menu-label">Payment</span>
       </a>
 
-      <a class="menu-item" [routerLink]="['reports']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+      <!-- <a class="menu-item" [routerLink]="['reports']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>report</mat-icon>
+        <span class="menu-label">Reporting</span>
+      </a> -->
+
+      <a
+        *ngIf="canViewReporting()"
+        class="menu-item"
+        [routerLink]="['reports']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
         <mat-icon>report</mat-icon>
         <span class="menu-label">Reporting</span>
       </a>
@@ -50,18 +86,27 @@
 
   <div class="app-content">
     <mat-toolbar class="app-toolbar">
-      <button mat-icon-button (click)="toggleDrawer()" class="menu-button" aria-label="Toggle menu">
+      <button
+        mat-icon-button
+        (click)="toggleDrawer()"
+        class="menu-button"
+        aria-label="Toggle menu"
+      >
         <mat-icon>menu</mat-icon>
       </button>
-      
+
       <!-- <span class="app-title">My App</span> -->
-      
+
       <span class="spacer"></span>
-      
+
       <div class="user-menu">
-        <button mat-button [matMenuTriggerFor]="profileMenu" class="user-button">
+        <button
+          mat-button
+          [matMenuTriggerFor]="profileMenu"
+          class="user-button"
+        >
           <mat-icon class="user-icon">account_circle</mat-icon>
-          <span class="user-name">{{userName}}</span>
+          <span class="user-name">{{ userName }}</span>
         </button>
         <mat-menu #profileMenu="matMenu" class="user-dropdown">
           <button mat-menu-item (click)="changePassword()">

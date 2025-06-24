@@ -61,7 +61,7 @@ export class LoanCheckComponent implements OnInit {
   onSearch(): void {
     const { agents, dateFrom, dateTo } = this.form.value;
     this.service.getInstallments(agents, dateFrom, dateTo).subscribe((res) => {
-      console.log(res,'res');
+      
       this.dataSource = res;
     });
   }
