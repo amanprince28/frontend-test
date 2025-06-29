@@ -74,6 +74,8 @@ export class LoanAddEditComponent implements OnInit {
   secondAgent :boolean = false;
   isSaving: boolean = false;
   readonly: boolean=true;
+  action: 'add' | 'edit' | 'view' = 'add';
+  loan_id_header: string | null = null;
 
   dateUnit = [
     { id: 1, unit: 'Day' },
@@ -108,6 +110,7 @@ export class LoanAddEditComponent implements OnInit {
 
   ) {
     this.passedData = this.router.getCurrentNavigation()?.extras.state?.['data'];
+   
     
   }
 
@@ -121,6 +124,8 @@ export class LoanAddEditComponent implements OnInit {
 
     this.route.params.subscribe(async (params) => {
       if (this.passedData['action'] === 'edit' || this.passedData['action'] === 'view') {
+        this.action = this.passedData['action'];
+        this.loan_id_header = this.passedData['generate_id']
         const loanData = await this.dataService.getLoanById(this.passedData['generate_id']).toPromise()
         this.loadAllData(loanData);
        
@@ -312,7 +317,7 @@ export class LoanAddEditComponent implements OnInit {
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
       loan_date: new FormControl('',Validators.required),
-      repayment_term: new FormControl(''),
+      repayment_term: new FormControl('',Validators.required),
       actual_profit:new FormControl({ value: '', disabled: true }),
       estimated_profit:new FormControl({ value: 0, disabled: true }),
 
@@ -372,54 +377,65 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   saveLoan() {
+    if (!this.loanDetailsForm.valid) {
+      this.snackBar.open(
+        'Please fill all required fields.',
+        'Close',
+        { duration: 5000, panelClass: ['error-snackbar'] }
+      );
+      return;
+    }
+  
     this.isSaving = true;
-
-
-    const loanData = {
+  
+    const loanDetails = this.loanDetailsForm.getRawValue();
+  
+    const loanData: any = {
       supervisor: this.agentDetailsForm.get('agentId')?.value,
       customer_id: this.customerDetailsForm.get('customerId')?.value,
-      payment_per_term: this.loanDetailsForm.getRawValue().payment_per_term.toString(),
-      amount_given: this.loanDetailsForm.getRawValue().amount_given.toString(),
-      interest_amount: this.loanDetailsForm.getRawValue().interest_amount.toString(),
-      estimated_profit: this.loanDetailsForm.getRawValue().estimated_profit.toString(),
-      actual_profit :this.loanDetailsForm.getRawValue().actual_profit.toString(),
-      ...this.loanDetailsForm.value,
+      payment_per_term: loanDetails.payment_per_term?.toString() || '',
+      amount_given: loanDetails.amount_given?.toString() || '',
+      interest_amount: loanDetails.interest_amount?.toString() || '',
+      estimated_profit: loanDetails.estimated_profit?.toString() || '',
+      actual_profit: loanDetails.actual_profit?.toString() || '',
+      ...loanDetails
     };
-
+  
     const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
     if (agentId1) {
       loanData.supervisor_2 = agentId1;
     }
-
+  
     if (this.isEditMode) {
       loanData.id = this.loan_id;
     }
-
-    const saveOperation = this.isEditMode 
+  
+    const saveOperation = this.isEditMode
       ? this.dataService.updateLoan(this.loan_id, loanData)
       : this.dataService.addLoan(loanData);
-
+  
     saveOperation.subscribe({
-      next: (response) => {
+      next: () => {
         this.isSaving = false;
         this.snackBar.open(
-          `Loan ${this.isEditMode ? 'updated' : 'created'} successfully!`, 
-          'Close', 
+          `Loan ${this.isEditMode ? 'updated' : 'created'} successfully!`,
+          'Close',
           { duration: 3000, panelClass: ['success-snackbar'] }
         );
         this.router.navigate(['/loan']);
       },
-      error: (error) => {
+      error: (err) => {
         this.isSaving = false;
-        console.error('Error saving loan:', error);
+        console.error('Error saving loan:', err);
         this.snackBar.open(
-          'Failed to save loan. Please try again.', 
-          'Close', 
+          'Failed to save loan. Please try again.',
+          'Close',
           { duration: 5000, panelClass: ['error-snackbar'] }
         );
       }
     });
   }
+  
 
   cancel() {
     this.agentDetailsForm.reset();

@@ -52,12 +52,15 @@ export class ReportsComponent implements AfterViewInit {
   loanDisplayedColumns = [
     'sucessDate',
     'loanId',
+    'agent',
     'customerName',
     'loanAmount',
     'out',
     'deposit',
     'onHand',
     'paymentDate',
+    'installmentDate',
+    'payableAmount',
     'amount',
     'status',
     'estimatedProfit',
@@ -121,6 +124,15 @@ export class ReportsComponent implements AfterViewInit {
 
             return {
               ...loan,
+              loanData: {
+                ...loan.loanData,
+                installment: loan.loanData.installment.sort((a:any, b:any) =>
+                  new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime()
+                ),
+                payment: loan.loanData.payment.sort((a:any, b:any) =>
+                  new Date(a.installmentDate).getTime() - new Date(b.installmentDate).getTime()
+                )
+              },
               paymentStatus: totalPayments >= outAmount ? 'Fully Paid' :
                 totalPayments > 0 ? 'Partial Paid' : 'Unpaid',
               onHand: onHandAmount
@@ -184,6 +196,7 @@ export class ReportsComponent implements AfterViewInit {
   private prepareLoanExportData(): any[] {
     return this.loanDataSource.data.map(loan => {
       const payments = loan.loanData.payment
+      .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
         .filter((p: any) => p.type === 'In')
         .map((p: any) => ({
           date: p.payment_date ? new Date(p.payment_date).toISOString().split('T')[0] : '',
@@ -193,15 +206,28 @@ export class ReportsComponent implements AfterViewInit {
       const paymentDates = payments.map((p: any) => p.date).join('\n');
       const paymentAmounts = payments.map((p: any) => p.amount).join('\n');
 
+      const installment = loan.loanData.installment
+      .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
+      .map((i:any)=>({
+        ins_date :new Date(i.installment_date).toISOString().split('T')[0],
+        payable:loan.loanData.payment_per_term,
+        
+      }))
+      const ins_date =installment.map((i:any)=>i.ins_date).join('\n')
+      const payable =installment.map((i:any)=>i.payable).join('\n')
+      
       return {
         'SUCCESS DATE': loan.loanCreatedDate ? new Date(loan.loanCreatedDate).toISOString().split('T')[0] : '',
         'LOAN ID': loan.loanId,
+        'AGENT Name':loan.loanData.user.name,
         'NAME': loan.customerName,
         'LOAN AMOUNT': `RM ${loan.loanAmount}`,
         'OUT': `RM ${loan.out}`,
         'DEPOSIT': `RM ${loan.deposit}`,
         'ON HAND': `RM ${loan.onHand}`,
         'PAYMENT DATE': paymentDates,
+        'INSTALLMENT DATE':ins_date,
+        'PAYABLE AMOUNT':payable,
         'AMOUNT': paymentAmounts,
         'STATUS': loan.paymentStatus,
         'Estimated Profit': `RM ${loan.estimatedProfit}`,

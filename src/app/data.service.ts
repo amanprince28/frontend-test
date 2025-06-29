@@ -7,9 +7,8 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'https://www.cs-season.com/backend';
-  //private apiUrl = 'http://54.151.165.48/backend';
-  //private apiUrl = 'http://localhost:3000';
+  //private apiUrl = 'https://www.cs-season.com/backend';
+  private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -241,5 +240,18 @@ export class DataService {
   
     return this.http.post<any>(url, body);
   }
+
+  getExpenses(agentIds: any, year: string): Observable<any> {
+    const params = new URLSearchParams();
+    params.set('agent_id',agentIds)
+    params.set('year', year);
+    return this.http.get(`${this.apiUrl}/expenses/current-year?${params.toString()}`);
+  }
+  
+
+  saveExpenses(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/expenses`, payload);
+  }  
+
   
 }

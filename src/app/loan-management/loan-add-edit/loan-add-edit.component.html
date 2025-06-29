@@ -1,5 +1,10 @@
 <div class="loan-add-container">
-  <h2>Loan - Add</h2>
+  <h2>
+    Loan - {{ action | titlecase }}
+    <ng-container *ngIf="(action === 'edit' || action === 'view') && loan_id_header">
+      {{ loan_id_header }}
+    </ng-container>
+  </h2>
   <mat-card class="card">
     <!-- Agent Details -->
     <div class="section">
