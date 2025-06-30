@@ -253,12 +253,15 @@ export class DataService {
     return this.http.post(`${this.apiUrl}/expenses`, payload);
   }  
 
-  getLoanCheck(agents:any,fromDate:any,toDate:any):Observable<any>{
-    const params = new URLSearchParams();
-    params.set('agents',agents);
-    params.set('fromDate',fromDate);
-    params.set('toDate',toDate);
-    return this.http.get(`${this.apiUrl}/loan/getLoanCheck?${params.toString()}`);
+  getLoanCheck(agents: any, fromDate: any, toDate: any): Observable<any> {
+    const payload = {
+      agents,
+      fromDate,
+      toDate
+    };
+  
+    return this.http.post(`${this.apiUrl}/loan/getLoanCheck`, payload);
   }
+  
   
 }
