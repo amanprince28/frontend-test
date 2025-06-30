@@ -3,9 +3,6 @@ import { of } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class LoanCheckService {
-  getAgents() {
-    return of(['Sky', 'Charles']);
-  }
 
   getInstallments(agents: string[], from: Date, to: Date) {
 

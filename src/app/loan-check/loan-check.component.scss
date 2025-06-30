@@ -250,6 +250,13 @@
   }
 }
 
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 .custom-paginator {
   border-top: 1px solid mat.get-color-from-palette(mat.$grey-palette, 200);
   margin-top: auto;

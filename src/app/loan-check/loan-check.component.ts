@@ -9,6 +9,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { LoanCheckService } from './loan-check.service';
+import { DataService } from '../data.service';
 
 @Component({
   standalone: true,
@@ -29,7 +30,7 @@ import { LoanCheckService } from './loan-check.service';
 })
 export class LoanCheckComponent implements OnInit {
   form!: FormGroup;
-  agents: string[] = [];
+  agents: any
   dataSource: any[] = [];
 
   displayedColumns: string[] = [
@@ -41,26 +42,43 @@ export class LoanCheckComponent implements OnInit {
     'remark'
   ];
 
+  constructor(private dataService:DataService){}
+
   private fb = inject(FormBuilder);
   private service = inject(LoanCheckService);
 
   ngOnInit(): void {
     const today = new Date();
+    this.loadAgents();
     this.form = this.fb.group({
       agents: [[]],
       dateFrom: [today],
       dateTo: [today]
     });
 
-    this.service.getAgents().subscribe((agents) => {
-      this.agents = agents;
-      this.form.patchValue({ agents }); // default to all
+  }
+
+   loadAgents(): void {
+    
+    const payload = { page: 1, limit: 100 };
+    this.dataService.getUser(payload).subscribe({
+      next: (response) => {
+        const filteredAgents = response.data
+          .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
+          .map((agent: any) => ({ id: agent.id, name: agent.name }));
+        this.agents=filteredAgents;
+        
+      },
+      error: (error) => {
+        console.error('Error loading agents:', error);
+        
+      }
     });
   }
 
   onSearch(): void {
     const { agents, dateFrom, dateTo } = this.form.value;
-    this.service.getInstallments(agents, dateFrom, dateTo).subscribe((res) => {
+    this.dataService.getLoanCheck(agents, dateFrom, dateTo).subscribe((res) => {
       
       this.dataSource = res;
     });
