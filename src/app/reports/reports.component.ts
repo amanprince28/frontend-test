@@ -196,38 +196,38 @@ export class ReportsComponent implements AfterViewInit {
   private prepareLoanExportData(): any[] {
     return this.loanDataSource.data.map(loan => {
       const payments = loan.loanData.payment
-      .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
+        .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
         .filter((p: any) => p.type === 'In')
         .map((p: any) => ({
-          date: p.payment_date ? new Date(p.payment_date).toISOString().split('T')[0] : '',
+          date: p.payment_date ? this.formatDate(p.payment_date) : '',
           amount: `RM ${p.amount}.00`
         }));
-
-      const paymentDates = payments.map((p: any) => p.date).join('\n');
-      const paymentAmounts = payments.map((p: any) => p.amount).join('\n');
-
+  
+      const paymentDates = payments.map((p:any) => p.date).join('\n');
+      const paymentAmounts = payments.map((p:any) => p.amount).join('\n');
+  
       const installment = loan.loanData.installment
-      .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
-      .map((i:any)=>({
-        ins_date :new Date(i.installment_date).toISOString().split('T')[0],
-        payable:loan.loanData.payment_per_term,
-        
-      }))
-      const ins_date =installment.map((i:any)=>i.ins_date).join('\n')
-      const payable =installment.map((i:any)=>i.payable).join('\n')
-      
+        .sort((a: any, b: any) => new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime())
+        .map((i: any) => ({
+          ins_date: this.formatDate(i.installment_date),
+          payable: loan.loanData.payment_per_term,
+        }));
+  
+      const ins_date = installment.map((i:any) => i.ins_date).join('\n');
+      const payable = installment.map((i:any) => i.payable).join('\n');
+  
       return {
-        'SUCCESS DATE': loan.loanCreatedDate ? new Date(loan.loanCreatedDate).toISOString().split('T')[0] : '',
+        'SUCCESS DATE': loan.loanCreatedDate ? this.formatDate(loan.loanCreatedDate) : '',
         'LOAN ID': loan.loanId,
-        'AGENT Name':loan.loanData.user.name,
+        'AGENT Name': loan.loanData.user.name,
         'NAME': loan.customerName,
         'LOAN AMOUNT': `RM ${loan.loanAmount}`,
         'OUT': `RM ${loan.out}`,
         'DEPOSIT': `RM ${loan.deposit}`,
         'ON HAND': `RM ${loan.onHand}`,
         'PAYMENT DATE': paymentDates,
-        'INSTALLMENT DATE':ins_date,
-        'PAYABLE AMOUNT':payable,
+        'INSTALLMENT DATE': ins_date,
+        'PAYABLE AMOUNT': payable,
         'AMOUNT': paymentAmounts,
         'STATUS': loan.paymentStatus,
         'Estimated Profit': `RM ${loan.estimatedProfit}`,
@@ -235,20 +235,31 @@ export class ReportsComponent implements AfterViewInit {
       };
     });
   }
+  
 
   private preparePaymentExportData(): any[] {
     return this.paymentDataSource.data.map(payment => ({
-      'Payment In/Out': payment.paymntin_out ? new Date(payment.paymntin_out).toISOString().split('T')[0] : '',
-      'Type':payment.paymentType,
+      'Payment In/Out': payment.paymntin_out ? this.formatDate(payment.paymntin_out) : '',
+      'Type': payment.paymentType,
       'Agent': payment.agentName,
       'Loan ID': payment.loanId,
       'Customer Name': payment.customerName,
       'Payment In': payment.totalPaymentIn,
       'Payment Out': payment.totalPaymentOut,
       'Bank A/C No.': payment.bankAgentAccountNo,
-      'Remarks':payment.remarks
+      'Remarks': payment.remarks
     }));
   }
+  
+
+  private formatDate(date: string | Date): string {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+  
 
   private saveAsExcelFile(buffer: any, fileName: string): void {
     const blob = new Blob([buffer], {

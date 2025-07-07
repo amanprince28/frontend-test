@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +10,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { LoanCheckService } from './loan-check.service';
 import { DataService } from '../data.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSelectChange } from '@angular/material/select';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   standalone: true,
@@ -23,15 +26,19 @@ import { DataService } from '../data.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatTableModule,
-    MatButtonModule
+    MatButtonModule,
+    MatChipsModule
   ],
   templateUrl: './loan-check.component.html',
-  styleUrls: ['./loan-check.component.scss']
+  styleUrls: ['./loan-check.component.scss'],
 })
 export class LoanCheckComponent implements OnInit {
   form!: FormGroup;
-  agents: any
+  // agents: any
   dataSource: any[] = [];
+  agents = signal<{ id: string; name: string }[]>([]);
+  selectedAgentIds = signal<string[]>([]);
+  selectAllValue = 'select_all';
 
   displayedColumns: string[] = [
     'agent',
@@ -39,58 +46,114 @@ export class LoanCheckComponent implements OnInit {
     'customerIC',
     'dueDate',
     'dueAmount',
-    'remark'
+    'remark',
   ];
 
-  constructor(private dataService:DataService){}
+  constructor(
+    private dataService: DataService,
+    private snackBar: MatSnackBar
+  ) {}
 
   private fb = inject(FormBuilder);
   private service = inject(LoanCheckService);
 
   ngOnInit(): void {
     const today = new Date();
-    this.loadAgents();
     this.form = this.fb.group({
       agents: [[]],
       dateFrom: [today],
       dateTo: [today]
     });
 
+    this.loadAgents();
   }
 
-   loadAgents(): void {
-    
+  loadAgents(): void {
     const payload = { page: 1, limit: 100 };
     this.dataService.getUser(payload).subscribe({
       next: (response) => {
         const filteredAgents = response.data
           .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
           .map((agent: any) => ({ id: agent.id, name: agent.name }));
-        this.agents=filteredAgents;
-        
+        this.agents.set(filteredAgents);
       },
-      error: (error) => {
-        console.error('Error loading agents:', error);
-        
-      }
+      error: (error) => console.error('Error loading agents:', error)
     });
   }
 
   onSearch(): void {
     const { agents, dateFrom, dateTo } = this.form.value;
-    this.dataService.getLoanCheck(agents, dateFrom, dateTo).subscribe((res) => {
-      
-      this.dataSource = res;
-    });
+    const selectedAgentIds = agents.map((id: string) => id);
+
+    this.dataService
+      .getLoanCheck(selectedAgentIds, dateFrom, dateTo)
+      .subscribe((res) => {
+        if (!res || res.length === 0) {
+          this.dataSource = [];
+          this.snackBar.open(
+            'No data found for given range. Please select other dates.',
+            'Close',
+            {
+              duration: 4000,
+              horizontalPosition: 'center',
+              verticalPosition: 'bottom',
+            }
+          );
+        } else {
+          this.dataSource = res;
+        }
+      });
   }
 
   getRowClass(row: any): string {
     const today = new Date();
-    const dueDate = new Date(row.dueDate);
-    const isDue = dueDate <= today && row.status !== 'PAID';
+    const dueDate = row.dueDate ? new Date(row.dueDate) : null;
+
+    if (!dueDate) return 'normal'; // No due date means treat as normal
+
+    const isDue = dueDate <= today;
 
     if (isDue && row.remark) return 'dark-red';
     if (isDue) return 'pink-red';
     return 'normal';
   }
+
+  isAllSelected(): boolean {
+    return (
+      this.agents().length > 0 &&
+      this.form.get('agents')?.value?.length === this.agents().length
+    );
+  }
+
+  getAgentNameById(id: string): string {
+    const agent = this.agents().find(agent => agent.id === id);
+    return agent ? agent.name : 'Unknown';
+  }
+
+  toggleSelectAll(event: Event): void {
+    event.stopPropagation();
+
+    const allIds = this.agents().map(agent => agent.id);
+
+    if (this.isAllSelected()) {
+      this.form.get('agents')?.setValue([]);
+      this.selectedAgentIds.set([]);
+    } else {
+      this.form.get('agents')?.setValue(allIds);
+      this.selectedAgentIds.set(allIds);
+    }
+  }
+
+  onAgentSelectionChange(event: MatSelectChange): void {
+    const selected = event.value.filter((v: string) => v !== this.selectAllValue);
+    this.selectedAgentIds.set(selected);
+    this.form.get('agents')?.setValue(selected); // remove select_all
+  }
+
+  onSelectOpened(): void {
+    // Optionally re-sync signal to form
+    const formValue = this.form.get('agents')?.value || [];
+    this.selectedAgentIds.set(formValue);
+  }
+
 }

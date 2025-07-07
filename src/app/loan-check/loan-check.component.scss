@@ -1,343 +1,111 @@
-@use '@angular/material' as mat;
-
 .user-management-container {
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  gap: 0.75rem;
-  min-height: 100vh;
-  box-sizing: border-box;
-  background-color: #ffffff;
+  padding: 1rem;
 
-  /* Desktop - no scaling */
-  @media (min-width: 1025px) {
-    transform: scale(1);
-    width: 100%;
-  }
-
-  /* Tablets */
-  @media (max-width: 1024px) and (orientation: portrait) {
-    transform: scale(0.8);
-    transform-origin: top left;
-    width: 125%;
-    min-height: calc(100vh / 0.8);
-    padding: 0.75rem;
-  }
-
-  @media (max-width: 1024px) and (orientation: landscape) {
-    transform: scale(0.85);
-    transform-origin: top left;
-    width: 117.65%;
-    min-height: calc(100vh / 0.85);
-  }
-
-  /* Small tablets */
-  @media (max-width: 768px) and (orientation: portrait) {
-    transform: scale(0.7);
-    width: 142.86%;
-    min-height: calc(100vh / 0.7);
-  }
-
-  @media (max-width: 768px) and (orientation: landscape) {
-    transform: scale(0.75);
-    width: 133.33%;
-    min-height: calc(100vh / 0.75);
-  }
-
-  /* Phones */
-  @media (max-width: 480px) and (orientation: portrait) {
-    transform: scale(0.6);
-    width: 166.67%;
-    min-height: calc(100vh / 0.6);
-    padding: 0.5rem;
-  }
-
-  @media (max-width: 480px) and (orientation: landscape) {
-    transform: scale(0.65);
-    width: 153.85%;
-    min-height: calc(100vh / 0.65);
-  }
-
-  /* Small phones */
-  @media (max-width: 360px) {
-    @media (orientation: portrait) {
-      transform: scale(0.55);
-      width: 181.82%;
-      min-height: calc(100vh / 0.55);
-    }
-    @media (orientation: landscape) {
-      transform: scale(0.6);
-      width: 166.67%;
-      min-height: calc(100vh / 0.6);
-    }
-  }
-}
-
-.search-row {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: nowrap;
-    align-items: center;
+  .breadcrumb {
     margin-bottom: 1rem;
-  
-    mat-form-field {
-      width: 200px;
-    }
-  
-    button {
-      height: 56px;
+
+    h4 {
+      margin: 0;
+      font-weight: 600;
     }
   }
 
-.header-section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  position: sticky;
-  top: 0;
-  background-color: white;
-  z-index: 2;
-  padding: 0.5rem 0;
-  margin: 0 -0.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.breadcrumb h4 {
-  margin: 0;
-  color: mat.get-color-from-palette(mat.$indigo-palette, 700);
-  font-size: 1.5rem;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 0 0.5rem;
-}
-
-.controls-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 0.5rem;
-}
-
-.search-filter-group {
-  display: flex;
-  flex: 1;
-  min-width: 300px;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.search-input {
-  flex: 1;
-  min-width: 200px;
-
-  .mat-form-field {
-    width: 100%;
-    font-size: 0.875rem;
-
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
-
-    .mat-form-field-infix {
-      border-top: 0;
-      padding: 0.5em 0;
-    }
-  }
-}
-
-.filter-btn, .add-btn {
-  white-space: nowrap;
-  min-width: auto;
-  padding: 0 12px;
-  height: 36px;
-  font-size: 0.875rem;
-  border-radius: 4px;
-
-  .mat-button-wrapper {
+  .search-row {
     display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: flex-end; // aligns all items to bottom
+    margin-bottom: 1.5rem;
 
-  mat-icon {
-    font-size: 18px;
-    width: 18px;
-    height: 18px;
-  }
-}
-
-.filter-btn {
-  background-color: mat.get-color-from-palette(mat.$grey-palette, 200);
-}
-
-.add-btn {
-  background-color: mat.get-color-from-palette(mat.$indigo-palette, 500);
-  color: white;
-}
-
-.table-wrapper {
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  margin: 0 -0.5rem;
-  width: calc(100% + 1rem);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  flex-grow: 1;
-  overflow-x: auto;
-}
-
-.user-table {
-  width: 100%;
-  min-width: 600px;
-  border-collapse: collapse;
-
-  .mat-header-cell {
-    font-weight: 600;
-    background-color: mat.get-color-from-palette(mat.$indigo-palette, 500);
-    color: white;
-    font-size: 0.8125rem;
-    padding: 0.75rem 1rem;
-    border-bottom: none;
-  }
-
-  .mat-cell {
-    padding: 0.75rem 1rem;
-    font-size: 0.8125rem;
-    border-bottom: 1px solid mat.get-color-from-palette(mat.$grey-palette, 200);
-    color: mat.get-color-from-palette(mat.$grey-palette, 800);
-  }
-
-  .mat-row:hover .mat-cell {
-    background-color: mat.get-color-from-palette(mat.$indigo-palette, 50);
-  }
-
-  .actions-cell {
-    width: 120px;
-    text-align: center;
+    mat-form-field {
+      flex: 1 1 220px;
+      min-width: 200px;
+    }
 
     .action-buttons {
       display: flex;
-      gap: 4px;
+      align-items: flex-end; // button aligns with bottom of mat-form-field
+      height: 72px; // matches mat-form-field including label height
+    }
+
+    button {
+      margin: 0;
+      padding: 0 24px;
+      height: 56px; // same as input height
+      line-height: 56px;
+    }
+  }
+
+  table {
+    width: 100%;
+
+    th,
+    td {
+      text-align: left;
+      padding: 0.75rem;
+      word-break: break-word;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .search-row {
+    flex-direction: column;
+
+    mat-form-field,
+    .action-buttons {
+      width: 100%;
+    }
+
+    .action-buttons {
       justify-content: flex-end;
-      
-      button {
-        min-width: 32px;
-        padding: 0 4px;
-        height: 32px;
-        line-height: 32px;
-        border-radius: 4px;
-        
-        mat-icon {
-          font-size: 16px;
-          width: 16px;
-          height: 16px;
-        }
-      }
+    }
 
-      .edit-btn {
-        color: mat.get-color-from-palette(mat.$blue-palette, 600);
-      }
-
-      .delete-btn {
-        color: mat.get-color-from-palette(mat.$red-palette, 600);
-      }
+    button {
+      width: 100%;
     }
   }
 }
 
-.action-buttons {
+.dark-red {
+  background-color: #8B0000 !important; // dark red
+  color: #ffffff;
+}
+
+.pink-red {
+  background-color: #FFB6C1 !important; // light pink red
+  color: #000000;
+}
+
+.normal {
+  background-color: transparent;
+}
+
+.select-all-option {
+  font-weight: bold;
+  background-color: #f5f5f5;
+  
+  &:hover {
+    background-color: #e0e0e0 !important;
+  }
+}
+
+.select-all-text {
+  color: #3f51b5; // Primary color
+}
+
+.selected-agents {
   display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.custom-paginator {
-  border-top: 1px solid mat.get-color-from-palette(mat.$grey-palette, 200);
-  margin-top: auto;
-  font-size: 0.8125rem;
-  min-height: 56px;
-  background-color: mat.get-color-from-palette(mat.$grey-palette, 50);
+  gap: 8px;
+  margin-bottom: 16px;
   
-  .mat-paginator-container {
-    min-height: 56px;
-    padding: 0 12px;
-  }
-  
-  .mat-paginator-page-size {
-    margin-right: 12px;
-  }
-
-  .mat-paginator-range-actions {
-    gap: 8px;
-  }
-
-  .mat-paginator-range-label {
-    margin: 0 8px;
+  mat-chip {
+    background: #3f51b5;
+    color: white;
   }
 }
-
-/* Status badges */
-.status-badge {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-
-  &.active {
-    background-color: mat.get-color-from-palette(mat.$green-palette, 50);
-    color: mat.get-color-from-palette(mat.$green-palette, 800);
-  }
-
-  &.inactive {
-    background-color: mat.get-color-from-palette(mat.$red-palette, 50);
-    color: mat.get-color-from-palette(mat.$red-palette, 800);
-  }
-
-  &.pending {
-    background-color: mat.get-color-from-palette(mat.$amber-palette, 50);
-    color: mat.get-color-from-palette(mat.$amber-palette, 800);
-  }
-}
-
-/* Responsive adjustments for very small screens */
-@media (max-width: 360px) {
-  .breadcrumb h4 {
-    font-size: 1.25rem;
-  }
-
-  .search-filter-group {
-    min-width: 100%;
-  }
-
-  .user-table {
-    min-width: 550px;
-
-    .mat-header-cell,
-    .mat-cell {
-      padding: 0.5rem 0.75rem;
-      font-size: 0.75rem;
-    }
-
-    .actions-cell {
-      width: 100px;
-    }
-  }
-}
-  
-  .dark-red {
-    background-color: #8b0000;
-    color: #fff;
-  }
-  
-  .pink-red {
-    background-color: pink;
-    color: #000;
-  }
-  

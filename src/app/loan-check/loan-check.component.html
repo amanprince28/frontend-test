@@ -4,14 +4,27 @@
   </nav>
 
   <form [formGroup]="form" (ngSubmit)="onSearch()" class="search-row">
+
     <mat-form-field appearance="outline">
-      <mat-label>Agents</mat-label>
-      <mat-select formControlName="agents" multiple>
-        <mat-option *ngFor="let agent of agents" [value]="agent.id">
+      <mat-label>Select Agents</mat-label>
+      <mat-select
+        formControlName="agents"
+        multiple
+        (openedChange)="onSelectOpened()"
+        (selectionChange)="onAgentSelectionChange($event)"
+      >
+        <!-- Select All / Deselect All Option -->
+        <mat-option [value]="selectAllValue" (click)="toggleSelectAll($event)">
+          {{ isAllSelected() ? 'Deselect All' : 'Select All' }}
+        </mat-option>
+    
+        <!-- Agent Options -->
+        <mat-option *ngFor="let agent of agents()" [value]="agent.id">
           {{ agent.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
+    
 
     <mat-form-field appearance="outline">
       <mat-label>Date From</mat-label>
@@ -29,11 +42,15 @@
       <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
       <mat-datepicker #pickerTo></mat-datepicker>
     </mat-form-field>
-    <div class="action-buttons">
-      <button mat-raised-button color="primary" type="submit">Search</button>
-    </div>
-  </form>
 
+    <button mat-raised-button color="primary" type="submit">Search</button>
+  </form>
+  <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">
+    <mat-chip *ngFor="let id of selectedAgentIds()">
+      {{ getAgentNameById(id) }}
+    </mat-chip>
+    
+  </div>
   <table
     mat-table
     [dataSource]="dataSource"
@@ -70,7 +87,7 @@
     <ng-container matColumnDef="dueAmount">
       <th mat-header-cell *matHeaderCellDef>Installment Due Amount</th>
       <td mat-cell *matCellDef="let row" [ngClass]="getRowClass(row)">
-        {{ row.dueAmount }}
+        RM {{ row.dueAmount }}
       </td>
     </ng-container>
 

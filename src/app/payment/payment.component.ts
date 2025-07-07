@@ -24,9 +24,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom, generate } from 'rxjs';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { AppDateAdapter, APP_DATE_FORMATS } from '../common/custom-date-adapter';
-
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import {
+  AppDateAdapter,
+  APP_DATE_FORMATS,
+} from '../common/custom-date-adapter';
 
 interface PaymentRecord {
   paymentType: string;
@@ -35,10 +41,10 @@ interface PaymentRecord {
   due_amount?: number | string;
   balance?: number | string;
   bankAgentAccount?: string;
-  remarks?: string,
+  remarks?: string;
   id?: number;
   installmentId: string;
-  paymentDate:string;
+  paymentDate: string;
   loan_id?: number;
   isEdited?: boolean;
   isNew?: boolean;
@@ -66,7 +72,7 @@ interface PaymentRecord {
   providers: [
     { provide: DateAdapter, useClass: AppDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
   ],
   templateUrl: './payment.component.html',
   styleUrls: ['./payment.component.scss'],
@@ -121,8 +127,8 @@ export class PaymentComponent implements OnInit {
       balance: new FormControl(),
       bankAgentAccount: new FormControl(null),
       generate_id: new FormControl(),
-      payment_date:new FormControl(),
-      remarks:new FormControl(),
+      payment_date: new FormControl(),
+      remarks: new FormControl(),
     });
     this.paymentStatus = ['Paid', 'Unpaid', 'Contra', 'Void', 'Late', 'Delete'];
     this.paymentType = ['In', 'Out'];
@@ -309,9 +315,25 @@ export class PaymentComponent implements OnInit {
     }
   }
 
+  // Add this to your PaymentComponent class
+  hasUnsavedChanges(): boolean {
+    // Check for unsaved changes in installment data
+    const hasUnsavedInstallments = this.installmentData.some(
+      (item: any) => item.isEdited || item.isNew
+    );
+
+    // Check for unsaved changes in payment data
+    const hasUnsavedPayments = this.paymentData.some(
+      (item: any) => item.isEdited || item.isNew
+    );
+
+    return hasUnsavedInstallments || hasUnsavedPayments;
+  }
+
   saveInstallmentListing() {
     this.installmentData = this.installmentData.map((el: any) => {
-      const { loan_id, balance, ...rest } = el; // destructure and remove loan_id
+      //const { loan_id, balance, ...rest } = el; // destructure and remove loan_id
+      const { loan_id, balance, isEdited, isNew, ...rest } = el;
       return {
         ...rest,
         due_amount:
@@ -336,7 +358,7 @@ export class PaymentComponent implements OnInit {
 
   onAddPayment() {
     if (this.paymentForm.invalid) return;
-    
+
     const data = this.paymentForm.value;
     if (this.selectedPaymentIndex !== null) {
       // Update the existing record
@@ -353,6 +375,7 @@ export class PaymentComponent implements OnInit {
         ...this.paymentData,
         {
           ...data,
+          isEdited: false,
           isNew: true, // Mark as new
         },
       ];
@@ -394,7 +417,7 @@ export class PaymentComponent implements OnInit {
           loan_id: el.loan_id || null,
           installment_id: el.id ? el.id : el.installmentId,
           generate_id: el.generate_id,
-          installment_date:el.installment_date
+          installment_date: el.installment_date,
         };
       })
       .filter(
@@ -503,42 +526,44 @@ export class PaymentComponent implements OnInit {
   }
 
   onPaymentEdit(record: PaymentRecord, index: number) {
-    
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index;
-  
+    this.paymentData[index].isEdited = true; // Mark as edited
+
     // Patch the form values
     this.paymentForm.patchValue({
       paymentType: record.paymentType,
       installmentId: record.installmentId,
-      paymentDate: record.paymentDate ? record.paymentDate : record.installment_date,
+      paymentDate: record.paymentDate
+        ? record.paymentDate
+        : record.installment_date,
       paymentAmount: record.due_amount,
       balance: record.balance,
       bankAgentAccount: record.bankAgentAccount,
       remarks: record.remarks,
       installment_id: record.installmentId,
-      generate_id: record.generate_id
+      generate_id: record.generate_id,
     });
-  
+
     // Enable all fields first
-    Object.keys(this.paymentForm.controls).forEach(field => {
+    Object.keys(this.paymentForm.controls).forEach((field) => {
       this.paymentForm.get(field)?.enable();
     });
-  
+
     // If paymentType is 'Out', disable all except bankAgentAccount
     if (record.paymentType === 'Out') {
-      Object.keys(this.paymentForm.controls).forEach(field => {
-        if (field !== 'bankAgentAccount' && field !=='remarks') {
+      Object.keys(this.paymentForm.controls).forEach((field) => {
+        if (field !== 'bankAgentAccount' && field !== 'remarks') {
           this.paymentForm.get(field)?.disable();
         }
       });
     }
   }
-  
 
   onEdit(record: any, index: number) {
     this.enableInsatllmentInsert = true;
     this.selectedIndex = index; // Store the index
+    this.installmentData[index].isEdited = true; // Mark as edited
     this.installmentForm.patchValue({
       installment_date: new Date(record.installment_date),
       due_amount: record.due_amount,
