@@ -33,6 +33,7 @@ import {
   AppDateAdapter,
   APP_DATE_FORMATS,
 } from '../common/custom-date-adapter';
+import { format } from 'date-fns';
 
 interface PaymentRecord {
   paymentType: string;
@@ -331,6 +332,11 @@ export class PaymentComponent implements OnInit {
   }
 
   saveInstallmentListing() {
+
+     const formatDate = (date: any): string => {
+          return date ? format(new Date(date), 'yyyy-MM-dd') : '';
+        };
+
     this.installmentData = this.installmentData.map((el: any) => {
       //const { loan_id, balance, ...rest } = el; // destructure and remove loan_id
       const { loan_id, balance, isEdited, isNew, ...rest } = el;
@@ -344,6 +350,7 @@ export class PaymentComponent implements OnInit {
           typeof el.accepted_amount === 'number'
             ? String(el.accepted_amount)
             : el.accepted_amount,
+        installment_date:formatDate(el.installment_date),
       };
     });
 
@@ -387,6 +394,10 @@ export class PaymentComponent implements OnInit {
 
   async savePaymentListing() {
     // Filter only edited or new records
+    const formatDate = (date: any): string => {
+      return date ? format(new Date(date), 'yyyy-MM-dd') : '';
+    };
+    
     const recordsToSave = this.paymentData.filter(
       (record) => record.isEdited || record.isNew
     );
@@ -408,7 +419,7 @@ export class PaymentComponent implements OnInit {
 
         return {
           type: el.paymentType,
-          payment_date: paymentDate,
+          payment_date: formatDate(el.paymentDate),
           balance: String(el.balance ?? 0),
           status: el.status || 'null',
           account_details: el.bankAgentAccount || '',

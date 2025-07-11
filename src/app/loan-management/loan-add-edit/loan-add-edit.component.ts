@@ -30,10 +30,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericModalComponent } from '../../generic-modal/generic-modal.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import { AppDateAdapter, APP_DATE_FORMATS } from '../../common/custom-date-adapter';
-
-
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import {
+  AppDateAdapter,
+  APP_DATE_FORMATS,
+} from '../../common/custom-date-adapter';
+import { format } from 'date-fns';
 
 @Component({
   selector: 'app-loan-add',
@@ -57,13 +63,13 @@ import { AppDateAdapter, APP_DATE_FORMATS } from '../../common/custom-date-adapt
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
   ],
   providers: [
     { provide: DateAdapter, useClass: AppDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' }
-  ]
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+  ],
 })
 export class LoanAddEditComponent implements OnInit {
   isEditMode: boolean = false;
@@ -71,9 +77,9 @@ export class LoanAddEditComponent implements OnInit {
   customerDetailsForm!: FormGroup;
   loanDetailsForm!: FormGroup;
   formValid: boolean = false;
-  secondAgent :boolean = false;
+  secondAgent: boolean = false;
   isSaving: boolean = false;
-  readonly: boolean=true;
+  readonly: boolean = true;
   action: 'add' | 'edit' | 'view' = 'add';
   loan_id_header: string | null = null;
 
@@ -89,7 +95,6 @@ export class LoanAddEditComponent implements OnInit {
     { status: 'Bad Debt' },
     { status: 'Bad Debt Completed' },
     { status: 'Partially Paid' },
-    
   ];
   customerId: any;
 
@@ -106,12 +111,9 @@ export class LoanAddEditComponent implements OnInit {
     private route: ActivatedRoute,
     private dialog: MatDialog,
     private snackBar: MatSnackBar
-    
-
   ) {
-    this.passedData = this.router.getCurrentNavigation()?.extras.state?.['data'];
-   
-    
+    this.passedData =
+      this.router.getCurrentNavigation()?.extras.state?.['data'];
   }
 
   ngOnInit() {
@@ -123,12 +125,17 @@ export class LoanAddEditComponent implements OnInit {
     this.fetchCustomer();
 
     this.route.params.subscribe(async (params) => {
-      if (this.passedData['action'] === 'edit' || this.passedData['action'] === 'view') {
+      if (
+        this.passedData['action'] === 'edit' ||
+        this.passedData['action'] === 'view'
+      ) {
         this.action = this.passedData['action'];
-        this.loan_id_header = this.passedData['generate_id']
-        const loanData = await this.dataService.getLoanById(this.passedData['generate_id']).toPromise()
+        this.loan_id_header = this.passedData['generate_id'];
+        const loanData = await this.dataService
+          .getLoanById(this.passedData['generate_id'])
+          .toPromise();
         this.loadAllData(loanData);
-       
+
         this.isEditMode = this.passedData['action'] === 'edit';
         if (this.passedData['action'] === 'view') {
           this.agentDetailsForm.disable();
@@ -141,83 +148,84 @@ export class LoanAddEditComponent implements OnInit {
     });
 
     this.loanDetailsForm
-    .get('deposit_amount')
-    ?.valueChanges.subscribe((value) => {
-      // Get the current values from the form controls
-      const principal_amount =
-        this.loanDetailsForm.get('principal_amount')?.value;
-      const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
-      const application_fee =
-        this.loanDetailsForm.get('application_fee')?.value;
-  
+      .get('deposit_amount')
+      ?.valueChanges.subscribe((value) => {
+        // Get the current values from the form controls
+        const principal_amount =
+          this.loanDetailsForm.get('principal_amount')?.value;
+        const deposit_amount =
+          this.loanDetailsForm.get('deposit_amount')?.value;
+        const application_fee =
+          this.loanDetailsForm.get('application_fee')?.value;
 
         // Check if any of the values is null or undefined
         if (
           principal_amount == null ||
           deposit_amount == null ||
-          application_fee == null 
+          application_fee == null
         ) {
           // If any value is null or undefined, reset amount_given to null
           this.loanDetailsForm.get('amount_given')?.setValue(null);
         } else {
           // Calculate amount_given if all values are defined
           const amount_given =
-            principal_amount - deposit_amount-application_fee;
+            principal_amount - deposit_amount - application_fee;
           this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
         }
       });
 
-      this.loanDetailsForm.get('interest')?.valueChanges.subscribe((value) => {
-        // Get the current values from the form controls
-        const principal_amount =
-          this.loanDetailsForm.get('principal_amount')?.value;
-        const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
-        const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
-        const interest = this.loanDetailsForm.get('interest')?.value;
-      
-        // Check if any of the required values is null or undefined
-        if (
-          principal_amount == null ||
-          deposit_amount == null ||
-          repayment_terms == null ||
-          interest == null
-        ) {
-          // If any value is null or undefined, reset the calculated fields
-          this.loanDetailsForm.get('interest_amount')?.setValue(null);
-          this.loanDetailsForm.get('payment_per_term')?.setValue(null);
-        } else {
-          // Calculate interest_amount and payment_per_term if all values are defined
-          const interest_amount =
-            principal_amount * (interest / 100) * repayment_terms;
-          this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
-      
-          const payment_per_term =
-            (principal_amount ) / repayment_terms;
-          this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
-        }
-      });
+    this.loanDetailsForm.get('interest')?.valueChanges.subscribe((value) => {
+      // Get the current values from the form controls
+      const principal_amount =
+        this.loanDetailsForm.get('principal_amount')?.value;
+      const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
+      const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
+      const interest = this.loanDetailsForm.get('interest')?.value;
+
+      // Check if any of the required values is null or undefined
+      if (
+        principal_amount == null ||
+        deposit_amount == null ||
+        repayment_terms == null ||
+        interest == null
+      ) {
+        // If any value is null or undefined, reset the calculated fields
+        this.loanDetailsForm.get('interest_amount')?.setValue(null);
+        this.loanDetailsForm.get('payment_per_term')?.setValue(null);
+      } else {
+        // Calculate interest_amount and payment_per_term if all values are defined
+        const interest_amount =
+          principal_amount * (interest / 100) * repayment_terms;
+        this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
+
+        const payment_per_term = principal_amount / repayment_terms;
+        this.loanDetailsForm
+          .get('payment_per_term')
+          ?.setValue(payment_per_term);
+      }
+    });
 
     // Add a valueChanges listener for principalAmount, depositAmount, and applicationFee to ensure calculations are updated when they change
     this.loanDetailsForm.get('principal_amount')?.valueChanges.subscribe(() => {
       // Recalculate amount_given if principal_amount changes
       this.updateAmountGiven();
     });
-    
+
     this.loanDetailsForm.get('deposit_amount')?.valueChanges.subscribe(() => {
       // Recalculate amount_given if deposit_amount changes
       this.updateAmountGiven();
     });
-    
+
     this.loanDetailsForm.get('application_fee')?.valueChanges.subscribe(() => {
       // Recalculate amount_given if application_fee changes
       this.updateAmountGiven();
     });
-    
+
     this.loanDetailsForm.get('interest')?.valueChanges.subscribe(() => {
       // Recalculate interest_amount and payment_per_term if interest changes
       this.updateInterestAndPaymentPerTerm();
     });
-    
+
     this.loanDetailsForm.get('repayment_term')?.valueChanges.subscribe(() => {
       // Recalculate interest_amount and payment_per_term if repayment_terms changes
       this.updateInterestAndPaymentPerTerm();
@@ -227,45 +235,48 @@ export class LoanAddEditComponent implements OnInit {
   fetchUserData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
     this.dataService.getUser(payload).subscribe((response: any) => {
-      this.userData = response.data.filter((el: any) => el?.role === 'AGENT' || el?.role ==='LEAD');
+      this.userData = response.data.filter(
+        (el: any) => el?.role === 'AGENT' || el?.role === 'LEAD'
+      );
     });
   }
 
   fetchCustomer(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
-    this.dataService.getCustomer(payload).subscribe((response: any) => { 
+    this.dataService.getCustomer(payload).subscribe((response: any) => {
       this.customerData = response.data;
     });
   }
 
   updateAmountGiven() {
-    const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
+    const principal_amount =
+      this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const application_fee = this.loanDetailsForm.get('application_fee')?.value;
-  
+
     if (
       principal_amount == null ||
       deposit_amount == null ||
-      application_fee == null 
+      application_fee == null
     ) {
       // Reset amount_given if any value is null or undefined
       this.loanDetailsForm.get('amount_given')?.setValue(null);
     } else {
       // Calculate amount_given if all values are valid
-      const amount_given =
-        principal_amount - deposit_amount-application_fee;
+      const amount_given = principal_amount - deposit_amount - application_fee;
       this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
-      const estimatedProfit = (principal_amount-deposit_amount) - amount_given;
+      const estimatedProfit = principal_amount - deposit_amount - amount_given;
       this.loanDetailsForm.get('estimated_profit')?.setValue(estimatedProfit);
     }
   }
-  
+
   updateInterestAndPaymentPerTerm() {
-    const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
+    const principal_amount =
+      this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
     const interest = this.loanDetailsForm.get('interest')?.value;
-  
+
     if (
       principal_amount == null ||
       deposit_amount == null ||
@@ -277,22 +288,23 @@ export class LoanAddEditComponent implements OnInit {
       this.loanDetailsForm.get('payment_per_term')?.setValue(null);
     } else {
       // Calculate interest_amount and payment_per_term if all values are valid
-      const interest_amount = principal_amount * (interest / 100) * repayment_terms;
+      const interest_amount =
+        principal_amount * (interest / 100) * repayment_terms;
       this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
-  
-      const payment_per_term = (principal_amount - deposit_amount) / repayment_terms;
+
+      const payment_per_term =
+        (principal_amount - deposit_amount) / repayment_terms;
       this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
     }
   }
-  
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
       agentName: new FormControl('', Validators.required),
       agentId: new FormControl('', Validators.required),
       agentLead: new FormControl('', Validators.required),
-      agentName1: new FormControl('',),
-      agentId1: new FormControl('',),
+      agentName1: new FormControl(''),
+      agentId1: new FormControl(''),
     });
 
     this.customerDetailsForm = new FormGroup({
@@ -300,7 +312,7 @@ export class LoanAddEditComponent implements OnInit {
       customerName: new FormControl('', Validators.required),
       mobile: new FormControl('', Validators.required),
       customerAddress: new FormControl('', Validators.required),
-      customerIc : new FormControl(''),
+      customerIc: new FormControl(''),
     });
 
     this.loanDetailsForm = new FormGroup({
@@ -316,37 +328,34 @@ export class LoanAddEditComponent implements OnInit {
       loan_remark: new FormControl(''),
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
-      loan_date: new FormControl('',Validators.required),
-      repayment_term: new FormControl('',Validators.required),
-      actual_profit:new FormControl({ value: '', disabled: true }),
-      estimated_profit:new FormControl({ value: 0, disabled: true }),
-
+      loan_date: new FormControl('', Validators.required),
+      repayment_term: new FormControl('', Validators.required),
+      actual_profit: new FormControl({ value: '', disabled: true }),
+      estimated_profit: new FormControl({ value: 0, disabled: true }),
     });
   }
   loadAllData(row: any) {
     this.loan_id = row.id;
 
     const totalAcceptedAmount = row.payment
-    .filter((item: any) => item.type === 'In')
-    .reduce((sum: number, item: any) => {
-    const amount = Number(item.amount) || 0;
-    return sum + amount;
-    }, 0);
-    const actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
+      .filter((item: any) => item.type === 'In')
+      .reduce((sum: number, item: any) => {
+        const amount = Number(item.amount) || 0;
+        return sum + amount;
+      }, 0);
+    const actualProfit =
+      Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
 
-    
-  
     this.agentDetailsForm.patchValue({
       agentId: row.user.id,
-      agentName: (row.user.name).toUpperCase(),
+      agentName: row.user.name.toUpperCase(),
       agentLead: row.agentLead,
     });
-    if(row.user_2){
+    if (row.user_2) {
       this.secondAgent = true;
       this.agentDetailsForm.patchValue({
         agentId1: row.user_2.id,
-        agentName1: (row.user_2.name.toUpperCase()),
-        
+        agentName1: row.user_2.name.toUpperCase(),
       });
     }
     this.customerDetailsForm.patchValue({
@@ -354,7 +363,7 @@ export class LoanAddEditComponent implements OnInit {
       customerName: row.customer.name,
       mobile: row.customer.mobile_no,
       customerAddress: row.customerAddress,
-      customerIc : row.customer.ic
+      customerIc: row.customer.ic,
     });
 
     this.loanDetailsForm.patchValue({
@@ -370,27 +379,31 @@ export class LoanAddEditComponent implements OnInit {
       payment_per_term: row.payment_per_term,
       unit_of_date: row.unit_of_date,
       repayment_term: row.repayment_term,
-      status:row.status,
-      actual_profit:actualProfit,
-      loan_date:row.loan_date
+      status: row.status,
+      actual_profit: actualProfit,
+      loan_date: row.loan_date,
     });
   }
 
   saveLoan() {
     if (!this.loanDetailsForm.valid) {
-      this.snackBar.open(
-        'Please fill all required fields.',
-        'Close',
-        { duration: 5000, panelClass: ['error-snackbar'] }
-      );
+      this.snackBar.open('Please fill all required fields.', 'Close', {
+        duration: 5000,
+        panelClass: ['error-snackbar'],
+      });
       return;
     }
-  
+
     this.isSaving = true;
-  
+
     const loanDetails = this.loanDetailsForm.getRawValue();
-  
+
+    const formatDate = (date: any): string => {
+      return date ? format(new Date(date), 'yyyy-MM-dd') : '';
+    };
+
     const loanData: any = {
+      ...loanDetails,
       supervisor: this.agentDetailsForm.get('agentId')?.value,
       customer_id: this.customerDetailsForm.get('customerId')?.value,
       payment_per_term: loanDetails.payment_per_term?.toString() || '',
@@ -398,22 +411,23 @@ export class LoanAddEditComponent implements OnInit {
       interest_amount: loanDetails.interest_amount?.toString() || '',
       estimated_profit: loanDetails.estimated_profit?.toString() || '',
       actual_profit: loanDetails.actual_profit?.toString() || '',
-      ...loanDetails
+      repayment_date: formatDate(loanDetails.repayment_date),
+      loan_date: formatDate(loanDetails.loan_date),
     };
-  
+
     const agentId1 = this.agentDetailsForm.get('agentId1')?.value;
     if (agentId1) {
       loanData.supervisor_2 = agentId1;
     }
-  
+
     if (this.isEditMode) {
       loanData.id = this.loan_id;
     }
-  
+
     const saveOperation = this.isEditMode
       ? this.dataService.updateLoan(this.loan_id, loanData)
       : this.dataService.addLoan(loanData);
-  
+
     saveOperation.subscribe({
       next: () => {
         this.isSaving = false;
@@ -427,15 +441,13 @@ export class LoanAddEditComponent implements OnInit {
       error: (err) => {
         this.isSaving = false;
         console.error('Error saving loan:', err);
-        this.snackBar.open(
-          'Failed to save loan. Please try again.',
-          'Close',
-          { duration: 5000, panelClass: ['error-snackbar'] }
-        );
-      }
+        this.snackBar.open('Failed to save loan. Please try again.', 'Close', {
+          duration: 5000,
+          panelClass: ['error-snackbar'],
+        });
+      },
     });
   }
-  
 
   cancel() {
     this.agentDetailsForm.reset();
@@ -453,12 +465,12 @@ export class LoanAddEditComponent implements OnInit {
       [
         { key: 'name', header: 'Name' },
         { key: 'role', header: 'Role' },
-        { key: 'status', header: 'Status' }
+        { key: 'status', header: 'Status' },
       ],
       'agent'
     );
   }
-  
+
   openCustomerSearch() {
     this.openModal(
       'Customer Search',
@@ -466,12 +478,12 @@ export class LoanAddEditComponent implements OnInit {
       this.customerData,
       [
         { key: 'name', header: 'Name' },
-        { key: 'ic', header: 'IC' }
+        { key: 'ic', header: 'IC' },
       ],
       'customer'
     );
   }
-  
+
   openModal(
     title: string,
     searchPlaceholder: string,
@@ -481,11 +493,11 @@ export class LoanAddEditComponent implements OnInit {
   ) {
     const dialogRef = this.dialog.open(GenericModalComponent, {
       width: '70%',
-      height:'70%',
+      height: '70%',
       data: { title, searchPlaceholder, items, columns, type },
       panelClass: 'custom-dialog-container',
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (title === 'Customer Search') {
@@ -494,25 +506,24 @@ export class LoanAddEditComponent implements OnInit {
             customerName: result.name,
             mobile: result.mobile_no,
             customerAddress: result.customerAddress,
-            customerIc: result.ic
+            customerIc: result.ic,
           });
         } else {
           if (this.secondAgent) {
             this.agentDetailsForm.patchValue({
               agentId1: result.id,
-              agentName1: result.name
+              agentName1: result.name,
             });
           } else {
             this.agentDetailsForm.patchValue({
               agentId: result.id,
               agentName: result.name,
               email: result.email,
-              role: result.role
+              role: result.role,
             });
           }
         }
       }
     });
   }
-  
 }
