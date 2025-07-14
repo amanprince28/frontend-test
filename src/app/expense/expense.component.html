@@ -56,12 +56,24 @@
       </ng-container>
 
       <!-- Month Columns -->
-      <ng-container *ngFor="let month of months" [matColumnDef]="month.key">
+      <!-- <ng-container *ngFor="let month of months" [matColumnDef]="month.key">
         <th mat-header-cell *matHeaderCellDef>{{ month.label }}</th>
         <td mat-cell *matCellDef="let element">
           <input matInput type="string"
                  [value]="element[month.key]"
                  (input)="updateExpense(element.agentId, month.key, $event)" />
+        </td>
+      </ng-container> -->
+
+      <ng-container *ngFor="let month of months" [matColumnDef]="month.key">
+        <th mat-header-cell *matHeaderCellDef>{{ month.label }}</th>
+      
+        <td mat-cell *matCellDef="let row">
+          <input matInput
+                 type="number"
+                 [(ngModel)]="row[month.key]"
+                 (ngModelChange)="updateExpense(row.agentId, month.key, $event)"
+                 autocomplete="off">
         </td>
       </ng-container>
       

@@ -327,7 +327,6 @@ export class PaymentComponent implements OnInit {
     const hasUnsavedPayments = this.paymentData.some(
       (item: any) => item.isEdited || item.isNew
     );
-
     return hasUnsavedInstallments || hasUnsavedPayments;
   }
 
@@ -387,7 +386,6 @@ export class PaymentComponent implements OnInit {
         },
       ];
     }
-
     this.paymentForm.reset();
     this.cdr.detectChanges();
   }
@@ -452,12 +450,12 @@ export class PaymentComponent implements OnInit {
         this.dataService.addPayment(payload)
       );
 
-      if (response && Array.isArray(response.data)) {
+      if (response && Array.isArray(response)) {
         // Update paymentData with response data
         this.paymentData = this.paymentData.map((payment) => {
           // Find matching response for this payment
-          const savedPayment = response.data.find(
-            (sp: any) => sp.installment_id === payment.id
+          const savedPayment = response.find(
+            (sp: any) => sp.installment_id === payment.installmentId
           );
 
           if (savedPayment) {
