@@ -327,6 +327,7 @@ export class PaymentComponent implements OnInit {
     const hasUnsavedPayments = this.paymentData.some(
       (item: any) => item.isEdited || item.isNew
     );
+    console.log(hasUnsavedInstallments,hasUnsavedPayments,'sss');
     return hasUnsavedInstallments || hasUnsavedPayments;
   }
 
@@ -449,13 +450,12 @@ export class PaymentComponent implements OnInit {
       const response = await firstValueFrom(
         this.dataService.addPayment(payload)
       );
-
       if (response && Array.isArray(response)) {
         // Update paymentData with response data
         this.paymentData = this.paymentData.map((payment) => {
           // Find matching response for this payment
           const savedPayment = response.find(
-            (sp: any) => sp.installment_id === payment.installmentId
+            (sp: any) => sp.installment_id === payment.installmentId || sp.generate_id === payment.generate_id
           );
 
           if (savedPayment) {

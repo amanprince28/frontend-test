@@ -1,49 +1,51 @@
 // unsaved-changes.guard.ts
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
-import { MatSnackBar, MatSnackBarRef, SimpleSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { Observable, of } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { MatSnackBar, MatSnackBarRef } from '@angular/material/snack-bar';
+import { Observable, race } from 'rxjs';
+import { map, take, finalize } from 'rxjs/operators';
+import { UnsavedChangesSnackbarComponent } from './unsaved‑changes-snackbar.component'
 
 export interface CanComponentDeactivate {
   hasUnsavedChanges: () => boolean | Observable<boolean>;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class UnsavedChangesGuard implements CanDeactivate<CanComponentDeactivate> {
-  private snackBarRef: MatSnackBarRef<SimpleSnackBar> | null = null;
+
+  private snackBarRef: MatSnackBarRef<UnsavedChangesSnackbarComponent> | null = null;
 
   constructor(private snackBar: MatSnackBar) {}
 
   canDeactivate(component: CanComponentDeactivate): Observable<boolean> | boolean {
-    if (!component.hasUnsavedChanges || !component.hasUnsavedChanges()) {
-      return true;
-    }
 
-    // If there's already a snackbar open, don't open another one
-    if (this.snackBarRef) {
-      return false;
-    }
+    /* 1. nothing to save → allow immediately */
+    const hasChanges = component.hasUnsavedChanges?.();
+    if (!hasChanges) { return true; }
 
-    const config: MatSnackBarConfig = {
-      duration: 0, // No auto-dismiss
-      panelClass: 'unsaved-changes-snackbar'
-    };
+    /* 2. a snackbar is already open → block navigation */
+    if (this.snackBarRef) { return false; }
 
-    this.snackBarRef = this.snackBar.open(
-      'You have unsaved changes. Are you sure you want to leave?',
-      'Leave',
-      config
+    /* 3. open the custom snackbar */
+    this.snackBarRef = this.snackBar.openFromComponent(
+      UnsavedChangesSnackbarComponent,
+      {
+        duration: 0,                    // stay up until user decides
+        panelClass: 'unsaved-changes-snackbar'
+      }
     );
 
-    return this.snackBarRef.onAction().pipe(
+    /* 4. translate the user’s choice into true / false */
+    const decision$ = race(
+      // “Yes” → onAction()
+      this.snackBarRef.onAction().pipe(map(() => true)),
+      // “No”  → afterDismissed()
+      this.snackBarRef.afterDismissed().pipe(map(() => false))
+    ).pipe(
       take(1),
-      map(() => {
-        this.snackBarRef = null;
-        return true;
-      })
+      finalize(() => { this.snackBarRef = null; })   // clean up reference
     );
+
+    return decision$;
   }
 }
