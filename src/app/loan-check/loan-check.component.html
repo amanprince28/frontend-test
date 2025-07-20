@@ -3,8 +3,7 @@
     <h4>Loan Check</h4>
   </nav>
 
-  <form [formGroup]="form" (ngSubmit)="onSearch()" class="search-row">
-
+  <form [formGroup]="form" (ngSubmit)="fetchData()" class="search-row">
     <mat-form-field appearance="outline">
       <mat-label>Select Agents</mat-label>
       <mat-select
@@ -15,16 +14,15 @@
       >
         <!-- Select All / Deselect All Option -->
         <mat-option [value]="selectAllValue" (click)="toggleSelectAll($event)">
-          {{ isAllSelected() ? 'Deselect All' : 'Select All' }}
+          {{ isAllSelected() ? "Deselect All" : "Select All" }}
         </mat-option>
-    
+
         <!-- Agent Options -->
         <mat-option *ngFor="let agent of agents()" [value]="agent.id">
           {{ agent.name }}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    
 
     <mat-form-field appearance="outline">
       <mat-label>Date From</mat-label>
@@ -49,7 +47,6 @@
     <mat-chip *ngFor="let id of selectedAgentIds()">
       {{ getAgentNameById(id) }}
     </mat-chip>
-    
   </div>
   <table
     mat-table
@@ -101,4 +98,13 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+
+  <mat-paginator
+  [length]="totalCount"
+  [pageSize]="pageSize"
+  [pageSizeOptions]="[10, 20, 30]"
+  [pageIndex]="currentPage"
+  (page)="onPageChange($event)"
+  #paginator>
+</mat-paginator>
 </div>

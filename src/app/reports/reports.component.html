@@ -102,11 +102,11 @@
         </ng-container>
 
         <ng-container matColumnDef="payableAmount">
-          <th mat-header-cell *matHeaderCellDef>PAYABLE AMOUNT</th>
+          <th mat-header-cell *matHeaderCellDef> PAYABLE AMOUNT </th>
           <td mat-cell *matCellDef="let element">
-            <div *ngFor="let installment of element.loanData.installment">
-            RM  {{ element.loanData.payment_per_term }}
-          </div>
+            <div *ngFor="let installment of element.loanData.amount_due">
+              RM {{ installment.due_amount }}
+            </div>
           </td>
         </ng-container>
 
