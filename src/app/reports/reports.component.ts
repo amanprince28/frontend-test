@@ -1,5 +1,5 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -40,9 +40,29 @@ import { DataService } from '../data.service';
 export class ReportsComponent implements AfterViewInit {
   form = this.fb.group({
     reportType: [''],
-    fromDate: [null],
-    toDate: [null],
+    fromDate: [''],
+    toDate: [''],
+    paymentFromDate: [''],
+    paymentToDate: ['']
+  }, {
+    validators: [
+      this.validateDatePair('fromDate', 'toDate'),
+      this.validateDatePair('paymentFromDate', 'paymentToDate')
+    ]
   });
+
+  validateDatePair(startKey: string, endKey: string) {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const start = group.get(startKey)?.value;
+      const end = group.get(endKey)?.value;
+      if (start && !end) {
+        group.get(endKey)?.setErrors({ required: true });
+        return { datePairInvalid: true };
+      }
+      group.get(endKey)?.setErrors(null); // clear errors if valid
+      return null;
+    };
+  }
 
   selectedReportType: 'loan' | 'payment' | null = null;
   showTable = false;
@@ -110,7 +130,7 @@ export class ReportsComponent implements AfterViewInit {
     this.errorMessage = '';
     this.showTable = false;
 
-    const { fromDate, toDate } = this.form.value;
+    const { fromDate, toDate,paymentFromDate,paymentToDate } = this.form.value;
 
     const formattedFromDate = fromDate
       ? new Date(fromDate).toISOString().split('T')[0]
@@ -119,8 +139,15 @@ export class ReportsComponent implements AfterViewInit {
       ? new Date(toDate).toISOString().split('T')[0]
       : undefined;
 
+      const formattedPaymentFromDate = paymentFromDate
+      ? new Date(paymentFromDate).toISOString().split('T')[0]
+      : undefined;
+    const formattedPaymentToDate = paymentToDate
+      ? new Date(paymentToDate).toISOString().split('T')[0]
+      : undefined;
+
     this.dataService
-      .getReport(this.selectedReportType, formattedFromDate, formattedToDate)
+      .getReport(this.selectedReportType, formattedFromDate, formattedToDate,formattedPaymentFromDate,formattedPaymentToDate)
       .subscribe({
         next: (response: any) => {
           if (this.selectedReportType === 'loan') {
@@ -180,7 +207,7 @@ export class ReportsComponent implements AfterViewInit {
             );
           } else {
             const data = response || [];
-            this.paymentDataSource.data = data;
+            this.paymentDataSource.data = data.filter((item:any) => item !== null);
             setTimeout(
               () => (this.paymentDataSource.paginator = this.paymentPaginator)
             );

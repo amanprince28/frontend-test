@@ -27,11 +27,26 @@
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>Paymemt From</mat-label>
+        <input matInput [matDatepicker]="picker3" formControlName="paymentFromDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+        <mat-datepicker #picker3></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Payment  To</mat-label>
+        <input matInput [matDatepicker]="picker4" formControlName="paymentToDate" />
+        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+        <mat-datepicker #picker4></mat-datepicker>
+      </mat-form-field>
       <div class="action-buttons">
         <button mat-raised-button color="primary" type="submit">Submit</button>
         <button mat-raised-button color="accent" type="button" (click)="exportXLSX()">Export To XLS</button>
       </div>
+     
     </form>
+    
 
     <div class="report-table" *ngIf="showTable">
       <div *ngIf="errorMessage" class="no-data-message">{{ errorMessage }}</div>
@@ -164,7 +179,7 @@
         <ng-container matColumnDef="paymntin_out">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Payment In/ Out Date</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.paymntin_out |date:'dd-MM-yyyy' }}
+            {{ element?.paymntin_out |date:'dd-MM-yyyy' }}
           </td>
         </ng-container>
 
