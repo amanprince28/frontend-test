@@ -7,8 +7,8 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'https://www.cs-season.com/backend';
-  //private apiUrl = 'http://localhost:3000';
+  //private apiUrl = 'https://www.cs-season.com/backend';
+  private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -224,7 +224,7 @@ export class DataService {
     return this.http.get<any[]>(this.loan+'/calculate-profits');
   }
 
-  getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string): Observable<any> {
+  getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string,paymentFrom?: string, paymentTo?: string): Observable<any> {
     const url = this.apiUrl + '/report';
   
     const body: any = {
@@ -236,6 +236,13 @@ export class DataService {
     }
     if (toDate) {
       body.loan_data_to = toDate;
+    }
+
+    if (paymentFrom) {
+      body.payment_date_from = paymentFrom;
+    }
+    if (paymentTo) {
+      body.payment_date_to = paymentTo;
     }
   
     return this.http.post<any>(url, body);
