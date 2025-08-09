@@ -72,5 +72,6 @@
   <div class="modal-footer">
     <button mat-raised-button color="primary" class="action-button confirm-button" (click)="onConfirm()">OK</button>
     <button mat-button class="action-button cancel-button" (click)="onClose()">Cancel</button>
+    <button *ngIf="addCustomer" mat-raised-button color="primary" class="action-button confirm-button" (click)="redirectCustomer()">Add Customer</button>
   </div>
 </div>

@@ -1,0 +1,93 @@
+<div class="agent-report-container">
+  <h2 class="title">Agent Sales Report</h2>
+
+  <form [formGroup]="filterForm" class="filter-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Agent Name</mat-label>
+      <mat-select formControlName="agentNames" multiple>
+        <mat-option *ngFor="let agent of agents" [value]="agent">{{ agent }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
+      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>To</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="search-button">
+      <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
+    </div>
+  </form>
+
+  <div class="table-wrapper mat-elevation-z8" *ngIf="dataSource.length">
+    <table mat-table [dataSource]="dataSource" class="agent-table">
+
+      <ng-container matColumnDef="agentName">
+        <th mat-header-cell *matHeaderCellDef>Agent Name</th>
+        <td mat-cell *matCellDef="let el">{{ el.agentName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="month">
+        <th mat-header-cell *matHeaderCellDef>Month</th>
+        <td mat-cell *matCellDef="let el">{{ el.month }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentIn">
+        <th mat-header-cell *matHeaderCellDef>Current IN</th>
+        <td mat-cell *matCellDef="let el">{{ el.currentIn }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="currentOut">
+        <th mat-header-cell *matHeaderCellDef>Current OUT</th>
+        <td mat-cell *matCellDef="let el">{{ el.currentOut }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="balance">
+        <th mat-header-cell *matHeaderCellDef>Balance</th>
+        <td mat-cell *matCellDef="let el">{{ el.balance }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="expenses">
+        <th mat-header-cell *matHeaderCellDef>Expenses</th>
+        <td mat-cell *matCellDef="let el">{{ el.expenses }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="finalBalance">
+        <th mat-header-cell *matHeaderCellDef>Final Balance</th>
+        <td mat-cell *matCellDef="let el">{{ el.finalBalance }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sumIn">
+        <th mat-header-cell *matHeaderCellDef>Sum In</th>
+        <td mat-cell *matCellDef="let el">{{ el.sumIn }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sumOut">
+        <th mat-header-cell *matHeaderCellDef>Sum Out</th>
+        <td mat-cell *matCellDef="let el">{{ el.sumOut }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sumExpenses">
+        <th mat-header-cell *matHeaderCellDef>Sum Expenses</th>
+        <td mat-cell *matCellDef="let el">{{ el.sumExpenses }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="sumBalance">
+        <th mat-header-cell *matHeaderCellDef>Sum Balance</th>
+        <td mat-cell *matCellDef="let el">{{ el.sumBalance }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</div>

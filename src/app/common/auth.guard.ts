@@ -26,7 +26,7 @@ export class RoleGuard implements CanActivate {
 
     // Define allowed routes for each role
     const allowedRoutes: { [key: string]: string[] } = {
-      'SUPER_ADMIN': ['users', 'users-details', 'loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
+      'SUPER_ADMIN': ['users', 'users-details', 'loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','agent-report','loan-check','sales-report'],
       'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
       'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
       'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],

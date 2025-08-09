@@ -269,6 +269,10 @@ export class DataService {
   
     return this.http.post(`${this.apiUrl}/loan/getLoanCheck`, payload);
   }
+
+  getAgentReports(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/expenses`, payload);
+  }  
   
   
 }

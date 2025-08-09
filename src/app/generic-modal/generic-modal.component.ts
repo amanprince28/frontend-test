@@ -12,6 +12,8 @@ import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/p
 import { MatSelectModule } from '@angular/material/select';
 import { DataService } from '../data.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { add } from 'date-fns';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-generic-modal',
@@ -34,6 +36,7 @@ export class GenericModalComponent implements OnInit{
     { key: 'name', label: 'Name' },
     { key: 'ic', label: 'IC' },
   ];
+  addCustomer:boolean=false;
   searchQuery: string = '';
 
   selectedKey: string | null = null;
@@ -46,6 +49,7 @@ export class GenericModalComponent implements OnInit{
   constructor(
     private dialogRef: MatDialogRef<GenericModalComponent>,
     private dataService: DataService,
+    private router:Router,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {
     this.title = data.title;
@@ -55,15 +59,6 @@ export class GenericModalComponent implements OnInit{
   ngOnInit(): void {
     this.fetchData(this.currentPage, this.pageSize);
   }
-
-  // ngAfterViewInit(): void {
-  //   this.dataSource.paginator = this.paginator;
-  //   this.fetchData(this.currentPage, this.pageSize);
-    
-  //   this.paginator.page.subscribe(() => {
-  //     this.fetchData(this.currentPage, this.pageSize);
-  //   });
-  // }
 
   onPageChange(event: PageEvent): void {
       this.fetchData(event.pageIndex, event.pageSize);
@@ -77,10 +72,6 @@ export class GenericModalComponent implements OnInit{
       limit: pageSize,
       filter: this.searchQuery || undefined,
     };
-    // const pageIndex = this.paginator?.pageIndex || 0;
-    // const pageSize = this.paginator?.pageSize || 5;
-    // const page = pageIndex + 1;
-    // const limit = pageSize;
   
     if (this.data.type === 'agent') {
       this.dataService.getActiveUser(payload).subscribe({
@@ -140,6 +131,10 @@ export class GenericModalComponent implements OnInit{
           next: (response) => {
             this.dataSource.data = response;
             this.resultsLength = response.length;
+            if(this.resultsLength ==0){
+              this.addCustomer = true
+            }
+            console.log(this.addCustomer,'ss');
             this.paginator.firstPage();
             this.isLoading = false;
           },
@@ -183,5 +178,10 @@ export class GenericModalComponent implements OnInit{
 
   onClose() {
     this.dialogRef.close();
+  }
+
+  redirectCustomer(){
+    this.dialogRef.close(null);
+    this.router.navigateByUrl("/details")
   }
 }

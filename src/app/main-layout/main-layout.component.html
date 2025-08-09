@@ -81,6 +81,16 @@
         <mat-icon>check</mat-icon>
         <span class="menu-label">Loan Check</span>
       </a>
+
+      <a class="menu-item" [routerLink]="['agent-report']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>check</mat-icon>
+        <span class="menu-label">Agent Report</span>
+      </a>
+
+      <a class="menu-item" [routerLink]="['sales-report']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
+        <mat-icon>money</mat-icon>
+        <span class="menu-label">Sales Report</span>
+      </a>
     </nav>
   </mat-drawer>
 

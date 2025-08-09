@@ -41,6 +41,15 @@
       <mat-datepicker #pickerTo></mat-datepicker>
     </mat-form-field>
 
+    <mat-form-field appearance="outline" class="status-field">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let element of loanStatus" [value]="element.status">
+          {{ element.status }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
     <button mat-raised-button color="primary" type="submit">Search</button>
   </form>
   <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">

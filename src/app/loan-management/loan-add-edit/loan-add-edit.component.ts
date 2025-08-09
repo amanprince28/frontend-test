@@ -40,6 +40,8 @@ import {
   APP_DATE_FORMATS,
 } from '../../common/custom-date-adapter';
 import { format } from 'date-fns';
+import { GlobalPositionStrategy } from '@angular/cdk/overlay';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-loan-add',
@@ -104,6 +106,7 @@ export class LoanAddEditComponent implements OnInit {
   userDetails: any;
   userRole: any;
   passedData: any;
+  cantSave: boolean=false;
 
   constructor(
     private router: Router,
@@ -230,7 +233,15 @@ export class LoanAddEditComponent implements OnInit {
       // Recalculate interest_amount and payment_per_term if repayment_terms changes
       this.updateInterestAndPaymentPerTerm();
     });
+
+    this.loanDetailsForm.get('goodwill')?.valueChanges.pipe(
+    debounceTime(2000) // 2 seconds delay
+  )
+  .subscribe((value) => {
+    this.updateEstimatedProfit();
+  });
   }
+  
 
   fetchUserData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
@@ -246,6 +257,20 @@ export class LoanAddEditComponent implements OnInit {
     this.dataService.getCustomer(payload).subscribe((response: any) => {
       this.customerData = response.data;
     });
+  }
+
+  updateEstimatedProfit(){
+   const  preserveEstProfit = this.loanDetailsForm.get('estimated_profit')?.value;
+   const  estimated_profit = this.loanDetailsForm.get('estimated_profit')?.value
+   const goodwill = this.loanDetailsForm.get('goodwill')?.value;
+   const value = Number(estimated_profit) - Number(goodwill);
+   console.log(estimated_profit,goodwill,value);
+   this.loanDetailsForm.get('estimated_profit')?.setValue(value);
+   
+   if(Number(estimated_profit) < Number(goodwill)){
+    this.cantSave = true
+    console.log('cant save')
+   }
   }
 
   updateAmountGiven() {
@@ -298,6 +323,7 @@ export class LoanAddEditComponent implements OnInit {
     }
   }
 
+
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
       agentName: new FormControl('', Validators.required),
@@ -328,6 +354,7 @@ export class LoanAddEditComponent implements OnInit {
       loan_remark: new FormControl(''),
       interest_amount: new FormControl({ value: '', disabled: true }),
       status: new FormControl(''),
+      goodwill: new FormControl(''),
       loan_date: new FormControl('', Validators.required),
       repayment_term: new FormControl('', Validators.required),
       actual_profit: new FormControl({ value: '', disabled: true }),
@@ -388,6 +415,13 @@ export class LoanAddEditComponent implements OnInit {
   saveLoan() {
     if (!this.loanDetailsForm.valid) {
       this.snackBar.open('Please fill all required fields.', 'Close', {
+        duration: 5000,
+        panelClass: ['error-snackbar'],
+      });
+      return;
+    }
+    if(this.cantSave){
+      this.snackBar.open('Unable to Save', 'Close', {
         duration: 5000,
         panelClass: ['error-snackbar'],
       });
