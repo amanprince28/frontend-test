@@ -147,7 +147,7 @@ export class ReportsComponent implements AfterViewInit {
       : undefined;
 
     this.dataService
-      .getReport(this.selectedReportType, formattedFromDate, formattedToDate,formattedPaymentFromDate,formattedPaymentToDate)
+      .getReport(this.selectedReportType, formattedFromDate, formattedToDate)
       .subscribe({
         next: (response: any) => {
           if (this.selectedReportType === 'loan') {

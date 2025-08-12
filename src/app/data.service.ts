@@ -7,8 +7,10 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  private apiUrl = 'https://www.cs-season.com/backend';
-  //private apiUrl = 'http://localhost:3000';
+  //private apiUrl ='https://cs-seasons.com/backend/'
+  //private apiUrl = 'https://cs-summer.com/api';
+  //private apiUrl = 'http://47.129.250.145/api';
+  private apiUrl = 'http://localhost:3000';
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
