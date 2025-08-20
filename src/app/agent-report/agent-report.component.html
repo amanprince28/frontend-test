@@ -3,9 +3,22 @@
 
   <form [formGroup]="filterForm" class="filter-form">
     <mat-form-field appearance="outline">
-      <mat-label>Agent Name</mat-label>
-      <mat-select formControlName="agentNames" multiple>
-        <mat-option *ngFor="let agent of agents" [value]="agent">{{ agent }}</mat-option>
+      <mat-label>Select Agents</mat-label>
+      <mat-select
+        formControlName="agents"
+        multiple
+        (openedChange)="onSelectOpened()"
+        (selectionChange)="onAgentSelectionChange($event)"
+      >
+        <!-- Select All / Deselect All Option -->
+        <mat-option [value]="selectAllValue" (click)="toggleSelectAll($event)">
+          {{ isAllSelected() ? "Deselect All" : "Select All" }}
+        </mat-option>
+
+        <!-- Agent Options -->
+        <mat-option *ngFor="let agent of agents()" [value]="agent.id">
+          {{ agent.name }}
+        </mat-option>
       </mat-select>
     </mat-form-field>
 
@@ -27,6 +40,11 @@
       <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
     </div>
   </form>
+  <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">
+    <mat-chip *ngFor="let id of selectedAgentIds()">
+      {{ getAgentNameById(id) }}
+    </mat-chip>
+  </div>
 
   <div class="table-wrapper mat-elevation-z8" *ngIf="dataSource.length">
     <table mat-table [dataSource]="dataSource" class="agent-table">

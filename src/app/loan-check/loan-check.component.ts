@@ -150,6 +150,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
         payload.agents,
         payload.dateFrom,
         payload.dateTo,
+        payload.status,
         payload.page,
         payload.limit
       )
