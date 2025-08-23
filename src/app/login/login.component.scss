@@ -1,4 +1,3 @@
-/* Main container styles */
 .login-container {
   display: flex;
   justify-content: center;
@@ -10,6 +9,7 @@
   overflow: hidden;
   width: 100vw;
   box-sizing: border-box;
+  position: relative;
 
   /* Landscape mode scaling */
   @media (max-width: 900px) and (orientation: landscape) {
@@ -44,6 +44,7 @@
   flex-direction: column;
   gap: 2rem;
   box-sizing: border-box;
+  position: relative;
 
   /* Adjustments for landscape scaling */
   @media (max-width: 900px) and (orientation: landscape) {
@@ -187,7 +188,22 @@ mat-error {
   }
 }
 
-/* Portrait mode adjustments (unchanged from original) */
+/* App footer styles */
+.app-footer {
+  text-align: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.app-footer p {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+
+/* Portrait mode adjustments */
 @media (max-width: 600px) and (orientation: portrait) {
   .login-container {
     padding: 0.5rem;
@@ -216,6 +232,10 @@ mat-error {
   mat-error {
     font-size: 0.75rem;
   }
+  
+  .app-footer p {
+    font-size: 0.75rem;
+  }
 }
 
 @media (max-width: 400px) and (orientation: portrait) {
@@ -241,6 +261,10 @@ mat-error {
 
   .mat-form-field {
     font-size: 0.85rem;
+  }
+  
+  .app-footer p {
+    font-size: 0.7rem;
   }
 }
 

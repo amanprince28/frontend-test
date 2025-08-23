@@ -236,6 +236,15 @@ export class ReportsComponent implements AfterViewInit {
   //     });
   // }
 
+   formatDateToLocal(date: Date | string | null | undefined): string | undefined {
+    if (!date) return undefined;
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
   onSubmit() {
     if (!this.form.value.reportType) {
       this.showTable = false;
@@ -250,12 +259,11 @@ export class ReportsComponent implements AfterViewInit {
 
     const { fromDate, toDate,paymentFromDate,paymentToDate  } = this.form.value;
   
-    const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : undefined;
-    const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : undefined;
-  
-    const formattedPaymentFromDate = paymentFromDate ? new Date(paymentFromDate).toISOString().split('T')[0] : undefined;
-    const formattedPaymentToDate = paymentToDate ? new Date(paymentToDate).toISOString().split('T')[0] : undefined;
-  
+    const formattedFromDate = this.formatDateToLocal(fromDate);
+const formattedToDate = this.formatDateToLocal(toDate);
+
+const formattedPaymentFromDate = this.formatDateToLocal(paymentFromDate);
+const formattedPaymentToDate = this.formatDateToLocal(paymentToDate);
     const num = (v: any) => v == null ? 0 : Number(String(v).replace(/[^0-9.-]/g, '')) || 0;
     const halfNum = (v: any) => Number((num(v) / 2).toFixed(2));
   

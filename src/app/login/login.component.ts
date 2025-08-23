@@ -9,6 +9,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Router } from '@angular/router';
 import { DataService } from '../data.service';
 import { MatIconModule } from '@angular/material/icon';
+import { APP_VERSION } from '../../enviornments/version';  
 
 @Component({
   selector: 'app-login',
@@ -30,6 +31,7 @@ export class LoginComponent {
   loginForm: FormGroup;
   hide = true;
   isLoading = false;
+  appVersion = APP_VERSION;   
 
   constructor(
     private fb: FormBuilder,
