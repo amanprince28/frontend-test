@@ -47,16 +47,22 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       this.isLoading = true;
       const credentials = this.loginForm.value;
-
+  
       this.dataService.login(credentials).subscribe({
         next: (resp) => {
           this.isLoading = false;
-          if (resp.access_token) {
-            localStorage.setItem('user-details', JSON.stringify(resp));
+  
+          // ✅ check for sessionInfo instead of access_token
+          if (resp.sessionInfo && resp.sessionInfo.sessionId) {
+            // Save both user + session info to localStorage
+            localStorage.setItem('user-details', JSON.stringify(resp.user));
+            localStorage.setItem('session-info', JSON.stringify(resp.sessionInfo));
+  
             this.snackBar.open('✅ Login Successful', 'Close', {
               duration: 3000,
               panelClass: 'success-snackbar'
             });
+  
             this.router.navigateByUrl('/listing');
           } else {
             this.snackBar.open(resp.message || 'Invalid Credentials', 'Close', {
@@ -86,6 +92,7 @@ export class LoginComponent {
       });
     }
   }
+  
 
   togglePasswordVisibility(event: MouseEvent): void {
     event.preventDefault(); // Just for safety

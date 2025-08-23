@@ -247,7 +247,8 @@ export class ReportsComponent implements AfterViewInit {
     this.errorMessage = '';
     this.showTable = false;
   
-    const { fromDate, toDate, paymentFromDate, paymentToDate } = this.form.value;
+
+    const { fromDate, toDate,paymentFromDate,paymentToDate  } = this.form.value;
   
     const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : undefined;
     const formattedToDate = toDate ? new Date(toDate).toISOString().split('T')[0] : undefined;
@@ -273,7 +274,8 @@ export class ReportsComponent implements AfterViewInit {
   
             (response || []).forEach((loan: any) => {
               // Parse base numeric amounts
-              const outAmount = num(loan.out);
+
+              const outAmount = num(loan.loanAmount)-num(loan.loanData?.application_fee);
               const depositAmount = num(loan.deposit);
               const onHandAmount = outAmount - depositAmount;
   
@@ -291,6 +293,7 @@ export class ReportsComponent implements AfterViewInit {
               // Build normalized base (no push yet)
               const baseNormalized = {
                 ...loan,
+                outAmount:outAmount,
                 loanData: {
                   ...loan.loanData,
                   installment: sortedInstallments,
@@ -329,7 +332,8 @@ export class ReportsComponent implements AfterViewInit {
                   ...baseNormalized,
                   // root-level halves when present
                   loanAmount: baseNormalized.loanAmount != null ? halfNum(baseNormalized.loanAmount) : baseNormalized.loanAmount,
-                  out: outHalf,
+
+                  outAmount: outHalf,
                   deposit: depositHalf,
                   onHand: onHandHalf,
                   amount: baseNormalized.amount != null ? halfNum(baseNormalized.amount) : baseNormalized.amount,
@@ -420,8 +424,37 @@ export class ReportsComponent implements AfterViewInit {
             setTimeout(() => (this.loanDataSource.paginator = this.loanPaginator));
           } else {
             const data = response || [];
-            this.paymentDataSource.data = data.filter((item: any) => item !== null);
-            setTimeout(() => (this.paymentDataSource.paginator = this.paymentPaginator));
+            //this.paymentDataSource.data = data.filter((item: any) => item !== null);
+            //setTimeout(() => (this.paymentDataSource.paginator = this.paymentPaginator));
+            const processedData = data.flatMap((item: any) => {
+              if (item.agentName2 && item.agentName2.trim() !== "") {
+                const totalIn = item.totalPaymentIn ? parseFloat(item.totalPaymentIn) / 2 : 0;
+                const totalOut = item.totalPaymentOut ? parseFloat(item.totalPaymentOut) / 2 : 0;
+            
+                return [
+                  {
+                    ...item,
+                    agentName: item.agentName,
+                    totalPaymentIn: totalIn ? totalIn.toString() : "",
+                    totalPaymentOut: totalOut ? totalOut.toString() : ""
+                  },
+                  {
+                    ...item,
+                    agentName: item.agentName2,
+                    totalPaymentIn: totalIn ? totalIn.toString() : "",
+                    totalPaymentOut: totalOut ? totalOut.toString() : ""
+                  }
+                ];
+              } else {
+                return [item];
+              }
+            });
+            
+            this.paymentDataSource.data = processedData.filter((item: any) => item !== null);
+            
+            setTimeout(() => {
+              this.paymentDataSource.paginator = this.paymentPaginator;
+            });
           }
   
           this.showTable = true;
@@ -539,7 +572,7 @@ export class ReportsComponent implements AfterViewInit {
       'AGENT Name': loan.agent,
       NAME: loan.customerName,
       'LOAN AMOUNT': Number(loan.loanAmount),
-      'OUT(RM)': Number(loan.out),
+      'OUT(RM)': Number(loan.outAmount),
       'DEPOSIT(RM)': Number(loan.deposit),
       'ON HAND': Number(loan.onHand),
       'PAYMENT DATE': paymentDates,

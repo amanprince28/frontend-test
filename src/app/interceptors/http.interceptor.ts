@@ -1,50 +1,65 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {
+  HttpInterceptor,
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpErrorResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
-
 export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private router: Router) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const tokenString = localStorage.getItem('user-details');
-    let accessToken: string | null = null;
-    let userid: string | null = null;
-    
-    if (tokenString) {
-      try {
-        const token = JSON.parse(tokenString);
-        accessToken = token.access_token;
-        userid = token.id;
-      } catch (error) {
-        console.error('Error parsing token from localStorage:', error);
+    // Retrieve user & session info from localStorage
+    const userString = localStorage.getItem('user-details');
+    const sessionString = localStorage.getItem('session-info');
+
+    let userId: string | null = null;
+    let sessionId: string | null = null;
+
+    try {
+      if (userString) {
+        const user = JSON.parse(userString);
+        userId = user?.id || null;
       }
+      if (sessionString) {
+        const session = JSON.parse(sessionString);
+        sessionId = session?.sessionId || null;
+      }
+    } catch (error) {
+      console.error('Error parsing user/session from localStorage:', error);
     }
 
-    // Add the access token to headers for GET, POST, and PUT requests
-    if (accessToken && (request.method === 'GET' || request.method === 'POST' || request.method === 'PUT')) {
-      let modifiedRequest = request.clone({
+    // Always add withCredentials
+    let modifiedRequest = request.clone({
+      withCredentials: true
+    });
+
+    // If sessionId exists, attach it in headers
+    if (sessionId) {
+      modifiedRequest = modifiedRequest.clone({
         setHeaders: {
-          'access_token': accessToken,
-          'user_id': userid || ''
+          'X-Session-Id': sessionId,
+          'X-User-Id': userId || ''
         }
       });
-
-      // For POST and PUT requests, add userid to the body if it exists
-      if ((request.method === 'POST' || request.method === 'PUT') && userid) {
-        const body = request.body ? { ...request.body, userid } : { userid };
-        modifiedRequest = modifiedRequest.clone({ body });
-      }
-
-      // For GET requests, add userid to the query params if it exists
-      if (request.method === 'GET' && userid) {
-        modifiedRequest = modifiedRequest.clone({
-          params: request.params.set('userid', userid)
-        });
-      }
-
-      return next.handle(modifiedRequest);
     }
 
-    return next.handle(request);
+    return next.handle(modifiedRequest).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.warn('Unauthorized (401) detected, logging out...');
+          localStorage.removeItem('user-details');
+          localStorage.removeItem('session-info');
+          this.router.navigate(['/login']);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }
