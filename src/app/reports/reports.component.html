@@ -27,19 +27,21 @@
         <mat-datepicker #picker2></mat-datepicker>
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Payment From</mat-label>
-        <input matInput [matDatepicker]="picker3" formControlName="paymentFromDate" />
-        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
-        <mat-datepicker #picker3></mat-datepicker>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Payment  To</mat-label>
-        <input matInput [matDatepicker]="picker4" formControlName="paymentToDate" />
-        <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
-        <mat-datepicker #picker4></mat-datepicker>
-      </mat-form-field>
+      <ng-container *ngIf="form.get('reportType')?.value === 'payment'">
+        <mat-form-field appearance="outline">
+          <mat-label>Payment From</mat-label>
+          <input matInput [matDatepicker]="picker3" formControlName="paymentFromDate" />
+          <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+          <mat-datepicker #picker3></mat-datepicker>
+        </mat-form-field>
+    
+        <mat-form-field appearance="outline">
+          <mat-label>Payment To</mat-label>
+          <input matInput [matDatepicker]="picker4" formControlName="paymentToDate" />
+          <mat-datepicker-toggle matSuffix [for]="picker4"></mat-datepicker-toggle>
+          <mat-datepicker #picker4></mat-datepicker>
+        </mat-form-field>
+      </ng-container>
       <div class="action-buttons">
         <button mat-raised-button color="primary" type="submit">Submit</button>
         <button mat-raised-button color="accent" type="button" (click)="exportXLSX()">Export To XLS</button>
