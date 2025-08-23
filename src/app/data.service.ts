@@ -28,6 +28,10 @@ export class DataService {
   });
 }
 
+logout(): Observable<any> {
+  return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true });
+}
+
   getLoan(payload: any): Observable<any> {
     const params = new HttpParams()
     .set('page', payload.page.toString())

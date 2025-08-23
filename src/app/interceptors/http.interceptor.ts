@@ -3,12 +3,17 @@ import {
   HttpInterceptor,
   HttpRequest,
   HttpHandler,
-  HttpEvent
+  HttpEvent,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpInterceptorService implements HttpInterceptor {
+  constructor(private router: Router) {}
+
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Retrieve user & session info from localStorage
     const userString = localStorage.getItem('user-details');
@@ -35,7 +40,7 @@ export class HttpInterceptorService implements HttpInterceptor {
       withCredentials: true
     });
 
-    // If sessionId exists, attach it in headers (optional but useful for debugging or hybrid auth)
+    // If sessionId exists, attach it in headers
     if (sessionId) {
       modifiedRequest = modifiedRequest.clone({
         setHeaders: {
@@ -45,6 +50,16 @@ export class HttpInterceptorService implements HttpInterceptor {
       });
     }
 
-    return next.handle(modifiedRequest);
+    return next.handle(modifiedRequest).pipe(
+      catchError((error: HttpErrorResponse) => {
+        if (error.status === 401) {
+          console.warn('Unauthorized (401) detected, logging out...');
+          localStorage.removeItem('user-details');
+          localStorage.removeItem('session-info');
+          this.router.navigate(['/login']);
+        }
+        return throwError(() => error);
+      })
+    );
   }
 }

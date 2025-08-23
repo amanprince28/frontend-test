@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu'; 
 import { CommonModule } from '@angular/common';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-main-layout',
@@ -24,7 +25,7 @@ export class MainLayoutComponent implements OnInit {
   checkUsers: any;
 
 
-  constructor(private router:Router){}
+  constructor(private router:Router,private dataService:DataService){}
 
 
   ngOnInit(): void {
@@ -69,9 +70,21 @@ export class MainLayoutComponent implements OnInit {
     this.router.navigate(['/settings']);
   }
 
+
   logout() {
-    localStorage.removeItem('user-details');
-    this.router.navigate(['/login']);
+    this.dataService.logout().subscribe({
+      next: (res) => {
+        console.log(res.message);
+        localStorage.removeItem('user-details'); // clear token/session storage
+        this.router.navigate(['/login']); // redirect to login page
+      },
+      error: (err) => {
+        console.error('Logout failed:', err);
+        // still clear local storage just in case
+        localStorage.removeItem('user-details');
+        this.router.navigate(['/login']);
+      },
+    });
   }
 
   changePassword(){
