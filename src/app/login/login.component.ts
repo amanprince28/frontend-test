@@ -43,20 +43,70 @@ export class LoginComponent {
     });
   }
 
+  // onSubmit(): void {
+  //   if (this.loginForm.valid) {
+  //     this.isLoading = true;
+  //     const credentials = this.loginForm.value;
+
+  //     this.dataService.login(credentials).subscribe({
+  //       next: (resp) => {
+  //         this.isLoading = false;
+  //         if (resp.access_token) {
+  //           localStorage.setItem('user-details', JSON.stringify(resp));
+  //           this.snackBar.open('✅ Login Successful', 'Close', {
+  //             duration: 3000,
+  //             panelClass: 'success-snackbar'
+  //           });
+  //           this.router.navigateByUrl('/listing');
+  //         } else {
+  //           this.snackBar.open(resp.message || 'Invalid Credentials', 'Close', {
+  //             duration: 3000,
+  //             panelClass: 'error-snackbar'
+  //           });
+  //         }
+  //       },
+  //       error: (err) => {
+  //         this.isLoading = false;
+  //         if (err.status === 401 || err.status === 400) {
+  //           this.snackBar.open(err.error.message || 'Invalid Credentials', 'Close', {
+  //             duration: 3000,
+  //             panelClass: 'error-snackbar'
+  //           });
+  //         } else {
+  //           this.snackBar.open('Login Failed. Please try again.', 'Close', {
+  //             duration: 3000,
+  //             panelClass: 'error-snackbar'
+  //           });
+  //         }
+  //       }
+  //     });
+  //   } else {
+  //     this.snackBar.open('⚠️ Please fill all required fields correctly.', 'Close', {
+  //       duration: 3000
+  //     });
+  //   }
+  // }
+
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.isLoading = true;
       const credentials = this.loginForm.value;
-
+  
       this.dataService.login(credentials).subscribe({
         next: (resp) => {
           this.isLoading = false;
-          if (resp.access_token) {
-            localStorage.setItem('user-details', JSON.stringify(resp));
+  
+          // ✅ check for sessionInfo instead of access_token
+          if (resp.sessionInfo && resp.sessionInfo.sessionId) {
+            // Save both user + session info to localStorage
+            localStorage.setItem('user-details', JSON.stringify(resp.user));
+            localStorage.setItem('session-info', JSON.stringify(resp.sessionInfo));
+  
             this.snackBar.open('✅ Login Successful', 'Close', {
               duration: 3000,
               panelClass: 'success-snackbar'
             });
+  
             this.router.navigateByUrl('/listing');
           } else {
             this.snackBar.open(resp.message || 'Invalid Credentials', 'Close', {
@@ -86,6 +136,7 @@ export class LoginComponent {
       });
     }
   }
+  
 
   togglePasswordVisibility(event: MouseEvent): void {
     event.preventDefault(); // Just for safety

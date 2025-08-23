@@ -7,7 +7,7 @@ import { SignalService } from './signal.service'; // Hypothetical circular depen
   providedIn: 'root'
 })
 export class DataService {
-  //private apiUrl ='https://cs-seasons.com/backend/'
+  //private apiUrl ='https://www.cs-season.com/backend'
   //private apiUrl = 'https://cs-summer.com/api';
   //private apiUrl = 'http://47.129.250.145/api';
   private apiUrl = 'http://localhost:3000';
@@ -19,14 +19,14 @@ export class DataService {
   constructor(private http: HttpClient, private signalService: SignalService) {} // Circular dependency
 
   getCustomer(payload: any): Observable<any> {
-    const params = new HttpParams()
+  const params = new HttpParams()
     .set('page', payload.page.toString())
     .set('limit', payload.limit.toString());
-     
-    return this.http.get<any[]>(this.customer, { params });
-  }
 
-
+  return this.http.get<any[]>(this.customer, {
+    params
+  });
+}
 
   getLoan(payload: any): Observable<any> {
     const params = new HttpParams()
@@ -180,7 +180,9 @@ export class DataService {
   }
 
   login(payload:any):Observable<any>{
-    return this.http.post(`${this.apiUrl}/auth/login`, payload);
+    return this.http.post(`${this.apiUrl}/auth/login`, payload, {
+      withCredentials: true
+    });
   }
 
   getCustomerById(id: string): Observable<any> {
@@ -226,7 +228,7 @@ export class DataService {
     return this.http.get<any[]>(this.loan+'/calculate-profits');
   }
 
-  getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string): Observable<any> {
+  getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string,paymentFrom?:any,paymentTo?:any): Observable<any> {
     const url = this.apiUrl + '/report';
   
     const body: any = {
