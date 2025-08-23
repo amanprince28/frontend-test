@@ -241,10 +241,10 @@ logout(): Observable<any> {
     };
   
     if (fromDate) {
-      body.loan_data_from = fromDate;
+      body.loan_date_from = fromDate;
     }
     if (toDate) {
-      body.loan_data_to = toDate;
+      body.loan_date_to = toDate;
     }
 
     if (paymentFrom) {
