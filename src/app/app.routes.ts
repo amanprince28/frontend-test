@@ -15,6 +15,8 @@ import { ReportsComponent } from './reports/reports.component';
 import { ExpenseComponent } from './expense/expense.component';
 import { LoanCheckComponent } from './loan-check/loan-check.component';
 import { UnsavedChangesGuard } from './common/unsaved-changes.guard';
+import { AgentReportComponent } from './agent-report/agent-report.component';
+import { SalesReportComponent } from './sales-report/sales-report.component';
 
 
 export const routes: Routes = [
@@ -36,8 +38,10 @@ export const routes: Routes = [
       {path:'customer-check',component:CustomerCheckComponent,canActivate:[RoleGuard] },
       {path:'payment',component:PaymentComponent,canActivate:[RoleGuard],canDeactivate: [UnsavedChangesGuard] },
       {path:'reports',component:ReportsComponent,canActivate:[RoleGuard] },
-      {path:'expense',component:ExpenseComponent,},
-      {path:'loan-check',component:LoanCheckComponent},
+      {path:'expense',component:ExpenseComponent,canActivate:[RoleGuard]},
+      {path:'loan-check',component:LoanCheckComponent,canActivate:[RoleGuard]},
+      {path:'agent-report',component:AgentReportComponent,canActivate:[RoleGuard]},
+      {path:'sales-report',component:SalesReportComponent,canActivate:[RoleGuard]},
     ]
   }
 ];

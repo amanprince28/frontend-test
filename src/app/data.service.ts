@@ -232,6 +232,7 @@ logout(): Observable<any> {
     return this.http.get<any[]>(this.loan+'/calculate-profits');
   }
 
+
   getReport(report_type: 'loan' | 'payment', fromDate?: string, toDate?: string,paymentFrom?:any,paymentTo?:any): Observable<any> {
     const url = this.apiUrl + '/report';
   
@@ -244,6 +245,13 @@ logout(): Observable<any> {
     }
     if (toDate) {
       body.loan_data_to = toDate;
+    }
+
+    if (paymentFrom) {
+      body.payment_date_from = paymentFrom;
+    }
+    if (paymentTo) {
+      body.payment_date_to = paymentTo;
     }
   
     return this.http.post<any>(url, body);
@@ -261,15 +269,19 @@ logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/expenses`, payload);
   }  
 
-  getLoanCheck(agents: any, fromDate: any, toDate: any,page:any,limit:any): Observable<any> {
+  getLoanCheck(agents: any, fromDate: any, toDate: any,status:string,page:any,limit:any): Observable<any> {
     const payload = {
       agents,
-      fromDate,
+      fromDate,status,
       toDate,page,limit
     };
   
     return this.http.post(`${this.apiUrl}/loan/getLoanCheck`, payload);
   }
+
+  getAgentReports(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/expenses`, payload);
+  }  
   
   
 }

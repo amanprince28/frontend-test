@@ -247,6 +247,7 @@ export class ReportsComponent implements AfterViewInit {
     this.errorMessage = '';
     this.showTable = false;
   
+
     const { fromDate, toDate,paymentFromDate,paymentToDate  } = this.form.value;
   
     const formattedFromDate = fromDate ? new Date(fromDate).toISOString().split('T')[0] : undefined;
@@ -273,6 +274,7 @@ export class ReportsComponent implements AfterViewInit {
   
             (response || []).forEach((loan: any) => {
               // Parse base numeric amounts
+
               const outAmount = num(loan.loanAmount)-num(loan.loanData?.application_fee);
               const depositAmount = num(loan.deposit);
               const onHandAmount = outAmount - depositAmount;
@@ -330,6 +332,7 @@ export class ReportsComponent implements AfterViewInit {
                   ...baseNormalized,
                   // root-level halves when present
                   loanAmount: baseNormalized.loanAmount != null ? halfNum(baseNormalized.loanAmount) : baseNormalized.loanAmount,
+
                   outAmount: outHalf,
                   deposit: depositHalf,
                   onHand: onHandHalf,

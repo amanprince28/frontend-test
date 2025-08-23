@@ -57,6 +57,14 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
   selectAllValue = 'select_all';
   private _destroyed = new Subject<void>();
 
+  loanStatus = [
+    { status: 'Completed' },
+    { status: 'Normal' },
+    { status: 'Bad Debt' },
+    { status: 'Bad Debt Completed' },
+    { status: 'Partially Paid' },
+  ];
+
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -122,6 +130,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
       agents: [[]],
       dateFrom: [today],
       dateTo: [today],
+      status:[]
     });
   }
 
@@ -133,6 +142,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
       agents: this.form.value.agents || [],
       dateFrom: this.form.value.dateFrom,
       dateTo: this.form.value.dateTo,
+      status:this.form.value.status
     };
   
     this.dataService
@@ -140,6 +150,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
         payload.agents,
         payload.dateFrom,
         payload.dateTo,
+        payload.status,
         payload.page,
         payload.limit
       )
