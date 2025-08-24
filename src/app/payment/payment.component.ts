@@ -327,7 +327,6 @@ export class PaymentComponent implements OnInit {
     const hasUnsavedPayments = this.paymentData.some(
       (item: any) => item.isEdited || item.isNew
     );
-    console.log(hasUnsavedInstallments,hasUnsavedPayments,'sss');
     return hasUnsavedInstallments || hasUnsavedPayments;
   }
 

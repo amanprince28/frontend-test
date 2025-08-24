@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { DataService } from '../data.service';
 import { MatIconModule } from '@angular/material/icon';
 import { APP_VERSION } from '../../enviornments/version';  
+import { SessionService } from '../common/session.service';
 
 @Component({
   selector: 'app-login',
@@ -37,7 +38,8 @@ export class LoginComponent {
     private fb: FormBuilder,
     private dataService: DataService,
     private snackBar: MatSnackBar,
-    private router: Router
+    private router: Router,
+    private sessionService:SessionService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -59,6 +61,7 @@ export class LoginComponent {
             // Save both user + session info to localStorage
             localStorage.setItem('user-details', JSON.stringify(resp.user));
             localStorage.setItem('session-info', JSON.stringify(resp.sessionInfo));
+            this.sessionService.startPollingSession(); 
   
             this.snackBar.open('✅ Login Successful', 'Close', {
               duration: 3000,

@@ -76,20 +76,33 @@ export class AgentReportComponent implements OnInit {
     };
 
     this.dataService.getAgentReports(payload).subscribe(
-      (data: any) => {
+      (data: any[]) => {
         this.dataSource = [];
-
-        agents.forEach((agent: any) => {
-          const agentData = data.filter((r: any) => r.agentName === agent);
-          agentData.forEach((item: any) =>
-            this.dataSource.push({ ...item, agentName: agent })
-          );
+    
+        data.forEach((agent: any) => {
+          agent.monthlyBreakdown.forEach((month: any) => {
+            this.dataSource.push({
+              agentId: agent.agentId,
+              agentName: agent.agentName,
+              month: month.month,
+              currentIn: month.totalPaymentIn,
+              currentOut: month.totalPaymentOut,
+              balance: month.balance,
+              expenses: month.expense,
+              finalBalance: month.finalBalance,
+              sumIn: month.summaryPrevious.totalPaymentIn,
+              sumOut: month.summaryPrevious.totalPaymentOut,
+              sumExpenses: month.summaryPrevious.totalExpenses,
+              sumBalance: month.summaryPrevious.balance
+            });
+          });
         });
       },
       (err) => {
         console.error('Failed to fetch report data', err);
       }
     );
+    
   }
 
   onSelectOpened(): void {

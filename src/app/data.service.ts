@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { SignalService } from './signal.service'; // Hypothetical circular dependency
+import { API_URL } from '../enviornments/version';  
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ export class DataService {
   //private apiUrl ='https://www.cs-season.com/backend'
   //private apiUrl = 'https://cs-summer.com/api';
   //private apiUrl = 'http://47.129.250.145/api';
-  private apiUrl = 'http://localhost:3000';
+  //private apiUrl = 'http://localhost:3000';
+  apiUrl = API_URL
   private customer = this.apiUrl + '/customer';
   private user = this.apiUrl + '/user';
   private loan = this.apiUrl + '/loan';
@@ -29,7 +31,7 @@ export class DataService {
 }
 
 logout(): Observable<any> {
-  return this.http.post(`${this.apiUrl}/logout`, {}, { withCredentials: true });
+  return this.http.post(`${this.apiUrl}/auth/logout`, {}, { withCredentials: true });
 }
 
   getLoan(payload: any): Observable<any> {

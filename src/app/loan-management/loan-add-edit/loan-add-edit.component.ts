@@ -409,6 +409,8 @@ export class LoanAddEditComponent implements OnInit {
       status: row.status,
       actual_profit: actualProfit,
       loan_date: row.loan_date,
+      estimated_profit:row?.estimated_profit,
+      goodwill:row.goodwill,
     });
   }
 
@@ -446,6 +448,7 @@ export class LoanAddEditComponent implements OnInit {
       estimated_profit: loanDetails.estimated_profit?.toString() || '',
       actual_profit: loanDetails.actual_profit?.toString() || '',
       repayment_date: formatDate(loanDetails.repayment_date),
+      goodwill:loanDetails.goodwill?.toString() || '',
       loan_date: formatDate(loanDetails.loan_date),
     };
 
