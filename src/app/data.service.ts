@@ -80,6 +80,15 @@ logout(): Observable<any> {
     return this.http.get<any>(`${this.loan}/user-status/${passportNumber}`);
   }
 
+  getSalesReport(agentName: string, dateFrom: string, dateTo: string): Observable<any> {
+    const params: any = {};
+    if (agentName) params.agentName = agentName;
+    if (dateFrom) params.dateFrom = dateFrom;
+    if (dateTo) params.dateTo = dateTo;
+
+    return this.http.get<any>(this.apiUrl, { params });
+  }
+
 
   findUser(payload: any): Observable<any> {
     const params = new HttpParams()
@@ -283,6 +292,10 @@ logout(): Observable<any> {
 
   getAgentReports(payload: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/report/agent-report-summary`, payload);
+  }  
+
+  getSalesReports(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/report/sales-report-summary`, payload);
   }  
   
   

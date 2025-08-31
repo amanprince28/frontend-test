@@ -8,6 +8,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { CommonModule } from '@angular/common';
 import { DataService } from '../data.service';
 import { SessionService } from '../common/session.service';
+import { APP_VERSION } from '../../enviornments/version';  
 
 @Component({
   selector: 'app-main-layout',
@@ -24,6 +25,8 @@ export class MainLayoutComponent implements OnInit {
   userDetails: any
   userName: any;
   checkUsers: any;
+
+  appVersion = APP_VERSION;   // ✅ bind to footer
 
 
 

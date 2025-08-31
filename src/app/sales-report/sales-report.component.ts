@@ -1,109 +1,212 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatTableModule } from '@angular/material/table';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { DataService } from '../data.service';
+
+export interface LoanReportData {
+  agentName: string;
+  newCustomer: number;
+  totalLoanCount: number;
+  totalCustomer: number;
+  totalNewCustomer: {
+    customerCount: number;
+    totalLoan: number;
+    totalIn: number;
+    totalOut: number;
+    estimateProfit: number;
+    actualProfit: number;
+  };
+  totalOldCustomer: {
+    customerCount: number;
+    totalLoan: number;
+    totalIn: number;
+    totalOut: number;
+    estimateProfit: number;
+    actualProfit: number;
+  };
+}
 
 @Component({
   selector: 'app-sales-report',
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatInputModule,
-    MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatTableModule,
-    ReactiveFormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatChipsModule,
     MatPaginatorModule,
   ],
   templateUrl: './sales-report.component.html',
-  styleUrls: ['./sales-report.component.scss'],
+  styleUrls: ['./sales-report.component.scss']
 })
-export class SalesReportComponent {
-  agentControl = new FormControl([]);
-  fromDateControl = new FormControl();
-  toDateControl = new FormControl();
+export class SalesReportComponent implements OnInit {
+  agents = signal<{ id: string; name: string }[]>([]);
+  filterForm: FormGroup;
+  selectedAgentIds = signal<string[]>([]);
+  selectAllValue = 'select_all';
 
-  agentList = ['Agent A', 'Agent B', 'Agent C'];
+  // Pagination
+  pageIndex = 0;
+  pageSize = 5;
+  paginatedData: LoanReportData[] = [];
 
-  totalCount = 0;
-  pageSize = 10;
-  currentPage = 0;
-
-  firstHeaderRow = [
-    'agent',
-    'newCustomer',
-    'totalLoanCount',
-    'totalCustomer',
-    'totalNewCustomerGroup',
-    'totalOldCustomerGroup',
-    'estProfitTotal',
-    'actualProfitTotal',
+  // Array instead of single object
+  reportData: LoanReportData[] = [
+    {
+      agentName: 'John Doe',
+      newCustomer: 15,
+      totalLoanCount: 120,
+      totalCustomer: 85,
+      totalNewCustomer: {
+        customerCount: 15,
+        totalLoan: 25,
+        totalIn: 50000,
+        totalOut: 45000,
+        estimateProfit: 6000,
+        actualProfit: 5500,
+      },
+      totalOldCustomer: {
+        customerCount: 70,
+        totalLoan: 95,
+        totalIn: 250000,
+        totalOut: 220000,
+        estimateProfit: 32000,
+        actualProfit: 30000,
+      },
+    },
+    {
+      agentName: 'Jane Smith',
+      newCustomer: 10,
+      totalLoanCount: 80,
+      totalCustomer: 60,
+      totalNewCustomer: {
+        customerCount: 10,
+        totalLoan: 20,
+        totalIn: 40000,
+        totalOut: 35000,
+        estimateProfit: 5000,
+        actualProfit: 4800,
+      },
+      totalOldCustomer: {
+        customerCount: 50,
+        totalLoan: 60,
+        totalIn: 180000,
+        totalOut: 160000,
+        estimateProfit: 25000,
+        actualProfit: 24000,
+      },
+    },
+    // add more mock rows if needed
   ];
 
-  secondHeaderRow = [
-    'agent',
-    'newCustomer',
-    'totalLoanCount',
-    'totalCustomer',
-    'newTotalCustomerCount',
-    'newTotalLoanCount',
-    'newTotalIN',
-    'newTotalOUT',
-    'newEstimateProfit',
-    'newActualProfit',
-    'oldTotalCustomerCount',
-    'oldTotalLoanCount',
-    'oldTotalIN',
-    'oldTotalOUT',
-    'oldEstimateProfit',
-    'oldActualProfit',
-    'estProfitTotal',
-    'actualProfitTotal',
-  ];
-
-  allColumns = this.secondHeaderRow;
-
-  dataSource: any[] = [];
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex;
-    this.pageSize = event.pageSize;
-    // Call your API/data fetch method here
+  constructor(private dataService: DataService, private fb: FormBuilder) {
+    this.filterForm = this.fb.group({
+      agents: [[]],
+      fromDate: [null],
+      toDate: [null],
+    });
   }
 
-  onSearch(): void {
-    // Sample data for testing
-    this.dataSource = [
-      {
-        agent: 'John Doe',
-        newCustomer: 12,
-        totalLoanCount: 24,
-        totalCustomer: 18,
-        newTotalCustomerCount: 8,
-        newTotalLoanCount: 14,
-        newTotalIN: 4000,
-        newTotalOUT: 3000,
-        newEstimateProfit: 1000,
-        newActualProfit: 800,
-        oldTotalCustomerCount: 10,
-        oldTotalLoanCount: 10,
-        oldTotalIN: 5000,
-        oldTotalOUT: 2500,
-        oldEstimateProfit: 2000,
-        oldActualProfit: 1500,
-        estProfitTotal: 3000,
-        actualProfitTotal: 2300,
+  ngOnInit(): void {
+    this.loadAgents();
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData() {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedData = this.reportData.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedData();
+  }
+
+  getAgentNameById(id: string): string {
+    const agent = this.agents().find((agent) => agent.id === id);
+    return agent ? agent.name : 'Unknown';
+  }
+
+  onAgentSelectionChange(event: MatSelectChange): void {
+    const selected = event.value.filter((v: string) => v !== this.selectAllValue);
+    this.selectedAgentIds.set(selected);
+    this.filterForm.get('agents')?.setValue(selected);
+  }
+
+  toggleSelectAll(event: Event): void {
+    event.stopPropagation();
+    const allIds = this.agents().map((agent) => agent.id);
+    if (this.isAllSelected()) {
+      this.filterForm.get('agents')?.setValue([]);
+      this.selectedAgentIds.set([]);
+    } else {
+      this.filterForm.get('agents')?.setValue(allIds);
+      this.selectedAgentIds.set(allIds);
+    }
+  }
+
+  isAllSelected(): boolean {
+    return (
+      this.agents().length > 0 &&
+      this.filterForm.get('agents')?.value?.length === this.agents().length
+    );
+  }
+
+  loadAgents(): void {
+    const payload = { page: 1, limit: 100 };
+    this.dataService.getUser(payload).subscribe({
+      next: (response) => {
+        const filteredAgents = response.data
+          .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
+          .map((agent: any) => ({ id: agent.id, name: agent.name }));
+        this.agents.set(filteredAgents);
       },
-    ];
+      error: (error) => {
+        console.error('Error loading agents:', error);
+      },
+    });
+  }
+
+  onSelectOpened(): void {
+    const formValue = this.filterForm.get('agents')?.value || [];
+    this.selectedAgentIds.set(formValue);
+  }
+
+  onSearch() {
+    const { agents, fromDate, toDate } = this.filterForm.value;
+
+    const payload = {
+      agents: agents,
+      fromDate,
+      toDate,
+    };
+
+    this.dataService.getAgentReports(payload).subscribe(
+      (data: any[]) => {
+        console.log(data,'api data');
+    
+    
+        
+      },
+      (err) => {
+        console.error('Failed to fetch report data', err);
+      }
+    );
+    
   }
 }

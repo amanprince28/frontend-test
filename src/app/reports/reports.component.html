@@ -42,12 +42,14 @@
           <mat-datepicker #picker4></mat-datepicker>
         </mat-form-field>
       </ng-container>
+
       <div class="action-buttons">
         <button mat-raised-button color="primary" type="submit">Submit</button>
         <button mat-raised-button color="accent" type="button" (click)="exportXLSX()">Export To XLS</button>
       </div>
-     
     </form>
+  
+   
     
 
     <div class="report-table" *ngIf="showTable">

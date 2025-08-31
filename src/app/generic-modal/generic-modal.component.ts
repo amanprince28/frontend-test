@@ -89,6 +89,7 @@ export class GenericModalComponent implements OnInit{
         }
       });
     } else if (this.data.type === 'customer') {
+      this.addCustomer= true;
       this.dataService.getCustomer(payload).subscribe({
         next: (response: any) => {
           this.dataSource.data = response.data || [];
@@ -131,10 +132,10 @@ export class GenericModalComponent implements OnInit{
           next: (response) => {
             this.dataSource.data = response;
             this.resultsLength = response.length;
-            if(this.resultsLength ==0){
-              this.addCustomer = true
-            }
-            console.log(this.addCustomer,'ss');
+            // if(this.resultsLength ==0){
+            //   this.addCustomer = true
+            // }
+            // console.log(this.addCustomer,'ss');
             this.paginator.firstPage();
             this.isLoading = false;
           },

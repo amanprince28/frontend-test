@@ -1,0 +1,119 @@
+<div class="loan-report-container">
+  <div class="filter-section">
+    <h2>Sales Report</h2>
+
+    <!-- Filter Form -->
+    <form [formGroup]="filterForm" class="filter-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Select Agents</mat-label>
+        <mat-select
+          formControlName="agents"
+          multiple
+          (openedChange)="onSelectOpened()"
+          (selectionChange)="onAgentSelectionChange($event)"
+        >
+          <mat-option [value]="selectAllValue" (click)="toggleSelectAll($event)">
+            {{ isAllSelected() ? "Deselect All" : "Select All" }}
+          </mat-option>
+
+          <mat-option *ngFor="let agent of agents()" [value]="agent.id">
+            {{ agent.name }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>From</mat-label>
+        <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
+        <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>To</mat-label>
+        <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
+        <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+
+      <div class="search-button">
+        <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
+      </div>
+    </form>
+
+    <!-- Selected Agents -->
+    <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">
+      <mat-chip *ngFor="let id of selectedAgentIds()">
+        {{ getAgentNameById(id) }}
+      </mat-chip>
+    </div>
+  </div>
+
+  <!-- Report Table -->
+  <div class="table-container">
+    <table class="loan-report-table">
+      <thead>
+        <tr>
+          <th rowspan="2">Agent</th>
+          <th rowspan="2">New Customer</th>
+          <th rowspan="2">Total Loan Count</th>
+          <th rowspan="2">Total Customer</th>
+          <th colspan="6">Total New Customer</th>
+          <th colspan="6">Total Old Customer</th>
+          <th rowspan="2">Estimate Profit</th>
+          <th rowspan="2">Actual Profit</th>
+        </tr>
+        <tr>
+          <th>Customer Count</th>
+          <th>Total Loan</th>
+          <th>Total IN</th>
+          <th>Total OUT</th>
+          <th>Estimate Profit</th>
+          <th>Actual Profit</th>
+          <th>Customer Count</th>
+          <th>Total Loan</th>
+          <th>Total IN</th>
+          <th>Total OUT</th>
+          <th>Estimate Profit</th>
+          <th>Actual Profit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of paginatedData">
+          <td>{{ report.agentName }}</td>
+          <td>{{ report.newCustomer }}</td>
+          <td>{{ report.totalLoanCount }}</td>
+          <td>{{ report.totalCustomer }}</td>
+
+          <!-- Total New Customer -->
+          <td>{{ report.totalNewCustomer.customerCount }}</td>
+          <td>{{ report.totalNewCustomer.totalLoan }}</td>
+          <td>{{ report.totalNewCustomer.totalIn | currency }}</td>
+          <td>{{ report.totalNewCustomer.totalOut | currency }}</td>
+          <td>{{ report.totalNewCustomer.estimateProfit | currency }}</td>
+          <td>{{ report.totalNewCustomer.actualProfit | currency }}</td>
+
+          <!-- Total Old Customer -->
+          <td>{{ report.totalOldCustomer.customerCount }}</td>
+          <td>{{ report.totalOldCustomer.totalLoan }}</td>
+          <td>{{ report.totalOldCustomer.totalIn | currency }}</td>
+          <td>{{ report.totalOldCustomer.totalOut | currency }}</td>
+          <td>{{ report.totalOldCustomer.estimateProfit | currency }}</td>
+          <td>{{ report.totalOldCustomer.actualProfit | currency }}</td>
+
+          <!-- Summary -->
+          <td>{{ report.totalNewCustomer.estimateProfit + report.totalOldCustomer.estimateProfit | currency }}</td>
+          <td>{{ report.totalNewCustomer.actualProfit + report.totalOldCustomer.actualProfit | currency }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <mat-paginator
+      [length]="reportData.length"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)">
+    </mat-paginator>
+  </div>
+</div>

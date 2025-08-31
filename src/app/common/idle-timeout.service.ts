@@ -10,7 +10,7 @@ import { TimeoutWarningComponent } from './timeout-warning/timeout-warning.compo
 export class IdleTimeoutService {
   private idleTimer: any;
   private warningTimer: any;
-  private readonly TIMEOUT_MINUTES = 50; // 2 minutes timeout
+  private readonly TIMEOUT_MINUTES = 5; // 2 minutes timeout
   private readonly WARNING_MINUTES = 0.5; // 30 seconds warning
 
   constructor(

@@ -1,47 +1,63 @@
 .reporting-container {
-    padding: 1rem;
-  
-    h2 {
-      text-align: center;
-      margin-bottom: 1rem;
-    }
-  
-    .report-form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-  
-      mat-form-field {
-        flex: 1 1 200px;
-        min-width: 200px;
-      }
-  
-      .action-buttons {
-        display: flex;
-        gap: 0.5rem;
-        align-items: center;
-        flex-wrap: wrap;
-      }
-    }
-  
-    .report-table {
-      margin-top: 2rem;
-      overflow-x: auto;
-  
-      table {
-        width: 100%;
-        min-width: 800px;
-      }
-    }
-  }
-  
-  .no-data-message {
-    padding: 20px;
+  padding: 1rem;
+
+  h2 {
     text-align: center;
-    font-size: 1.2em;
-    color: #f44336; // or any color you prefer
-    background-color: #ffebee;
-    border-radius: 4px;
-    margin: 20px 0;
+    margin-bottom: 1rem;
   }
+
+  .report-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: flex-start; // keep fields aligned left
+    align-items: flex-end;
+
+    mat-form-field {
+      flex: 1 1 200px;
+      min-width: 200px;
+      margin-bottom: 0;
+    }
+
+    // Ensure action buttons always on new line
+    .action-buttons {
+      width: 100%; // full row
+      display: flex;
+      justify-content: flex-end; // align right
+      gap: 0.5rem;
+      margin-top: 1rem; // spacing from inputs
+    }
+  }
+
+  .report-table {
+    margin-top: 2rem;
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      min-width: 800px;
+    }
+  }
+}
+
+.no-data-message {
+  padding: 20px;
+  text-align: center;
+  font-size: 1.2em;
+  color: #f44336;
+  background-color: #ffebee;
+  border-radius: 4px;
+  margin: 20px 0;
+}
+
+.user-management-container {
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+  }
+
+  mat-form-field {
+    .mat-form-field-wrapper {
+      padding-bottom: 0;
+    }
+  }
+}

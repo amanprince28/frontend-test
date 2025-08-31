@@ -130,7 +130,7 @@
     }
 
     mat-form-field {
-      flex: 1 1 calc(25% - 0.75rem);
+      flex: 0 0 calc(25% - 0.75rem);
       min-width: 120px;
       max-width: 100%;
 
@@ -196,6 +196,8 @@
       }
     }
   }
+
+  
 
   .action-buttons {
     display: flex;
