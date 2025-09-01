@@ -1,6 +1,6 @@
 <div class="loan-report-container">
   <div class="filter-section">
-    <h2>Sales Report</h2>
+    <h3>Sales Report</h3>
 
     <!-- Filter Form -->
     <form [formGroup]="filterForm" class="filter-form">
@@ -49,6 +49,10 @@
     </div>
   </div>
 
+  <div *ngIf="loading" class="spinner-container">
+    <mat-progress-spinner mode="indeterminate" diameter="60"> loading</mat-progress-spinner>
+  </div>
+
   <!-- Report Table -->
   <div class="table-container">
     <table class="loan-report-table">
@@ -88,22 +92,22 @@
           <!-- Total New Customer -->
           <td>{{ report.totalNewCustomer.customerCount }}</td>
           <td>{{ report.totalNewCustomer.totalLoan }}</td>
-          <td>{{ report.totalNewCustomer.totalIn | currency }}</td>
-          <td>{{ report.totalNewCustomer.totalOut | currency }}</td>
-          <td>{{ report.totalNewCustomer.estimateProfit | currency }}</td>
-          <td>{{ report.totalNewCustomer.actualProfit | currency }}</td>
+          <td>{{ report.totalNewCustomer.totalIn }}</td>
+          <td>{{ report.totalNewCustomer.totalOut }}</td>
+          <td>{{ report.totalNewCustomer.estimateProfit }}</td>
+          <td>{{ report.totalNewCustomer.actualProfit }}</td>
 
           <!-- Total Old Customer -->
           <td>{{ report.totalOldCustomer.customerCount }}</td>
           <td>{{ report.totalOldCustomer.totalLoan }}</td>
-          <td>{{ report.totalOldCustomer.totalIn | currency }}</td>
-          <td>{{ report.totalOldCustomer.totalOut | currency }}</td>
-          <td>{{ report.totalOldCustomer.estimateProfit | currency }}</td>
-          <td>{{ report.totalOldCustomer.actualProfit | currency }}</td>
+          <td>{{ report.totalOldCustomer.totalIn }}</td>
+          <td>{{ report.totalOldCustomer.totalOut }}</td>
+          <td>{{ report.totalOldCustomer.estimateProfit }}</td>
+          <td>{{ report.totalOldCustomer.actualProfit }}</td>
 
           <!-- Summary -->
-          <td>{{ report.totalNewCustomer.estimateProfit + report.totalOldCustomer.estimateProfit | currency }}</td>
-          <td>{{ report.totalNewCustomer.actualProfit + report.totalOldCustomer.actualProfit | currency }}</td>
+          <td>{{ report.totalNewCustomer.estimateProfit + report.totalOldCustomer.estimateProfit }}</td>
+          <td>{{ report.totalNewCustomer.actualProfit + report.totalOldCustomer.actualProfit }}</td>
         </tr>
       </tbody>
     </table>

@@ -4,9 +4,16 @@ import { Observable } from 'rxjs';
 import { SignalService } from './signal.service'; // Hypothetical circular dependency
 import { API_URL } from '../enviornments/version';  
 
+export interface AgentSalesReportRequest {
+  agents: string[];
+  fromDate: string; // ISO date string
+  toDate: string;   // ISO date string
+}
+
 @Injectable({
   providedIn: 'root'
 })
+
 export class DataService {
   //private apiUrl ='https://www.cs-season.com/backend'
   //private apiUrl = 'https://cs-summer.com/api';
@@ -294,9 +301,9 @@ logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/report/agent-report-summary`, payload);
   }  
 
-  getSalesReports(payload: any): Observable<any> {
+  getAgentPerformance(payload: AgentSalesReportRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/report/sales-report-summary`, payload);
-  }  
+  }
   
   
 }
