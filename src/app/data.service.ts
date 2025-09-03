@@ -304,6 +304,10 @@ logout(): Observable<any> {
   getAgentPerformance(payload: AgentSalesReportRequest): Observable<any> {
     return this.http.post(`${this.apiUrl}/report/sales-report-summary`, payload);
   }
+
+  getAgentsByLeads(leadIds: string[]): Observable<any[]> {
+    return this.http.post<any[]>(this.user+'/agents-by-leads', { leadIds });
+  }
   
   
 }

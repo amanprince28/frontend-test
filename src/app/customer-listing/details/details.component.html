@@ -97,9 +97,18 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="quarter-width">
             <mat-label>Leads</mat-label>
-            <mat-select formControlName="leadUser" multiple>
+            <mat-select formControlName="leadUser" multiple (selectionChange)="onLeadChange($event.value)">
               <mat-option *ngFor="let leads of leadsUsers" [value]="leads.id">
                 {{ leads.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="quarter-width">
+            <mat-label>Agents</mat-label>
+            <mat-select formControlName="agentCust">
+              <mat-option *ngFor="let agent of agentsSelected" [value]="agent.id">
+                {{ agent.name }}
               </mat-option>
             </mat-select>
           </mat-form-field>

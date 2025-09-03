@@ -68,6 +68,7 @@ export class DetailsComponent {
   remarksForm!: FormGroup;
   uploadedFiles: any[] = [];
   remarksTable: any[] = [];
+  agentsSelected:any[]=[];
   displayedColumns: string[] = [
     'fileName',
     'fileDescription',
@@ -174,6 +175,7 @@ export class DetailsComponent {
         //car_plate: new FormControl(''),
         status: new FormControl('', Validators.required),
         leadUser:new FormControl('', Validators.required),
+        agentCust:new FormControl('', Validators.required),
       },
       { validators: this.eitherFieldRequiredValidator }
     );
@@ -233,6 +235,7 @@ export class DetailsComponent {
 
     this.dataService.getLeads().subscribe((resp:any)=>{
       this.leadsUsers = resp;
+
     })
 
     // Watch for changes in the 'same_as_permanent' checkbox
@@ -284,6 +287,23 @@ export class DetailsComponent {
 
     this.fetchCountries();
   }
+
+  onLeadChange(selectedLeadIds: string[]): void {
+    if (selectedLeadIds && selectedLeadIds.length > 0) {
+      this.dataService.getAgentsByLeads(selectedLeadIds).subscribe((response:any) => {
+        // response has { agents: [...], leads: [...], ... }
+        this.agentsSelected = response.agents.map((agent:any) => ({
+          id: agent.id,
+          name: agent.name,
+          role: agent.role,
+          generate_id: agent.generate_id
+        }));
+      });
+    } else {
+      this.agentsSelected = [];
+    }
+  }
+  
 
   getDocument(customerId: any) {
     this.dataService.getDocumentById(customerId).subscribe((res) => {
@@ -558,12 +578,7 @@ export class DetailsComponent {
       this.bankDataSource.data = this.signalData?.bank_details;
       this.remarkDataSource.data = this.signalData?.remarks;
       this.dataSource.data = this.signalData?.relations;
-      if (
-        this.signalData 
-        // &&
-        // this.signalData.customer_address &&
-        // this.signalData.customer_address.length > 0
-      ) {
+      if (this.signalData ) {
         const customerCorrAddress =
           this.signalData?.customer_address?.length > 1
             ? this.signalData.customer_address[1]
@@ -619,10 +634,27 @@ export class DetailsComponent {
           telephone_no: this.signalData?.employment?.telephone_no,
         });
 
+        const leadIds = this.customerForm.value.leadUser;
+        if (leadIds?.length) {
+          this.dataService.getAgentsByLeads(leadIds).subscribe((res:any) => {
+            this.agentsSelected = res.agents.map((agent:any) => ({
+              id: agent.id,
+              name: agent.name,
+              role: agent.role,
+              generate_id: agent.generate_id
+            }));
+      
+            // Now patch agentCust after agentsSelected is ready
+            this.customerForm.patchValue({
+              agentCust: data.agent_id
+            });
+          });
+        }
         this.onCountryChange(
           customerPermanentAddress.country_id ||
             this.signalData.customer_address[0].country_id
         );
+    
       } else {
         this.isEditMode = false;
       }
@@ -787,6 +819,7 @@ export class DetailsComponent {
       status: this.customerForm.get('status')?.value,
       race:this.customerForm.get('race')?.value,
       leadUser:this.convertToLeadObjects(this.customerForm.get('leadUser')?.value),
+      agent_id:this.customerForm.get('agentCust')?.value,
       customer_address: [
         {
           address_lines:
