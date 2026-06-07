@@ -41,8 +41,10 @@ export class IdleTimeoutService {
 
     // Set logout timer (2 minutes)
     this.idleTimer = setTimeout(() => {
+      this.dialog.closeAll();
       this.logout();
     }, this.TIMEOUT_MINUTES * 60 * 1000);
+    
   }
 
   private showTimeoutWarning() {

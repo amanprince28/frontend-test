@@ -1,16 +1,17 @@
-import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { DataService } from '../data.service';
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatChipsModule } from '@angular/material/chips';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../common/custom-date-adapter';
 
 @Component({
   selector: 'app-agent-report',
@@ -26,11 +27,17 @@ import { MatChipsModule } from '@angular/material/chips';
     MatButtonModule,
     MatTableModule,
     MatChipsModule,
+    MatPaginatorModule,
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: AppDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
   ],
   templateUrl: './agent-report.component.html',
   styleUrls: ['./agent-report.component.scss'],
 })
-export class AgentReportComponent implements OnInit {
+export class AgentReportComponent implements OnInit, AfterViewInit {
   agents = signal<{ id: string; name: string }[]>([]);
   selectedAgentIds = signal<string[]>([]);
   selectAllValue = 'select_all';
@@ -51,18 +58,80 @@ export class AgentReportComponent implements OnInit {
     'sumExpenses',
     'sumBalance',
   ];
+  
+  userDetails: any;
+  userRole: any;
+  isLoading = signal<boolean>(false);
+  
+  // Pagination properties
+  dataSource: any[] = [];
+  paginatedDataSource: any[] = [];
+  pageSize: number = 10;
+  pageSizeOptions: number[] = [5, 10, 25, 50, 100];
+  currentPage: number = 0;
 
   ngOnInit(): void {
-    this.loadAgents();
+    const user = localStorage.getItem('user-details');
+    this.userDetails = user ? JSON.parse(user) : null;
+    this.userRole = this.userDetails?.role || '';
+
+    if (this.userRole === 'AGENT') {
+      const filteredAgents = [{ id: this.userDetails.id, name: this.userDetails.name }];
+      this.agents.set(filteredAgents);
+      console.log(filteredAgents, 'filere');
+    }
+    if (this.userRole === 'LEAD') {
+      this.agentbyLead();
+    }
+    if (this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
+      this.loadAgents();
+    }
   }
 
-  dataSource: any[] = [];
+  ngAfterViewInit(): void {
+    // Initialize paginator after view is ready
+    if (this.paginator) {
+      this.updatePaginatedData();
+    }
+  }
 
   constructor(private fb: FormBuilder, private dataService: DataService) {
     this.filterForm = this.fb.group({
       agents: [[]],
       fromDate: [null],
       toDate: [null],
+    });
+  }
+
+  private agentbyLead(): void {
+    this.dataService.getAgentsByLeads([this.userDetails.id]).subscribe((res: any) => {
+      const combinedList = [
+        ...(res.agents || []),
+        ...(res.leads || [])
+      ].map((item: any) => ({
+        id: item.id,
+        name: item.name
+      }));
+      
+      this.agents.set(combinedList);
+    });
+  }
+
+  private loadAgents(): void {
+    this.isLoading.set(true);
+    const payload = { page: 1, limit: 100 };
+    this.dataService.getUser(payload).subscribe({
+      next: (response) => {
+        const filteredAgents = response.data
+          .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
+          .map((agent: any) => ({ id: agent.id, name: agent.name }));
+        this.agents.set(filteredAgents);
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        console.error('Error loading agents:', error);
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -75,6 +144,8 @@ export class AgentReportComponent implements OnInit {
       toDate,
     };
 
+    this.isLoading.set(true);
+    
     this.dataService.getAgentReports(payload).subscribe(
       (data: any[]) => {
         this.dataSource = [];
@@ -97,12 +168,17 @@ export class AgentReportComponent implements OnInit {
             });
           });
         });
+        
+        // Reset to first page when new data comes in
+        this.currentPage = 0;
+        this.updatePaginatedData();
+        this.isLoading.set(false);
       },
       (err) => {
         console.error('Failed to fetch report data', err);
+        this.isLoading.set(false);
       }
     );
-    
   }
 
   onSelectOpened(): void {
@@ -143,21 +219,16 @@ export class AgentReportComponent implements OnInit {
     );
   }
 
-  loadAgents(): void {
-    const payload = { page: 1, limit: 100 };
-    this.dataService.getUser(payload).subscribe({
-      next: (response) => {
-        const filteredAgents = response.data
-          .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
-          .map((agent: any) => ({ id: agent.id, name: agent.name }));
-        this.agents.set(filteredAgents);
-      },
-      error: (error) => {
-        console.error('Error loading agents:', error);
-        // this.snackBar.open('Failed to load agents', 'Close', {
-        //   duration: 2000,
-        // });
-      },
-    });
+  // Pagination methods
+  onPageChange(event: PageEvent): void {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.updatePaginatedData();
+  }
+
+  updatePaginatedData(): void {
+    const startIndex = this.currentPage * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.paginatedDataSource = this.dataSource.slice(startIndex, endIndex);
   }
 }

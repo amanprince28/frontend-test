@@ -4,13 +4,14 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { DataService,AgentSalesReportRequest } from '../data.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AppDateAdapter, APP_DATE_FORMATS } from '../common/custom-date-adapter';
 
 
 export interface LoanReportData {
@@ -52,6 +53,11 @@ export interface LoanReportData {
     MatPaginatorModule,
     MatProgressSpinnerModule
   ],
+   providers: [
+        { provide: DateAdapter, useClass: AppDateAdapter },
+        { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+        { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+      ],
   templateUrl: './sales-report.component.html',
   styleUrls: ['./sales-report.component.scss']
 })
@@ -67,6 +73,9 @@ export class SalesReportComponent implements OnInit {
   pageSize = 5;
   paginatedData: LoanReportData[] = [];
   reportData:LoanReportData[]=[];
+  userDetails: any;
+  userRole: any;
+  isLoading = signal<boolean>(false);
   // Array instead of single object
 
 
@@ -79,7 +88,21 @@ export class SalesReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadAgents();
+    const user = localStorage.getItem('user-details');
+    this.userDetails = user ? JSON.parse(user) : null;
+    this.userRole = this.userDetails?.role || '';
+
+    if(this.userRole === 'AGENT') {
+      const filteredAgents =[ { id: this.userDetails.id, name: this.userDetails.name }];
+        this.agents.set(filteredAgents);
+        console.log(filteredAgents,'filere');
+    }
+    if(this.userRole === 'LEAD') {
+      this.agentbyLead();
+    }
+    if(this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
+      this.loadAgents();
+    }
     this.updatePaginatedData();
   }
 
@@ -125,7 +148,22 @@ export class SalesReportComponent implements OnInit {
     );
   }
 
-  loadAgents(): void {
+  private agentbyLead(): void {
+    this.dataService.getAgentsByLeads([this.userDetails.id]).subscribe((res:any)=>{
+      const combinedList = [
+        ...(res.agents || []),
+        ...(res.leads || [])
+      ].map((item: any) => ({
+        id: item.id,
+        name: item.name
+      }));
+      
+        this.agents.set(combinedList);
+    })
+}
+
+  private loadAgents(): void {
+    this.isLoading.set(true);
     const payload = { page: 1, limit: 100 };
     this.dataService.getUser(payload).subscribe({
       next: (response) => {
@@ -133,10 +171,12 @@ export class SalesReportComponent implements OnInit {
           .filter((user: any) => user.role === 'AGENT' || user.role === 'LEAD')
           .map((agent: any) => ({ id: agent.id, name: agent.name }));
         this.agents.set(filteredAgents);
+        this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error loading agents:', error);
-      },
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -144,6 +184,54 @@ export class SalesReportComponent implements OnInit {
     const formValue = this.filterForm.get('agents')?.value || [];
     this.selectedAgentIds.set(formValue);
   }
+
+  // onSearch() {
+  //   const { agents, fromDate, toDate } = this.filterForm.value;
+  
+  //   const payload: AgentSalesReportRequest = {
+  //     agents,
+  //     fromDate,
+  //     toDate,
+  //   };
+  //   this.loading = true; // start spinner
+  //   this.dataService.getAgentPerformance(payload).subscribe(
+  //     (data: any[]) => {
+  //       // Transform API response to LoanReportData[]
+  //       this.reportData = data.map((item: any) => ({
+  //         agentName: item.agentName || 'Unknown',
+  //         newCustomer: item.totalNewCustomer || 0,
+  //         totalLoanCount: item.totalLoans || 0,
+  //         totalCustomer: item.totalCustomers || 0,
+  //         totalNewCustomer: {
+  //           customerCount: item.customersInRangeStats?.totalCustomerCount || 0,
+  //           totalLoan: item.customersInRangeStats?.totalLoans || 0,
+  //           totalIn: item.customersInRangeStats?.paymentsIn || 0,
+  //           totalOut: item.customersInRangeStats?.paymentsOut || 0,
+  //           estimateProfit: item.customersInRangeStats?.estimatedProfit || 0,
+  //           actualProfit: item.customersInRangeStats?.actualProfit || 0,
+  //         },
+  //         totalOldCustomer: {
+  //           customerCount: item.customersOutsideRangeStats?.totalCustomerCount || 0,
+  //           totalLoan: item.customersOutsideRangeStats?.totalLoans || 0,
+  //           totalIn: item.customersOutsideRangeStats?.paymentsIn || 0,
+  //           totalOut: item.customersOutsideRangeStats?.paymentsOut || 0,
+  //           estimateProfit: item.customersOutsideRangeStats?.estimatedProfit || 0,
+  //           actualProfit: item.customersOutsideRangeStats?.actualProfit || 0,
+  //         },
+  //       }));
+  
+  //       // Refresh paginator
+  //       this.pageIndex = 0;
+  //       this.updatePaginatedData();
+  //       this.loading = false; // stop spinner
+  //       console.log('Mapped report data:', this.reportData);
+  //     },
+  //     (err) => {
+  //       console.error('Failed to fetch report data', err);
+  //       this.loading = false; // stop spinner
+  //     }
+  //   );
+  // }
 
   onSearch() {
     const { agents, fromDate, toDate } = this.filterForm.value;
@@ -153,28 +241,29 @@ export class SalesReportComponent implements OnInit {
       fromDate,
       toDate,
     };
+  
     this.loading = true; // start spinner
     this.dataService.getAgentPerformance(payload).subscribe(
       (data: any[]) => {
         // Transform API response to LoanReportData[]
         this.reportData = data.map((item: any) => ({
           agentName: item.agent || 'Unknown',
-          newCustomer: item.newCustomerCount || 0,
+          newCustomer: item.newUniqueCustomer || 0,
           totalLoanCount: item.totalLoanCount || 0,
-          totalCustomer: item.totalCustomerCount || 0,
+          totalCustomer: item.totalCustomer || 0,
           totalNewCustomer: {
-            customerCount: item.totalNewCustomer?.customerCount || 0,
+            customerCount: item.totalNewCustomer?.totalCustomer || 0,
             totalLoan: item.totalNewCustomer?.totalLoan || 0,
-            totalIn: item.totalNewCustomer?.totalIn || 0,
-            totalOut: item.totalNewCustomer?.totalOut || 0,
+            totalIn: item.totalNewCustomer?.totalIN || 0,
+            totalOut: item.totalNewCustomer?.totalOUT || 0,
             estimateProfit: item.totalNewCustomer?.estimateProfit || 0,
             actualProfit: item.totalNewCustomer?.actualProfit || 0,
           },
           totalOldCustomer: {
-            customerCount: item.totalOldCustomer?.customerCount || 0,
+            customerCount: item.totalOldCustomer?.totalCustomer || 0,
             totalLoan: item.totalOldCustomer?.totalLoan || 0,
-            totalIn: item.totalOldCustomer?.totalIn || 0,
-            totalOut: item.totalOldCustomer?.totalOut || 0,
+            totalIn: item.totalOldCustomer?.totalIN || 0,
+            totalOut: item.totalOldCustomer?.totalOUT || 0,
             estimateProfit: item.totalOldCustomer?.estimateProfit || 0,
             actualProfit: item.totalOldCustomer?.actualProfit || 0,
           },
@@ -192,5 +281,5 @@ export class SalesReportComponent implements OnInit {
       }
     );
   }
-  
+
 }

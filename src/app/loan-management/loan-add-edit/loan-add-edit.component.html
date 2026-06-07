@@ -138,7 +138,7 @@
         <div class="fields-row">
           <mat-form-field appearance="fill" class="profit-field">
             <mat-label>Estimated Profit</mat-label>
-            <input formControlName="estimated_profit" matInput [readonly]="readonly" />
+            <input formControlName="estimated_profit" matInput />
           </mat-form-field>
           <mat-form-field appearance="fill" class="profit-field">
             <mat-label>Actual Profit</mat-label>
@@ -172,7 +172,7 @@
   <!-- Footer Buttons -->
   <div class="action-buttons">
     <button mat-stroked-button color="warn" class="cancel-btn" (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="primary" class="save-btn" (click)="saveLoan()" [disabled]="userRole === 'AGENT' || isSaving">
+    <button mat-raised-button color="primary" class="save-btn" (click)="saveLoan()" [disabled]="userRole === 'AGENT' || isSaving || isCalculatingGoodwill">
       <ng-container *ngIf="!isSaving">{{ isEditMode ? 'Update' : 'Save' }}</ng-container>
       <ng-container *ngIf="isSaving">
         <span class="saving-state">

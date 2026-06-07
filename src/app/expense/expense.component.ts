@@ -60,11 +60,28 @@ export class ExpenseComponent implements OnInit {
 
   tableColumns = signal<string[]>(['agent', ...this.months.map(m => m.key)]);
   expenses = signal<any[]>([]);
+  userDetails: any;
+  userRole: any;
 
   constructor(private dataService: DataService,private snackBar: MatSnackBar) {}
 
   ngOnInit(): void {
-    this.loadAgents();
+    const user = localStorage.getItem('user-details');
+    this.userDetails = user ? JSON.parse(user) : null;
+    this.userRole = this.userDetails?.role || '';
+
+    if(this.userRole === 'AGENT') {
+      const filteredAgents =[ { id: this.userDetails.id, name: this.userDetails.name }];
+        this.agents.set(filteredAgents);
+        console.log(filteredAgents,'filere');
+    }
+    if(this.userRole === 'LEAD') {
+      this.agentbyLead();
+    }
+    if(this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
+      this.loadAgents();
+    }
+    
     this.loadAvailableYears();
   }
 
@@ -73,6 +90,23 @@ export class ExpenseComponent implements OnInit {
     return agent ? agent.name : 'Unknown';
   }
   
+  isEditDisabled(): boolean {
+    return this.userRole === 'AGENT' || this.userRole === 'LEAD' || this.userRole === 'ADMIN';
+  }
+
+  private agentbyLead(): void {
+    this.dataService.getAgentsByLeads([this.userDetails.id]).subscribe((res:any)=>{
+      const combinedList = [
+        ...(res.agents || []),
+        ...(res.leads || [])
+      ].map((item: any) => ({
+        id: item.id,
+        name: item.name
+      }));
+      
+        this.agents.set(combinedList);
+    })
+}
 
   private loadAgents(): void {
     this.isLoading.set(true);

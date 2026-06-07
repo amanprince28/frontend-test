@@ -63,6 +63,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     { status: 'Bad Debt' },
     { status: 'Bad Debt Completed' },
     { status: 'Partially Paid' },
+    { status: 'Void' },
   ];
 
 
@@ -81,6 +82,8 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     'dueAmount',
     'remark',
   ];
+  userDetails: any;
+  userRole: any;
 
   constructor(
     private dataService: DataService,
@@ -90,7 +93,22 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.initializeForm();
-    this.loadAgents();
+    const user = localStorage.getItem('user-details');
+    this.userDetails = user ? JSON.parse(user) : null;
+    this.userRole = this.userDetails?.role || '';
+    
+    //this.loadAgents();
+    if(this.userRole === 'AGENT') {
+      const filteredAgents =[ { id: this.userDetails.id, name: this.userDetails.name }];
+        this.agents.set(filteredAgents);
+        console.log(filteredAgents,'filere');
+    }
+    if(this.userRole === 'LEAD') {
+      this.agentbyLead();
+    }
+    if(this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
+      this.loadAgents();
+    }
     
     // Trigger data load when form changes (optional)
     this.form.valueChanges.pipe(
@@ -102,6 +120,21 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     });
   }
   
+  private agentbyLead(): void {
+    this.dataService.getAgentsByLeads([this.userDetails.id]).subscribe((res:any)=>{
+      const combinedList = [
+        ...(res.agents || []),
+        ...(res.leads || [])
+      ].map((item: any) => ({
+        id: item.id,
+        name: item.name
+      }));
+      
+        this.agents.set(combinedList);
+        this.agents.set(combinedList);
+    })
+}
+
   ngAfterViewInit(): void {
     // Ensure paginator is properly initialized
     this.dataSource.paginator = this.paginator;
@@ -134,17 +167,25 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     });
   }
 
+  formatDate(date: Date): string {
+    const d = new Date(date);
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    return `${d.getFullYear()}-${month}-${day}`;
+  }
+
   // Update the loadLoanData method to properly handle pagination
   loadLoanData(): void {
     const payload = {
       page: this.currentPage + 1, // Backend expects 1-based index
       limit: this.pageSize,
       agents: this.form.value.agents || [],
-      dateFrom: this.form.value.dateFrom,
-      dateTo: this.form.value.dateTo,
+      dateFrom: this.formatDate(this.form.value.dateFrom),
+      dateTo: this.formatDate(this.form.value.dateTo),
       status:this.form.value.status
     };
   
+    console.log(this.form.value,'values')
     this.dataService
       .getLoanCheck(
         payload.agents,

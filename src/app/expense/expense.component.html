@@ -73,6 +73,7 @@
                  type="number"
                  [(ngModel)]="row[month.key]"
                  (ngModelChange)="updateExpense(row.agentId, month.key, $event)"
+                 [disabled]="isEditDisabled()"
                  autocomplete="off">
         </td>
       </ng-container>
@@ -85,7 +86,10 @@
     <div style="display: flex; justify-content: center; margin-top: 1rem;">
       <button mat-raised-button color="primary"
               (click)="saveExpenses()"
-              [disabled]="isLoading()">
+              [disabled]="isLoading()"
+              [disabled]="isEditDisabled()"
+              >
+              
         <span *ngIf="!isLoading()">Save Expenses</span>
         <mat-spinner *ngIf="isLoading()" diameter="20"></mat-spinner>
       </button>

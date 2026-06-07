@@ -5,7 +5,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import * as XLSX from 'xlsx';
 import * as FileSaver from 'file-saver';
 import { DataService } from '../data.service';
+import { APP_DATE_FORMATS, AppDateAdapter } from '../common/custom-date-adapter';
 
 @Component({
   selector: 'app-reporting',
@@ -34,6 +35,11 @@ import { DataService } from '../data.service';
     MatProgressSpinnerModule,
     HttpClientModule,
   ],
+   providers: [
+      { provide: DateAdapter, useClass: AppDateAdapter },
+      { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
+      { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+    ],
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss'],
 })
@@ -85,6 +91,7 @@ export class ReportsComponent implements AfterViewInit {
     'status',
     'estimatedProfit',
     'actualProfit',
+    'loanStatus'
   ];
 
   paymentDisplayedColumns = [
@@ -163,157 +170,223 @@ const formattedPaymentToDate = this.formatDateToLocal(paymentToDate);
         next: (response: any) => {
           if (this.selectedReportType === 'loan') {
             const data: any[] = [];
-  
+          
             (response || []).forEach((loan: any) => {
-              // Parse base numeric amounts
-
-              const outAmount = num(loan.loanAmount)-num(loan.loanData?.application_fee);
+          
+              // ========================
+              // Base numeric calculations
+              // ========================
+              const outAmount = num(loan.loanAmount) - num(loan.loanData?.application_fee);
               const depositAmount = num(loan.deposit);
               const onHandAmount = outAmount - depositAmount;
-  
-              // Sort once
-              const sortedInstallments = (loan.loanData?.installment || []).slice().sort(
-                (a: any, b: any) =>
-                  new Date(a.installment_date).getTime() - new Date(b.installment_date).getTime()
-              );
-  
-              const sortedPayments = (loan.loanData?.payment || []).slice().sort(
-                (a: any, b: any) =>
-                  new Date(a.installmentDate).getTime() - new Date(b.installmentDate).getTime()
-              );
-  
-              // Build normalized base (no push yet)
+          
+              // ========================
+              // Sort installment & payment
+              // ========================
+              const sortedInstallments = (loan.loanData?.installment || [])
+                .slice()
+                .sort(
+                  (a: any, b: any) =>
+                    new Date(a.installment_date).getTime() -
+                    new Date(b.installment_date).getTime()
+                );
+          
+              const sortedPayments = (loan.loanData?.payment || [])
+                .slice()
+                .sort(
+                  (a: any, b: any) =>
+                    new Date(a.installmentDate).getTime() -
+                    new Date(b.installmentDate).getTime()
+                );
+          
+              // ========================
+              // Normalized base object
+              // ========================
               const baseNormalized = {
                 ...loan,
-                outAmount:outAmount,
+                outAmount: outAmount,
                 loanData: {
                   ...loan.loanData,
                   installment: sortedInstallments,
-                  // amount_due -> half for split rows; for nonsplit we keep original below
-                  amount_due: sortedInstallments.map((i: any) => ({ due_amount: i.due_amount })),
+                  amount_due: sortedInstallments.map((i: any) => ({
+                    due_amount: i.due_amount
+                  })),
                   payment: sortedPayments
                 }
               };
-  
+          
+              // ========================
+              // VOID STATUS CHECK
+              // ========================
+              const isVoid = baseNormalized.loanData?.status === 'Void';
+          
               const user2 = loan?.loanData?.user_2 ?? null;
-  
-              // Helper to create a split row with halves applied
+          
+              // =====================================================
+              // Helper: Create split row (half values)
+              // =====================================================
               const makeSplitRow = (agentValue: any) => {
-                // halve payments' amount
-                const paymentsHalf = (baseNormalized.loanData.payment || []).map((p: any) => ({
-                  ...p,
-                  amount: halfNum(p.amount)
-                }));
-  
-                // total payments (In) based on halved amounts
-                const totalPaymentsHalf = paymentsHalf
-                  .filter((p: any) => p.type === 'In')
-                  .reduce((sum: number, p: any) => sum + num(p.amount), 0);
-  
+          
+                const paymentsHalf = (baseNormalized.loanData.payment || []).map(
+                  (p: any) => ({
+                    ...p,
+                    amount: halfNum(p.amount)
+                  })
+                );
+          
                 const outHalf = halfNum(outAmount);
                 const depositHalf = halfNum(depositAmount);
                 const onHandHalf = halfNum(onHandAmount);
-  
-                // halve amount_due
-                const amountDueHalf = (baseNormalized.loanData.amount_due || []).map((d: any) => ({
-                  due_amount: halfNum(d.due_amount)
-                }));
-  
-                // Build row, halving all requested fields (both root and nested if present)
+          
+                const amountDueHalf = (baseNormalized.loanData.amount_due || []).map(
+                  (d: any) => ({
+                    due_amount: halfNum(d.due_amount)
+                  })
+                );
+          
                 const row: any = {
                   ...baseNormalized,
-                  // root-level halves when present
-                  loanAmount: baseNormalized.loanAmount != null ? halfNum(baseNormalized.loanAmount) : baseNormalized.loanAmount,
-
+          
+                  loanAmount:
+                    baseNormalized.loanAmount != null
+                      ? halfNum(baseNormalized.loanAmount)
+                      : baseNormalized.loanAmount,
+          
                   outAmount: outHalf,
                   deposit: depositHalf,
                   onHand: onHandHalf,
-                  amount: baseNormalized.amount != null ? halfNum(baseNormalized.amount) : baseNormalized.amount,
-                  estimated_profit:
-                    baseNormalized.estimated_profit != null ? halfNum(baseNormalized.estimated_profit) : baseNormalized.estimated_profit,
-                  estimatedProfit:
-                    baseNormalized.estimatedProfit != null ? halfNum(baseNormalized.estimatedProfit) : baseNormalized.estimatedProfit,
-                  actualProfit:
-                    baseNormalized.actualProfit != null ? halfNum(baseNormalized.actualProfit) : baseNormalized.actualProfit,
-  
+          
+                  amount:
+                    baseNormalized.amount != null
+                      ? halfNum(baseNormalized.amount)
+                      : baseNormalized.amount,
+          
+                  estimated_profit: isVoid
+                    ? 0
+                    : baseNormalized.estimated_profit != null
+                      ? halfNum(baseNormalized.estimated_profit)
+                      : baseNormalized.estimated_profit,
+          
+                  estimatedProfit: isVoid
+                    ? 0
+                    : baseNormalized.estimatedProfit != null
+                      ? halfNum(baseNormalized.estimatedProfit)
+                      : baseNormalized.estimatedProfit,
+          
+                  actualProfit: isVoid
+                    ? 0
+                    : baseNormalized.actualProfit != null
+                      ? halfNum(baseNormalized.actualProfit)
+                      : baseNormalized.actualProfit,
+          
                   loanData: {
                     ...baseNormalized.loanData,
-                    // set/override an agent field; keep original other fields
-                    agent: agentValue ?? baseNormalized.loanData.agent ?? baseNormalized.loanData.user ?? baseNormalized.agent ?? baseNormalized.user,
-                    amount: baseNormalized.loanData.amount != null ? halfNum(baseNormalized.loanData.amount) : baseNormalized.loanData.amount,
+          
+                    agent:
+                      agentValue ??
+                      baseNormalized.loanData.agent ??
+                      baseNormalized.loanData.user ??
+                      baseNormalized.agent ??
+                      baseNormalized.user,
+          
+                    amount:
+                      baseNormalized.loanData.amount != null
+                        ? halfNum(baseNormalized.loanData.amount)
+                        : baseNormalized.loanData.amount,
+          
                     loanAmount:
                       baseNormalized.loanData.loanAmount != null
                         ? halfNum(baseNormalized.loanData.loanAmount)
                         : baseNormalized.loanData.loanAmount,
-                    estimated_profit:
-                      baseNormalized.loanData.estimated_profit != null
+          
+                    estimated_profit: isVoid
+                      ? 0
+                      : baseNormalized.loanData.estimated_profit != null
                         ? halfNum(baseNormalized.loanData.estimated_profit)
                         : baseNormalized.loanData.estimated_profit,
-                    estimatedProfit:
-                      baseNormalized.loanData.estimatedProfit != null
+          
+                    estimatedProfit: isVoid
+                      ? 0
+                      : baseNormalized.loanData.estimatedProfit != null
                         ? halfNum(baseNormalized.loanData.estimatedProfit)
                         : baseNormalized.loanData.estimatedProfit,
-                    actualProfit:
-                      baseNormalized.loanData.actualProfit != null
+          
+                    actualProfit: isVoid
+                      ? 0
+                      : baseNormalized.loanData.actualProfit != null
                         ? halfNum(baseNormalized.loanData.actualProfit)
                         : baseNormalized.loanData.actualProfit,
+          
                     amount_due: amountDueHalf,
-                    payment: paymentsHalf
-                  }
+                    payment: paymentsHalf,
+                    loanStatus:baseNormalized.loanData.status
+                  },
+          
+                  paymentStatus:
+                    Number(baseNormalized.totalAmountReceived) === 0
+                      ? 'Unpaid'
+                      : Number(baseNormalized.totalAmountReceived) >=
+                        Number(baseNormalized.payableAmount)
+                      ? 'Fully Paid'
+                      : baseNormalized.loanData.status,
+                  
                 };
-  
-                // payment status against halved out
-                row.paymentStatus =
-                  totalPaymentsHalf >= outHalf
-                    ? 'Fully Paid'
-                    : totalPaymentsHalf > 0
-                    ? 'Partial Paid'
-                    : 'Unpaid';
-  
+          
                 return row;
               };
-  
+          
+              // ========================
+              // SPLIT / NON-SPLIT LOGIC
+              // ========================
               if (user2) {
-                // Split into two rows (replace base). Primary + user_2, both halved
                 const primaryAgent =
                   baseNormalized.loanData.agent ??
                   baseNormalized.loanData.user ??
                   baseNormalized.agent ??
                   baseNormalized.user ??
                   null;
-  
+          
                 const row1 = makeSplitRow(primaryAgent);
                 const row2 = makeSplitRow(user2);
-                row2.agent=user2?.name
-  
+                row2.agent = user2?.name;
+          
                 data.push(row1, row2);
               } else {
-                // No split: keep original behavior (full amounts)
-                const totalPayments = (baseNormalized.loanData.payment || [])
-                  .filter((p: any) => p.type === 'In')
-                  .reduce((sum: number, p: any) => sum + num(p.amount), 0);
-  
                 const fullRow = {
                   ...baseNormalized,
+          
+                  estimated_profit: isVoid ? 0 : baseNormalized.estimated_profit,
+                  estimatedProfit: isVoid ? 0 : baseNormalized.estimatedProfit,
+                  actualProfit: isVoid ? 0 : baseNormalized.actualProfit,
+          
                   loanData: {
                     ...baseNormalized.loanData,
-                    amount_due: baseNormalized.loanData.amount_due, // unchanged
+                    estimated_profit: isVoid ? 0 : baseNormalized.loanData.estimated_profit,
+                    estimatedProfit: isVoid ? 0 : baseNormalized.loanData.estimatedProfit,
+                    actualProfit: isVoid ? 0 : baseNormalized.loanData.actualProfit,
+                    amount_due: baseNormalized.loanData.amount_due,
+                    loanStatus:baseNormalized.loanData.status
                   },
+          
                   paymentStatus:
-                    totalPayments >= outAmount
+                    Number(baseNormalized.totalAmountReceived) === 0
+                      ? 'Unpaid'
+                      : Number(baseNormalized.totalAmountReceived) >=
+                        Number(baseNormalized.payableAmount)
                       ? 'Fully Paid'
-                      : totalPayments > 0
-                      ? 'Partial Paid'
-                      : 'Unpaid',
+                      : baseNormalized.loanData.status,
+          
                   onHand: onHandAmount.toFixed(2)
                 };
-  
+          
                 data.push(fullRow);
               }
             });
-  
+          
             this.loanDataSource.data = data;
+            console.log(this.loanDataSource.data,'ddd');
             setTimeout(() => (this.loanDataSource.paginator = this.loanPaginator));
+                    
           } else {
             const data = response || [];
             //this.paymentDataSource.data = data.filter((item: any) => item !== null);
@@ -474,6 +547,7 @@ const formattedPaymentToDate = this.formatDateToLocal(paymentToDate);
       STATUS: loan.paymentStatus,
       'Estimated Profit': Number(loan.estimatedProfit),
       'Actual Profit': Number(loan.actualProfit),
+      'Loan Status': loan.loanData.loanStatus
       };
     });
   }

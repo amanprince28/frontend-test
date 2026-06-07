@@ -387,8 +387,103 @@ export class PaymentComponent implements OnInit {
       ];
     }
     this.paymentForm.reset();
-    this.cdr.detectChanges();
+    //this.cdr.detectChanges();
   }
+
+  // async savePaymentListing() {
+  //   // Filter only edited or new records
+  //   const formatDate = (date: any): string => {
+  //     return date ? format(new Date(date), 'yyyy-MM-dd') : '';
+  //   };
+    
+  //   const recordsToSave = this.paymentData.filter(
+  //     (record) => record.isEdited || record.isNew
+  //   );
+
+  //   if (recordsToSave.length === 0) {
+  //     this.snackbar.open('No changes to save.', 'Close', {
+  //       duration: 3000,
+  //     });
+  //     return;
+  //   }
+
+  //   const payload = recordsToSave
+  //     .map((el) => {
+  //       const paymentDate = el.paymentDate ? new Date(el.paymentDate) : null;
+  //       const amount =
+  //         el.paymentAmount !== undefined && el.paymentAmount !== null
+  //           ? String(el.paymentAmount)
+  //           : '';
+
+  //       return {
+  //         type: el.paymentType,
+  //         payment_date: formatDate(el.paymentDate),
+  //         balance: String(el.balance ?? 0),
+  //         status: el.status || 'null',
+  //         account_details: el.bankAgentAccount || '',
+  //         remarks: el.remarks,
+  //         amount,
+  //         loan_id: el.loan_id || null,
+  //         installment_id: el.id ? el.id : el.installmentId,
+  //         generate_id: el.generate_id,
+  //         installment_date: el.installment_date,
+  //       };
+  //     })
+  //     .filter(
+  //       (temp) =>
+  //         temp.type &&
+  //         temp.payment_date &&
+  //         temp.amount &&
+  //         temp.type.trim() !== '' &&
+  //         temp.amount.trim() !== ''
+  //     );
+
+  //   if (payload.length === 0) {
+  //     this.snackbar.open('No valid payments to save.', 'Close', {
+  //       duration: 3000,
+  //     });
+  //     return;
+  //   }
+
+  //   try {
+  //     const response = await firstValueFrom(
+  //       this.dataService.addPayment(payload)
+  //     );
+  //     if (response && Array.isArray(response)) {
+  //       // Update paymentData with response data
+  //       this.paymentData = this.paymentData.map((payment) => {
+  //         // Find matching response for this payment
+  //         const savedPayment = response.find(
+  //           (sp: any) => sp.installment_id === payment.installmentId || sp.generate_id === payment.generate_id
+  //         );
+
+  //         if (savedPayment) {
+  //           return {
+  //             ...payment,
+  //             generate_id: savedPayment.generate_id,
+  //             isEdited: false, // Reset edit flag
+  //             isNew: false, // Reset new flag
+  //           };
+  //         }
+  //         return payment;
+  //       });
+  //     }
+
+  //     this.snackbar.open('Payment added successfully', 'Close', {
+  //       duration: 3000,
+  //     });
+
+  //     // Update agent payments if needed
+  //     if (this.agent2 != null) {
+  //       await this.updateAgentPayments();
+  //     }
+  //   } catch (err) {
+  //     console.error('Error adding payment:', err);
+  //     this.snackbar.open('Failed to add payment', 'Close', {
+  //       duration: 3000,
+  //     });
+  //   }
+  // }
 
   async savePaymentListing() {
     // Filter only edited or new records
@@ -399,14 +494,14 @@ export class PaymentComponent implements OnInit {
     const recordsToSave = this.paymentData.filter(
       (record) => record.isEdited || record.isNew
     );
-
+  
     if (recordsToSave.length === 0) {
       this.snackbar.open('No changes to save.', 'Close', {
         duration: 3000,
       });
       return;
     }
-
+  
     const payload = recordsToSave
       .map((el) => {
         const paymentDate = el.paymentDate ? new Date(el.paymentDate) : null;
@@ -414,7 +509,7 @@ export class PaymentComponent implements OnInit {
           el.paymentAmount !== undefined && el.paymentAmount !== null
             ? String(el.paymentAmount)
             : '';
-
+  
         return {
           type: el.paymentType,
           payment_date: formatDate(el.paymentDate),
@@ -437,30 +532,52 @@ export class PaymentComponent implements OnInit {
           temp.type.trim() !== '' &&
           temp.amount.trim() !== ''
       );
-
+  
     if (payload.length === 0) {
       this.snackbar.open('No valid payments to save.', 'Close', {
         duration: 3000,
       });
       return;
     }
-
+  
     try {
       const response = await firstValueFrom(
         this.dataService.addPayment(payload)
       );
+      
       if (response && Array.isArray(response)) {
-        // Update paymentData with response data
+        // Create a map of successful saves for quick lookup
+        const savedPaymentMap = new Map();
+        response.forEach((sp: any) => {
+          if (sp.installment_id) {
+            savedPaymentMap.set(sp.installment_id, sp);
+          }
+          if (sp.generate_id) {
+            savedPaymentMap.set(sp.generate_id, sp);
+          }
+        });
+  
+        // Reset flags for ALL payments that were saved
         this.paymentData = this.paymentData.map((payment) => {
-          // Find matching response for this payment
-          const savedPayment = response.find(
-            (sp: any) => sp.installment_id === payment.installmentId || sp.generate_id === payment.generate_id
+          // Check if this payment was in the recordsToSave
+          const wasSaved = recordsToSave.some(
+            saved => 
+              saved.installmentId === payment.installmentId || 
+              saved.generate_id === payment.generate_id
           );
-
-          if (savedPayment) {
+  
+          if (wasSaved) {
+            // Find matching response for this payment
+            const savedPayment = response.find(
+              (sp: any) => 
+                sp.installment_id === payment.installmentId || 
+                sp.generate_id === payment.generate_id
+            );
+  
             return {
               ...payment,
-              generate_id: savedPayment.generate_id,
+              generate_id: savedPayment?.generate_id || payment.generate_id,
+              id: savedPayment?.id || payment.id,
               isEdited: false, // Reset edit flag
               isNew: false, // Reset new flag
             };
@@ -468,15 +585,29 @@ export class PaymentComponent implements OnInit {
           return payment;
         });
       }
-
+  
+      // Clear the form and selection
+      this.paymentForm.reset();
+      this.selectedPaymentIndex = null;
+      this.enablePaymentInsert = false;
+  
+      // Refresh the data from API to ensure consistency
+      if (this.searchQuery) {
+        await this.filterTable();
+      }
+  
       this.snackbar.open('Payment added successfully', 'Close', {
         duration: 3000,
       });
-
+  
       // Update agent payments if needed
       if (this.agent2 != null) {
         await this.updateAgentPayments();
       }
+  
+      // Force change detection
+      this.cdr.detectChanges();
+  
     } catch (err) {
       console.error('Error adding payment:', err);
       this.snackbar.open('Failed to add payment', 'Close', {
@@ -533,11 +664,50 @@ export class PaymentComponent implements OnInit {
     }
   }
 
+  // onPaymentEdit(record: PaymentRecord, index: number) {
+  //   this.enablePaymentInsert = true;
+  //   this.selectedPaymentIndex = index;
+  //   this.paymentData[index].isEdited = true; // Mark as edited
+
+  //   // Patch the form values
+  //   this.paymentForm.patchValue({
+  //     paymentType: record.paymentType,
+  //     installmentId: record.installmentId,
+  //     paymentDate: record.paymentDate
+  //       ? record.paymentDate
+  //       : record.installment_date,
+  //     paymentAmount: record.due_amount,
+  //     balance: record.balance,
+  //     bankAgentAccount: record.bankAgentAccount,
+  //     remarks: record.remarks,
+  //     installment_id: record.installmentId,
+  //     generate_id: record.generate_id,
+  //   });
+
+  //   // Enable all fields first
+  //   Object.keys(this.paymentForm.controls).forEach((field) => {
+  //     this.paymentForm.get(field)?.enable();
+  //   });
+
+  //   // If paymentType is 'Out', disable all except bankAgentAccount
+  //   if (record.paymentType === 'Out') {
+  //     Object.keys(this.paymentForm.controls).forEach((field) => {
+  //       if (field !== 'bankAgentAccount' && field !== 'remarks') {
+  //         this.paymentForm.get(field)?.disable();
+  //       }
+  //     });
+  //   }
+  // }
+
   onPaymentEdit(record: PaymentRecord, index: number) {
     this.enablePaymentInsert = true;
     this.selectedPaymentIndex = index;
-    this.paymentData[index].isEdited = true; // Mark as edited
-
+    
+    // Only mark as edited if it's not a new record
+    if (!this.paymentData[index].isNew) {
+      this.paymentData[index].isEdited = true;
+    }
+  
     // Patch the form values
     this.paymentForm.patchValue({
       paymentType: record.paymentType,
@@ -552,12 +722,12 @@ export class PaymentComponent implements OnInit {
       installment_id: record.installmentId,
       generate_id: record.generate_id,
     });
-
+  
     // Enable all fields first
     Object.keys(this.paymentForm.controls).forEach((field) => {
       this.paymentForm.get(field)?.enable();
     });
-
+  
     // If paymentType is 'Out', disable all except bankAgentAccount
     if (record.paymentType === 'Out') {
       Object.keys(this.paymentForm.controls).forEach((field) => {
@@ -581,12 +751,65 @@ export class PaymentComponent implements OnInit {
     });
   }
 
+  // onAddInstallment() {
+  //   if (this.installmentForm.invalid) return;
+
+  //   const data = this.installmentForm.value;
+  //   data.due_amount = Number(data.due_amount); // Ensure numeric value
+
+  //   if (this.selectedIndex !== null) {
+  //     // Update existing record
+  //     this.installmentData[this.selectedIndex] = {
+  //       ...this.installmentData[this.selectedIndex],
+  //       ...data,
+  //     };
+  //   } else {
+  //     // Add new record
+  //     this.installmentData.push({ ...data });
+  //   }
+
+  //   // Update accepted_amount only up to the modified index
+  //   this.updateAcceptedAmounts(
+  //     this.selectedIndex !== null
+  //       ? this.selectedIndex
+  //       : this.installmentData.length - 1
+  //   );
+
+  //   this.selectedIndex = null;
+  //   this.installmentForm.reset(); // Reset form after submission
+  //   this.enablePaymentInsert = false;
+
+  //   // 🔥 Force UI update
+  //   this.installmentData = [...this.installmentData];
+  // }
+
+  // // Function to update accepted_amount only for the modified and previous entries
+  // updateAcceptedAmounts(index: number) {
+  //   let updatedData = [...this.installmentData]; // Create a new reference to ensure UI updates
+
+  //   if (index === 0) {
+  //     updatedData[0].accepted_amount = Number(updatedData[0].due_amount);
+  //   } else {
+  //     for (let i = 0; i <= index; i++) {
+  //       if (i === 0) {
+  //         updatedData[i].accepted_amount = Number(updatedData[i].due_amount);
+  //       } else {
+  //         updatedData[i].accepted_amount =
+  //           Number(updatedData[i - 1].accepted_amount) +
+  //           Number(updatedData[i].due_amount);
+  //       }
+  //     }
+  //   }
+  //   console.log(updatedData,'added datata')
+  //   this.installmentData = updatedData; // Assign new array reference to trigger UI change
+  // }
+
   onAddInstallment() {
     if (this.installmentForm.invalid) return;
-
+  
     const data = this.installmentForm.value;
-    data.due_amount = Number(data.due_amount); // Ensure numeric value
-
+    data.due_amount = Number(data.due_amount);
+  
     if (this.selectedIndex !== null) {
       // Update existing record
       this.installmentData[this.selectedIndex] = {
@@ -597,43 +820,43 @@ export class PaymentComponent implements OnInit {
       // Add new record
       this.installmentData.push({ ...data });
     }
-
-    // Update accepted_amount only up to the modified index
-    this.updateAcceptedAmounts(
-      this.selectedIndex !== null
-        ? this.selectedIndex
-        : this.installmentData.length - 1
-    );
-
+  
+    // ✅ Always recalculate full running total
+    this.updateAcceptedAmounts();
+  
     this.selectedIndex = null;
-    this.installmentForm.reset(); // Reset form after submission
+    this.installmentForm.reset();
     this.enablePaymentInsert = false;
-
-    // 🔥 Force UI update
+  
+    // Force UI refresh
     this.installmentData = [...this.installmentData];
   }
 
-  // Function to update accepted_amount only for the modified and previous entries
-  updateAcceptedAmounts(index: number) {
-    let updatedData = [...this.installmentData]; // Create a new reference to ensure UI updates
-
-    if (index === 0) {
-      updatedData[0].accepted_amount = Number(updatedData[0].due_amount);
-    } else {
-      for (let i = 0; i <= index; i++) {
-        if (i === 0) {
-          updatedData[i].accepted_amount = Number(updatedData[i].due_amount);
-        } else {
-          updatedData[i].accepted_amount =
-            Number(updatedData[i - 1].accepted_amount) +
-            Number(updatedData[i].due_amount);
+  updateAcceptedAmounts() {
+    let updatedData = [...this.installmentData];
+    let runningTotal = 0;
+  
+    for (let i = 0; i < updatedData.length; i++) {
+      const dueAmount = Number(updatedData[i].due_amount);
+  
+      // Only calculate running total if status is not null
+      if (updatedData[i].status !== null && updatedData[i].status !== undefined) {
+        
+        // Add only if Paid
+        if (updatedData[i].status === 'Paid') {
+          runningTotal += dueAmount;
         }
+  
+        // Update accepted_amount only for rows with status
+        updatedData[i].accepted_amount = runningTotal;
       }
+      // If status is null → do nothing (leave accepted_amount unchanged)
     }
-
-    this.installmentData = updatedData; // Assign new array reference to trigger UI change
+  
+    this.installmentData = updatedData;
   }
-
+  
+  
   transformInstallments(data: any) {
     if (!data || !data.installment || !data.user || !data.user_2) {
       throw new Error('Invalid input data');

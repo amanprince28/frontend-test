@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -41,7 +41,7 @@ import {
 } from '../../common/custom-date-adapter';
 import { format } from 'date-fns';
 import { GlobalPositionStrategy } from '@angular/cdk/overlay';
-import { debounceTime } from 'rxjs';
+import { debounceTime, distinctUntilChanged, skip, Subscription, tap } from 'rxjs';
 
 @Component({
   selector: 'app-loan-add',
@@ -73,7 +73,7 @@ import { debounceTime } from 'rxjs';
     { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
   ],
 })
-export class LoanAddEditComponent implements OnInit {
+export class LoanAddEditComponent implements OnInit,OnDestroy {
   isEditMode: boolean = false;
   agentDetailsForm!: FormGroup;
   customerDetailsForm!: FormGroup;
@@ -84,6 +84,10 @@ export class LoanAddEditComponent implements OnInit {
   readonly: boolean = true;
   action: 'add' | 'edit' | 'view' = 'add';
   loan_id_header: string | null = null;
+  isViewMode: boolean = false;
+  isCalculatingGoodwill = false;
+  private goodwillSubscription: Subscription | undefined;
+
 
   dateUnit = [
     { id: 1, unit: 'Day' },
@@ -97,6 +101,7 @@ export class LoanAddEditComponent implements OnInit {
     { status: 'Bad Debt' },
     { status: 'Bad Debt Completed' },
     { status: 'Partially Paid' },
+    { status: 'Void' },
   ];
   customerId: any;
 
@@ -106,7 +111,9 @@ export class LoanAddEditComponent implements OnInit {
   userDetails: any;
   userRole: any;
   passedData: any;
-  cantSave: boolean=false;
+  cantSave: boolean = false;
+  loanResponse: any;
+  isInitialLoad: boolean = true;
 
   constructor(
     private router: Router,
@@ -121,127 +128,154 @@ export class LoanAddEditComponent implements OnInit {
 
   ngOnInit() {
     this.initializeForms();
+    this.setupGoodwillListener();
     this.userDetails = localStorage.getItem('user-details');
     this.userDetails = JSON.parse(this.userDetails);
     this.userRole = this.userDetails?.role ?? '';
+    
+    // Only enable estimated_profit for edit mode if user has permission
+    if (this.userRole === 'SUPER_ADMIN' || this.userDetails?.email === 'Jessica@cs') {
+      // Will be handled based on mode in loadAllData
+    } else {
+      this.loanDetailsForm.get('estimated_profit')?.disable();
+    }
+    
     this.fetchUserData();
     this.fetchCustomer();
 
     this.route.params.subscribe(async (params) => {
-      if (
-        this.passedData['action'] === 'edit' ||
-        this.passedData['action'] === 'view'
-      ) {
+      if (this.passedData && (this.passedData['action'] === 'edit' || this.passedData['action'] === 'view')) {
         this.action = this.passedData['action'];
+        this.isViewMode = this.passedData['action'] === 'view';
         this.loan_id_header = this.passedData['generate_id'];
+        
         const loanData = await this.dataService
           .getLoanById(this.passedData['generate_id'])
           .toPromise();
-        this.loadAllData(loanData);
 
+        this.loanResponse = loanData;
         this.isEditMode = this.passedData['action'] === 'edit';
-        if (this.passedData['action'] === 'view') {
+        
+        // Disable all forms in view mode
+        if (this.isViewMode || this.passedData['status'] === 'Void') {
           this.agentDetailsForm.disable();
           this.customerDetailsForm.disable();
           this.loanDetailsForm.disable();
         }
+        
+        this.loadAllData(loanData);
+        
+        // Set flag to indicate initial load is complete
+        setTimeout(() => {
+          this.isInitialLoad = false;
+        }, 100);
       } else {
         this.isEditMode = false;
+        this.isViewMode = false;
       }
     });
 
+    // Only subscribe to value changes if not in view mode
+    if (!this.isViewMode) {
+      this.setupValueChangeListeners();
+    }
+  }
+
+  setupValueChangeListeners() {
+    // Setup all value change listeners only for add/edit modes
     this.loanDetailsForm
       .get('deposit_amount')
-      ?.valueChanges.subscribe((value) => {
-        // Get the current values from the form controls
-        const principal_amount =
-          this.loanDetailsForm.get('principal_amount')?.value;
-        const deposit_amount =
-          this.loanDetailsForm.get('deposit_amount')?.value;
-        const application_fee =
-          this.loanDetailsForm.get('application_fee')?.value;
-
-        // Check if any of the values is null or undefined
-        if (
-          principal_amount == null ||
-          deposit_amount == null ||
-          application_fee == null
-        ) {
-          // If any value is null or undefined, reset amount_given to null
-          this.loanDetailsForm.get('amount_given')?.setValue(null);
-        } else {
-          // Calculate amount_given if all values are defined
-          const amount_given =
-            principal_amount - deposit_amount - application_fee;
-          this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
-        }
+      ?.valueChanges.pipe(
+        skip(1),
+        debounceTime(2000)
+      )
+      .subscribe((value) => {
+        this.updateAmountGiven();
       });
 
-    this.loanDetailsForm.get('interest')?.valueChanges.subscribe((value) => {
-      // Get the current values from the form controls
-      const principal_amount =
-        this.loanDetailsForm.get('principal_amount')?.value;
-      const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
-      const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
-      const interest = this.loanDetailsForm.get('interest')?.value;
+    this.loanDetailsForm.get('interest')
+      ?.valueChanges.pipe(
+        skip(1),
+        debounceTime(2000)
+      )
+      .subscribe((value) => {
+        this.updateInterestAndPaymentPerTerm();
+      });
 
-      // Check if any of the required values is null or undefined
-      if (
-        principal_amount == null ||
-        deposit_amount == null ||
-        repayment_terms == null ||
-        interest == null
-      ) {
-        // If any value is null or undefined, reset the calculated fields
-        this.loanDetailsForm.get('interest_amount')?.setValue(null);
-        this.loanDetailsForm.get('payment_per_term')?.setValue(null);
-      } else {
-        // Calculate interest_amount and payment_per_term if all values are defined
-        const interest_amount =
-          principal_amount * (interest / 100) * repayment_terms;
-        this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
+    this.loanDetailsForm.get('principal_amount')
+      ?.valueChanges.pipe(
+        skip(1),
+        debounceTime(2000)
+      )
+      .subscribe(() => {
+        this.updateAmountGiven();
+        this.updateInterestAndPaymentPerTerm();
+      });
 
-        const payment_per_term = principal_amount / repayment_terms;
-        this.loanDetailsForm
-          .get('payment_per_term')
-          ?.setValue(payment_per_term);
-      }
-    });
+    this.loanDetailsForm.get('application_fee')
+      ?.valueChanges.pipe(
+        skip(1),
+        debounceTime(2000)
+      )
+      .subscribe(() => {
+        this.updateAmountGiven();
+      });
 
-    // Add a valueChanges listener for principalAmount, depositAmount, and applicationFee to ensure calculations are updated when they change
-    this.loanDetailsForm.get('principal_amount')?.valueChanges.subscribe(() => {
-      // Recalculate amount_given if principal_amount changes
-      this.updateAmountGiven();
-    });
+    this.loanDetailsForm.get('repayment_term')
+      ?.valueChanges.pipe(
+      
+        debounceTime(2000)
+      )
+      .subscribe(() => {
+        this.updateInterestAndPaymentPerTerm();
+      });
 
-    this.loanDetailsForm.get('deposit_amount')?.valueChanges.subscribe(() => {
-      // Recalculate amount_given if deposit_amount changes
-      this.updateAmountGiven();
-    });
-
-    this.loanDetailsForm.get('application_fee')?.valueChanges.subscribe(() => {
-      // Recalculate amount_given if application_fee changes
-      this.updateAmountGiven();
-    });
-
-    this.loanDetailsForm.get('interest')?.valueChanges.subscribe(() => {
-      // Recalculate interest_amount and payment_per_term if interest changes
-      this.updateInterestAndPaymentPerTerm();
-    });
-
-    this.loanDetailsForm.get('repayment_term')?.valueChanges.subscribe(() => {
-      // Recalculate interest_amount and payment_per_term if repayment_terms changes
-      this.updateInterestAndPaymentPerTerm();
-    });
-
-    this.loanDetailsForm.get('goodwill')?.valueChanges.pipe(
-    debounceTime(2000) // 2 seconds delay
-  )
-  .subscribe((value) => {
-    this.updateEstimatedProfit();
-  });
+    this.loanDetailsForm
+      .get('status')
+      ?.valueChanges.subscribe((statusValue) => {
+        if (statusValue === 'Void') {
+          this.updateEstimateActualProfit();
+        }
+      });
+    
   }
+
+  setupGoodwillListener() {
+    // Unsubscribe previous subscription if exists
+    if (this.goodwillSubscription) {
+      this.goodwillSubscription.unsubscribe();
+    }
   
+    const goodwillControl = this.loanDetailsForm.get('goodwill');
+    
+    if (goodwillControl) {
+      this.goodwillSubscription = goodwillControl.valueChanges.pipe(
+        skip(1), // Skip the initial form value emission
+        tap(() => {
+          // Disable button immediately when user starts typing
+          this.isCalculatingGoodwill = true;
+        }),
+        debounceTime(1000),
+        distinctUntilChanged()
+      ).subscribe((value) => {
+        // Only proceed if there's an actual value change
+        if (value !== undefined && value !== null) {
+          this.updateEstimatedProfit(this.loanResponse);
+        } else {
+          // If no valid value, reset the flag
+          this.isCalculatingGoodwill = false;
+        }
+      });
+    }
+  }
+
+  updateEstimateActualProfit() {
+    // Only update if not in view mode
+    if (!this.isViewMode) {
+      this.loanDetailsForm.get('estimated_profit')?.setValue(0);
+      this.loanDetailsForm.get('actual_profit')?.setValue(0);
+    }
+  }
 
   fetchUserData(page: number = 1, limit: number = 5): void {
     const payload = { page, limit };
@@ -259,23 +293,48 @@ export class LoanAddEditComponent implements OnInit {
     });
   }
 
-  updateEstimatedProfit(){
-   const  preserveEstProfit = this.loanDetailsForm.get('estimated_profit')?.value;
-   const  estimated_profit = this.loanDetailsForm.get('estimated_profit')?.value
-   const goodwill = this.loanDetailsForm.get('goodwill')?.value;
-   const value = Number(estimated_profit) - Number(goodwill);
-   console.log(estimated_profit,goodwill,value);
-   this.loanDetailsForm.get('estimated_profit')?.setValue(value);
-   
-   if(Number(estimated_profit) < Number(goodwill)){
-    this.cantSave = true
-    console.log('cant save')
-   }
+  updateEstimatedProfit(loanResponse: any) {
+    try {
+      if (this.isViewMode) {
+        return;
+      }
+  
+      const estimated_profit = loanResponse.principal_amount - loanResponse.deposit_amount - loanResponse.amount_given;
+      const goodwill = this.loanDetailsForm.get('goodwill')?.value;
+      
+      const value = Number(estimated_profit) - Number(goodwill);
+      console.log(goodwill, value, 'goodwill');
+  
+      this.loanDetailsForm.get('estimated_profit')?.setValue(value, { emitEvent: false });
+  
+      if (Number(estimated_profit) < Number(goodwill)) {
+        this.cantSave = true;
+      }
+      
+      if (this.loanDetailsForm.get('status')?.value === 'Void') {
+        this.loanDetailsForm.get('actualProfit')?.setValue(0, { emitEvent: false });
+      }
+    } catch (error) {
+      console.error('Error calculating goodwill:', error);
+    } finally {
+      // Always reset the flag after calculation is complete
+      setTimeout(() => {
+        this.isCalculatingGoodwill = false;
+      }, 100); // Small delay to ensure UI updates properly
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.goodwillSubscription) {
+      this.goodwillSubscription.unsubscribe();
+    }
   }
 
   updateAmountGiven() {
-    const principal_amount =
-      this.loanDetailsForm.get('principal_amount')?.value;
+    // Don't calculate in view mode
+    if (this.isViewMode) return;
+
+    const principal_amount = this.loanDetailsForm.get('principal_amount')?.value;
     const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
     const application_fee = this.loanDetailsForm.get('application_fee')?.value;
 
@@ -284,45 +343,55 @@ export class LoanAddEditComponent implements OnInit {
       deposit_amount == null ||
       application_fee == null
     ) {
-      // Reset amount_given if any value is null or undefined
       this.loanDetailsForm.get('amount_given')?.setValue(null);
     } else {
-      // Calculate amount_given if all values are valid
       const amount_given = principal_amount - deposit_amount - application_fee;
       this.loanDetailsForm.get('amount_given')?.setValue(amount_given);
+
       const estimatedProfit = principal_amount - deposit_amount - amount_given;
       this.loanDetailsForm.get('estimated_profit')?.setValue(estimatedProfit);
+      
+      // Don't update estimated profit here - it will be updated separately
+      // to avoid conflicts with goodwill calculation
     }
   }
+
 
   updateInterestAndPaymentPerTerm() {
-    const principal_amount =
-      this.loanDetailsForm.get('principal_amount')?.value;
-    const deposit_amount = this.loanDetailsForm.get('deposit_amount')?.value;
-    const repayment_terms = this.loanDetailsForm.get('repayment_term')?.value;
-    const interest = this.loanDetailsForm.get('interest')?.value;
-
-    if (
-      principal_amount == null ||
-      deposit_amount == null ||
-      repayment_terms == null ||
-      interest == null
-    ) {
-      // Reset interest_amount and payment_per_term if any value is null or undefined
-      this.loanDetailsForm.get('interest_amount')?.setValue(null);
-      this.loanDetailsForm.get('payment_per_term')?.setValue(null);
-    } else {
-      // Calculate interest_amount and payment_per_term if all values are valid
-      const interest_amount =
-        principal_amount * (interest / 100) * repayment_terms;
-      this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
-
-      const payment_per_term =
-        (principal_amount - deposit_amount) / repayment_terms;
+    // Don't calculate in view mode
+    if (this.isViewMode) return;
+  
+    const principal_amount = Number(this.loanDetailsForm.get('principal_amount')?.value) || 0;
+    const deposit_amount = Number(this.loanDetailsForm.get('deposit_amount')?.value) || 0;
+    const repayment_terms = Number(this.loanDetailsForm.get('repayment_term')?.value) || 0;
+    const interest = Number(this.loanDetailsForm.get('interest')?.value) || 0;
+  
+    // Calculate interest amount (always calculate, even with 0 values)
+    const interest_amount = principal_amount * (interest / 100) * repayment_terms;
+    this.loanDetailsForm.get('interest_amount')?.setValue(interest_amount);
+  
+    // Calculate payment per term - FIXED: Handle repayment_terms = 0 gracefully
+    let payment_per_term = null;
+    
+    if (repayment_terms !== 0) {
+      console.log('cal')
+      // Only calculate if repayment_terms is not 0
+      if (repayment_terms > 0) {
+        console.log('cal2')
+        payment_per_term = (principal_amount - deposit_amount) / repayment_terms;
+        // Round to 2 decimal places to avoid floating point issues
+        payment_per_term = Math.round(payment_per_term * 100) / 100;
+      }
+      // If repayment_terms is negative or 0, payment_per_term remains null
+    }
+    
+    // Only set value if calculation was performed
+    if (payment_per_term !== null) {
       this.loanDetailsForm.get('payment_per_term')?.setValue(payment_per_term);
+    } else {
+      this.loanDetailsForm.get('payment_per_term')?.setValue(null);
     }
   }
-
 
   initializeForms() {
     this.agentDetailsForm = new FormGroup({
@@ -361,57 +430,103 @@ export class LoanAddEditComponent implements OnInit {
       estimated_profit: new FormControl({ value: 0, disabled: true }),
     });
   }
+
   loadAllData(row: any) {
     this.loan_id = row.id;
+    this.isViewMode = this.passedData['action'] === 'view';
 
+    // Disable forms based on status or view mode
+    if (row.id && (row.status === 'Void' || this.isViewMode)) {
+      this.agentDetailsForm.disable();
+      this.customerDetailsForm.disable();
+      this.loanDetailsForm.disable();
+    }
+
+    // Calculate actual profit for display (both view and edit modes)
     const totalAcceptedAmount = row.payment
-      .filter((item: any) => item.type === 'In')
+      ?.filter((item: any) => item.type === 'In')
       .reduce((sum: number, item: any) => {
         const amount = Number(item.amount) || 0;
         return sum + amount;
-      }, 0);
-    const actualProfit =
-      Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
+      }, 0) || 0;
+    
+    let actualProfit = Number(totalAcceptedAmount) - (Number(row.amount_given) || 0);
+    
+    // For Void status, set actual profit to 0
+    if (row.status === 'Void') {
+      actualProfit = 0;
+    }
 
+    // Patch agent details
     this.agentDetailsForm.patchValue({
-      agentId: row.user.id,
-      agentName: row.user.name.toUpperCase(),
-      agentLead: row.agentLead,
+      agentId: row.user?.id || '',
+      agentName: row.user?.name?.toUpperCase() || '',
+      agentLead: row.agentLead || '',
     });
+    
     if (row.user_2) {
       this.secondAgent = true;
       this.agentDetailsForm.patchValue({
         agentId1: row.user_2.id,
-        agentName1: row.user_2.name.toUpperCase(),
+        agentName1: row.user_2.name?.toUpperCase() || '',
       });
     }
+
+    // Patch customer details
     this.customerDetailsForm.patchValue({
-      customerId: row.customer.id,
-      customerName: row.customer.name,
-      mobile: row.customer.mobile_no,
-      customerAddress: row.customerAddress,
-      customerIc: row.customer.ic,
+      customerId: row.customer?.id || '',
+      customerName: row.customer?.name || '',
+      mobile: row.customer?.mobile_no || '',
+      customerAddress: row.customerAddress || '',
+      customerIc: row.customer?.ic || '',
     });
 
+    // Patch loan details
     this.loanDetailsForm.patchValue({
-      repayment_date: row.repayment_date,
-      date_period: row.date_period,
-      principal_amount: row.principal_amount,
-      deposit_amount: row.deposit_amount,
-      application_fee: row.application_fee,
-      interest: row.interest,
-      loan_remark: row.loan_remark,
-      interest_amount: row.interest_amount,
-      amount_given: row.amount_given,
-      payment_per_term: row.payment_per_term,
-      unit_of_date: row.unit_of_date,
-      repayment_term: row.repayment_term,
-      status: row.status,
+      repayment_date: row.repayment_date ? new Date(row.repayment_date) : new Date(),
+      date_period: row.date_period || '',
+      principal_amount: row.principal_amount || '',
+      deposit_amount: row.deposit_amount || '',
+      application_fee: row.application_fee || '',
+      interest: row.interest || '',
+      loan_remark: row.loan_remark || '',
+      interest_amount: row.interest_amount || '',
+      amount_given: row.amount_given || '',
+      payment_per_term: row.payment_per_term || '',
+      unit_of_date: row.unit_of_date || '',
+      repayment_term: row.repayment_term || '',
+      status: row.status || '',
       actual_profit: actualProfit,
-      loan_date: row.loan_date,
-      estimated_profit:row?.estimated_profit,
-      goodwill:row.goodwill,
+      loan_date: row.loan_date ? new Date(row.loan_date) : new Date(),
+      goodwill: row.goodwill || '',
     });
+
+    // Handle estimated_profit differently for view vs edit modes
+    if (this.isViewMode) {
+      // In view mode, use the stored estimated_profit value
+      this.loanDetailsForm.get('estimated_profit')?.setValue(row.estimated_profit || 0);
+    } else {
+      // In edit mode, enable/disable based on user role
+      if (this.userRole === 'SUPER_ADMIN' || this.userDetails?.email === 'Jessica@cs') {
+        this.loanDetailsForm.get('estimated_profit')?.enable();
+      } else {
+        this.loanDetailsForm.get('estimated_profit')?.disable();
+      }
+      
+      // For edit mode, calculate estimated profit if not provided
+      if (!row.estimated_profit && row.estimated_profit !== 0) {
+        const principal = row.principal_amount || 0;
+        const deposit = row.deposit_amount || 0;
+        const amountGiven = row.amount_given || 0;
+        const goodwill = row.goodwill || 0;
+        
+        let estimatedProfit = principal - deposit - amountGiven - goodwill;
+        this.loanDetailsForm.get('estimated_profit')?.setValue(estimatedProfit);
+      } else {
+        // Use the stored value
+        this.loanDetailsForm.get('estimated_profit')?.setValue(row.estimated_profit);
+      }
+    }
   }
 
   saveLoan() {
@@ -422,8 +537,9 @@ export class LoanAddEditComponent implements OnInit {
       });
       return;
     }
-    if(this.cantSave){
-      this.snackBar.open('Unable to Save', 'Close', {
+    
+    if (this.cantSave) {
+      this.snackBar.open('Unable to Save - Goodwill cannot exceed estimated profit.', 'Close', {
         duration: 5000,
         panelClass: ['error-snackbar'],
       });
@@ -448,7 +564,7 @@ export class LoanAddEditComponent implements OnInit {
       estimated_profit: loanDetails.estimated_profit?.toString() || '',
       actual_profit: loanDetails.actual_profit?.toString() || '',
       repayment_date: formatDate(loanDetails.repayment_date),
-      goodwill:loanDetails.goodwill?.toString() || '',
+      goodwill: loanDetails.goodwill?.toString() || '',
       loan_date: formatDate(loanDetails.loan_date),
     };
 
@@ -490,10 +606,13 @@ export class LoanAddEditComponent implements OnInit {
     this.agentDetailsForm.reset();
     this.customerDetailsForm.reset();
     this.loanDetailsForm.reset();
-    this.router.navigate(['/loan']); // Navigate back to loan list or another appropriate page
+    this.router.navigate(['/loan']);
   }
 
   openAgentSearch(optionalParam?: string) {
+    // Don't allow search in view mode
+    if (this.isViewMode) return;
+    
     this.secondAgent = optionalParam === 'two';
     this.openModal(
       'Agent Search',
@@ -509,6 +628,9 @@ export class LoanAddEditComponent implements OnInit {
   }
 
   openCustomerSearch() {
+    // Don't allow search in view mode
+    if (this.isViewMode) return;
+    
     this.openModal(
       'Customer Search',
       'Search by Customer Name',

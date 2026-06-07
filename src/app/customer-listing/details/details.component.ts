@@ -291,13 +291,27 @@ export class DetailsComponent {
   onLeadChange(selectedLeadIds: string[]): void {
     if (selectedLeadIds && selectedLeadIds.length > 0) {
       this.dataService.getAgentsByLeads(selectedLeadIds).subscribe((response:any) => {
-        // response has { agents: [...], leads: [...], ... }
-        this.agentsSelected = response.agents.map((agent:any) => ({
-          id: agent.id,
-          name: agent.name,
-          role: agent.role,
-          generate_id: agent.generate_id
+        const mappedAgents = response.agents.map((a: any) => ({
+          id: a.id,
+          name: a.name,
+          role: a.role ?? 'AGENT',
+          generate_id: a.generate_id,
+          isLead: false
         }));
+    
+        // If you only want *selected* leads, keep the filter; otherwise remove it.
+        const LeadsAsAgents = response.leads
+          .map((l: any) => ({
+            id: l.id,
+            name: l.name,
+            role: 'AGENT',            // treated as agent
+            generate_id: l.generate_id,
+          }));
+    
+        // Merge + dedupe by id
+        const merged = [...mappedAgents, ...LeadsAsAgents];
+        
+        this.agentsSelected = Array.from(new Map(merged.map(a => [a.id, a])).values());
       });
     } else {
       this.agentsSelected = [];
@@ -634,22 +648,57 @@ export class DetailsComponent {
           telephone_no: this.signalData?.employment?.telephone_no,
         });
 
-        const leadIds = this.customerForm.value.leadUser;
-        if (leadIds?.length) {
-          this.dataService.getAgentsByLeads(leadIds).subscribe((res:any) => {
-            this.agentsSelected = res.agents.map((agent:any) => ({
-              id: agent.id,
-              name: agent.name,
-              role: agent.role,
-              generate_id: agent.generate_id
-            }));
+        // const leadIds = this.customerForm.value.leadUser;
+        // if (leadIds?.length) {
+        //   this.dataService.getAgentsByLeads(leadIds).subscribe((res:any) => {
+        //     this.agentsSelected = res.agents.map((agent:any) => ({
+        //       id: agent.id,
+        //       name: agent.name,
+        //       role: agent.role,
+        //       generate_id: agent.generate_id
+        //     }));
       
-            // Now patch agentCust after agentsSelected is ready
-            this.customerForm.patchValue({
-              agentCust: data.agent_id
-            });
-          });
-        }
+        //     // Now patch agentCust after agentsSelected is ready
+        //     this.customerForm.patchValue({
+        //       agentCust: data.agent_id
+        //     });
+        //   });
+        // }
+        const leadIds = this.customerForm.value.leadUser;
+
+if (leadIds?.length) {
+  this.dataService.getAgentsByLeads(leadIds).subscribe((res: any) => {
+    const mappedAgents = res.agents.map((a: any) => ({
+      id: a.id,
+      name: a.name,
+      role: a.role ?? 'AGENT',
+      generate_id: a.generate_id,
+      isLead: false
+    }));
+
+    // If you only want *selected* leads, keep the filter; otherwise remove it.
+    const LeadsAsAgents = res.leads
+      .map((l: any) => ({
+        id: l.id,
+        name: l.name,
+        role: 'AGENT',            // treated as agent
+        generate_id: l.generate_id,
+      }));
+
+    // Merge + dedupe by id
+    const merged = [...mappedAgents, ...LeadsAsAgents];
+    
+    this.agentsSelected = Array.from(new Map(merged.map(a => [a.id, a])).values());
+
+    // Patch after options are ready
+    this.customerForm.patchValue({
+      agentCust: data.agent_id   // must match one of the ids above (string)
+    });
+  });
+} else {
+  this.agentsSelected = [];
+  this.customerForm.get('agentCust')?.reset();
+}
         this.onCountryChange(
           customerPermanentAddress.country_id ||
             this.signalData.customer_address[0].country_id

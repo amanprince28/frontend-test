@@ -93,16 +93,21 @@ export class LoanManagementComponent implements OnInit {
     const payload = {
       page: pageIndex + 1, // backend expects 1-based
       limit: pageSize,
-      filter: this.searchQuery || undefined,
+      filter: this.searchQuery || '',
     };
 
-    this.dataService.getLoan(payload).subscribe({
+    this.dataService.getLoanWithFilter(payload).subscribe({
       next: (res: any) => {
+
+        res.data.sort((a: any, b: any) => {
+          return new Date(b.loan_date).getTime() - new Date(a.loan_date).getTime();
+        });
+
         this.dataSource.data = res.data || [];
         this.totalCount = res.total || res.totalCount || 0;
         this.pageSize = pageSize;
         this.currentPage = pageIndex;
-
+        
         const hasUser2 = this.dataSource.data.some(
           (item: any) => item.user_2 !== null
         );

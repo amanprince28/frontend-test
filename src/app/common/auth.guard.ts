@@ -27,9 +27,9 @@ export class RoleGuard implements CanActivate {
     // Define allowed routes for each role
     const allowedRoutes: { [key: string]: string[] } = {
       'SUPER_ADMIN': ['users', 'users-details', 'loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','agent-report','loan-check','sales-report','expense'],
-      'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
-      'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
-      'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports'],
+      'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
+      'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
+      'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
     };
 
     // Check if the user has a valid role
