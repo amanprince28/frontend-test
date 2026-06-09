@@ -233,13 +233,20 @@ export class SalesReportComponent implements OnInit {
   //   );
   // }
 
+  formatDate(date: Date): string {
+    const d = new Date(date);
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const day = ('0' + d.getDate()).slice(-2);
+    return `${d.getFullYear()}-${month}-${day}`;
+  }
+
   onSearch() {
     const { agents, fromDate, toDate } = this.filterForm.value;
   
     const payload: AgentSalesReportRequest = {
       agents,
-      fromDate,
-      toDate,
+      fromDate: this.formatDate(this.filterForm.value.fromDate),
+      toDate: this.formatDate(this.filterForm.value.toDate),
     };
   
     this.loading = true; // start spinner
