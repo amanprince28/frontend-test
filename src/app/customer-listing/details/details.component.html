@@ -631,7 +631,7 @@
       </mat-tab-group>
 
       <div class="action-buttons">
-        <button mat-raised-button color="primary" [disabled]="isView" (click)="onMasterSubmit()">Save</button>
+        <button mat-raised-button color="primary" class="save-btn"  [disabled]="isView === true"  (click)="onMasterSubmit()">Save</button>
         <button mat-raised-button (click)="masterCancel()">Cancel</button>
       </div>
     </mat-card-content>

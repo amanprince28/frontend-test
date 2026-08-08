@@ -96,6 +96,7 @@ export class UserDetailsComponent implements OnInit {
       { value: 'ADMIN', viewValue: 'ADMIN' },
       { value: 'LEAD', viewValue: 'LEAD' },
       { value: 'AGENT', viewValue: 'AGENT' },
+      { value: 'VIEWER', viewValue: 'VIEWER' },
     ];
 
     this.fetchSupervisors();

@@ -66,7 +66,6 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     { status: 'Void' },
   ];
 
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   dataSource = new MatTableDataSource<any>();
@@ -96,52 +95,54 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
     const user = localStorage.getItem('user-details');
     this.userDetails = user ? JSON.parse(user) : null;
     this.userRole = this.userDetails?.role || '';
-    
+
     //this.loadAgents();
-    if(this.userRole === 'AGENT') {
-      const filteredAgents =[ { id: this.userDetails.id, name: this.userDetails.name }];
-        this.agents.set(filteredAgents);
-        console.log(filteredAgents,'filere');
+    if (this.userRole === 'AGENT') {
+      const filteredAgents = [
+        { id: this.userDetails.id, name: this.userDetails.name },
+      ];
+      this.agents.set(filteredAgents);
+      console.log(filteredAgents, 'filere');
     }
-    if(this.userRole === 'LEAD') {
+    if (this.userRole === 'LEAD') {
       this.agentbyLead();
     }
-    if(this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
+    if (this.userRole === 'ADMIN' || this.userRole === 'SUPER_ADMIN') {
       this.loadAgents();
     }
-    
+
     // Trigger data load when form changes (optional)
-    this.form.valueChanges.pipe(
-      takeUntil(this._destroyed),
-      debounceTime(300)
-    ).subscribe(() => {
-      this.currentPage = 0;
-      this.loadLoanData();
-    });
+    this.form.valueChanges
+      .pipe(takeUntil(this._destroyed), debounceTime(300))
+      .subscribe(() => {
+        this.currentPage = 0;
+        this.loadLoanData();
+      });
   }
-  
+
   private agentbyLead(): void {
-    this.dataService.getAgentsByLeads([this.userDetails.id]).subscribe((res:any)=>{
-      const combinedList = [
-        ...(res.agents || []),
-        ...(res.leads || [])
-      ].map((item: any) => ({
-        id: item.id,
-        name: item.name
-      }));
-      
+    this.dataService
+      .getAgentsByLeads([this.userDetails.id])
+      .subscribe((res: any) => {
+        const combinedList = [...(res.agents || []), ...(res.leads || [])].map(
+          (item: any) => ({
+            id: item.id,
+            name: item.name,
+          })
+        );
+
         this.agents.set(combinedList);
         this.agents.set(combinedList);
-    })
-}
+      });
+  }
 
   ngAfterViewInit(): void {
     // Ensure paginator is properly initialized
     this.dataSource.paginator = this.paginator;
-    
+
     // Initial data load
     this.loadLoanData();
-    
+
     // Sync paginator with component state
     if (this.paginator) {
       this.paginator.page
@@ -151,7 +152,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
         });
     }
   }
-  
+
   ngOnDestroy(): void {
     this._destroyed.next();
     this._destroyed.complete();
@@ -163,7 +164,7 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
       agents: [[]],
       dateFrom: [today],
       dateTo: [today],
-      status:[]
+      status: [],
     });
   }
 
@@ -182,10 +183,10 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
       agents: this.form.value.agents || [],
       dateFrom: this.formatDate(this.form.value.dateFrom),
       dateTo: this.formatDate(this.form.value.dateTo),
-      status:this.form.value.status
+      status: this.form.value.status,
     };
-  
-    console.log(this.form.value,'values')
+
+    console.log(this.form.value, 'values');
     this.dataService
       .getLoanCheck(
         payload.agents,
@@ -200,10 +201,29 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
         next: (response: any) => {
           // Verify response structure
           console.log('API Response:', response);
-          
           this.totalCount = response.totalCount || 0;
-          this.dataSource.data = response.data || [];
-          
+
+  //         this.dataSource.data = (response.data || []).map((row: any) => {
+  //           const nextDueAmount = 
+  // row?.nextInstallment?.find((x: any) => x?.due_amount != null && x?.due_amount !== '')?.due_amount;
+
+  //           return {
+  //             ...row,
+  //              displayDueAmount: nextDueAmount ?? row.dueAmount ?? '-'
+  //           };
+  //         });
+  this.dataSource.data = (response.data || []).map((row: any) => {
+    const nextDueAmount =
+      row?.nextInstallment?.find((x: any) => x?.due_amount != null)?.due_amount;
+  
+    const finalAmount = nextDueAmount ?? row.dueAmount;
+  
+    return {
+      ...row,
+      displayDueAmount: this.formatRM(finalAmount)
+    };
+  });
+
           // Force update paginator
           if (this.paginator) {
             setTimeout(() => {
@@ -215,9 +235,24 @@ export class LoanCheckComponent implements OnInit, AfterViewInit {
         },
         error: (err) => {
           console.error('Error loading data:', err);
-          this.snackBar.open('Failed to load data', 'Close', { duration: 2000 });
-        }
+          this.snackBar.open('Failed to load data', 'Close', {
+            duration: 2000,
+          });
+        },
       });
+  }
+
+  formatRM(value: any): string {
+    if (value == null) return '-';
+  
+    // remove RM if already exists
+    const cleaned = String(value).replace(/RM\s?/i, '');
+  
+    const num = Number(cleaned);
+  
+    if (isNaN(num)) return '-';
+  
+    return `RM ${num.toFixed(2)}`;
   }
 
   // Update the onPageChange method

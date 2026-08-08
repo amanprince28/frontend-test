@@ -280,6 +280,15 @@ export class DetailsComponent {
           this.remarksForm.disable();
           this.documentsForm.disable();
         }
+        if(this.userDetailsFromStorage.role==='VIEWER'){
+          this.customerForm.disable();
+          this.customerAddressForm.disable();
+          this.customerEmployemntForm.disable();
+          this.customerRelationshipForm.disable();
+          this.bankingForm.disable();
+          this.remarksForm.disable();
+          this.documentsForm.disable();
+        }
       } else {
         this.isEditMode = false;
       }

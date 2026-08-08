@@ -5,17 +5,8 @@
     </div>
 
     <nav class="sidenav-menu">
-      <a
-        class="menu-item"
-        [routerLink]="['users']"
-        routerLinkActive="active"
-        *ngIf="!checkUsers"
-        (click)="closeDrawerOnMobile()"
-      >
-        <mat-icon>person</mat-icon>
-        <span class="menu-label">Users</span>
-      </a>
 
+      <!-- Customer - Visible for all users -->
       <a
         class="menu-item"
         [routerLink]="['listing']"
@@ -26,6 +17,7 @@
         <span class="menu-label">Customer</span>
       </a>
 
+      <!-- Loan - Visible for all users -->
       <a
         class="menu-item"
         [routerLink]="['loan']"
@@ -36,61 +28,93 @@
         <span class="menu-label">Loan</span>
       </a>
 
-      <a
-        class="menu-item"
-        [routerLink]="['customer-check']"
-        routerLinkActive="active"
-        (click)="closeDrawerOnMobile()"
-      >
-        <mat-icon>group</mat-icon>
-        <span class="menu-label">Customer Check</span>
-      </a>
+      <!-- All other menus hidden for VIEWER -->
+      <ng-container *ngIf="!onlyViewer()">
 
-      <a
-        class="menu-item"
-        [routerLink]="['payment']"
-        routerLinkActive="active"
-        (click)="closeDrawerOnMobile()"
-      >
-        <mat-icon>money</mat-icon>
-        <span class="menu-label">Payment</span>
-      </a>
+        <a
+          class="menu-item"
+          [routerLink]="['users']"
+          routerLinkActive="active"
+          *ngIf="!checkUsers"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>person</mat-icon>
+          <span class="menu-label">Users</span>
+        </a>
 
-      <!-- <a class="menu-item" [routerLink]="['reports']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
-        <mat-icon>report</mat-icon>
-        <span class="menu-label">Reporting</span>
-      </a> -->
+        <a
+          class="menu-item"
+          [routerLink]="['customer-check']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>group</mat-icon>
+          <span class="menu-label">Customer Check</span>
+        </a>
 
-      <a
-        *ngIf="canViewReporting()"
-        class="menu-item"
-        [routerLink]="['reports']"
-        routerLinkActive="active"
-        (click)="closeDrawerOnMobile()"
-      >
-        <mat-icon>report</mat-icon>
-        <span class="menu-label">Reporting</span>
-      </a>
+        <a
+          class="menu-item"
+          [routerLink]="['payment']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>money</mat-icon>
+          <span class="menu-label">Payment</span>
+        </a>
 
-      <a class="menu-item" [routerLink]="['expense']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
-        <mat-icon>money</mat-icon>
-        <span class="menu-label">Expenses</span>
-      </a>
+        <a
+          *ngIf="canViewReporting()"
+          class="menu-item"
+          [routerLink]="['reports']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>report</mat-icon>
+          <span class="menu-label">Reporting</span>
+        </a>
 
-      <a class="menu-item" [routerLink]="['loan-check']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
-        <mat-icon>check</mat-icon>
-        <span class="menu-label">Loan Check</span>
-      </a>
+        <a
+          class="menu-item"
+          [routerLink]="['expense']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>money</mat-icon>
+          <span class="menu-label">Expenses</span>
+        </a>
 
-      <a  class="menu-item" [routerLink]="['agent-report']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
-        <mat-icon>assignment</mat-icon>
-        <span class="menu-label">Agent Report</span>
-      </a>
+        <a
+          class="menu-item"
+          [routerLink]="['loan-check']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>check</mat-icon>
+          <span class="menu-label">Loan Check</span>
+        </a>
 
-      <a  class="menu-item" [routerLink]="['sales-report']" routerLinkActive="active" (click)="closeDrawerOnMobile()">
-        <mat-icon>reorder</mat-icon>
-        <span class="menu-label">Sales Report</span>
-      </a>
+        <a
+          class="menu-item"
+          [routerLink]="['agent-report']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>assignment</mat-icon>
+          <span class="menu-label">Agent Report</span>
+        </a>
+
+        <a
+          class="menu-item"
+          [routerLink]="['sales-report']"
+          routerLinkActive="active"
+          (click)="closeDrawerOnMobile()"
+        >
+          <mat-icon>reorder</mat-icon>
+          <span class="menu-label">Sales Report</span>
+        </a>
+
+      </ng-container>
+
     </nav>
   </mat-drawer>
 
@@ -105,8 +129,6 @@
         <mat-icon>menu</mat-icon>
       </button>
 
-      <!-- <span class="app-title">My App</span> -->
-
       <span class="spacer"></span>
 
       <div class="user-menu">
@@ -118,11 +140,13 @@
           <mat-icon class="user-icon">account_circle</mat-icon>
           <span class="user-name">{{ userName }}</span>
         </button>
+
         <mat-menu #profileMenu="matMenu" class="user-dropdown">
           <button mat-menu-item (click)="changePassword()">
             <mat-icon>vpn_key</mat-icon>
             <span>Change Password</span>
           </button>
+
           <button mat-menu-item (click)="logout()">
             <mat-icon>logout</mat-icon>
             <span>Logout</span>
@@ -136,7 +160,7 @@
     </main>
 
     <footer class="app-footer">
-      <span class="version">Build Version:{{ appVersion }}</span>
+      <span class="version">Build Version: {{ appVersion }}</span>
     </footer>
   </div>
 </mat-drawer-container>

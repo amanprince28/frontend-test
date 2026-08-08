@@ -30,6 +30,7 @@ export class RoleGuard implements CanActivate {
       'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
       'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
       'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
+      "VIEWER": ['loan', 'listing','loan-add','details']
     };
 
     // Check if the user has a valid role

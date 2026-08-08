@@ -124,7 +124,7 @@
                 mat-icon-button
                 color="primary"
                 (click)="onRowClick(element, 'edit')"
-                [disabled]="userRole === 'AGENT'"
+                [disabled]="userRole === 'AGENT' || userRole ==='VIEWER'"
                 matTooltip="Edit"
               >
                 <mat-icon>edit</mat-icon>
@@ -141,7 +141,7 @@
                 mat-icon-button
                 color="warn"
                 (click)="onDelete(element)"
-                [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN'"
+                [disabled]="userRole === 'AGENT' || userRole === 'LEAD' || userRole === 'ADMIN' || userRole==='VIEWER'"
                 matTooltip="Delete"
               >
                 <mat-icon>delete</mat-icon>

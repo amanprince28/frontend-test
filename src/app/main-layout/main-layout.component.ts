@@ -62,6 +62,10 @@ export class MainLayoutComponent implements OnInit {
     }
   }
 
+  onlyViewer(): boolean {
+    return this.userDetails?.role === 'VIEWER';
+  }
+
   canViewReporting(): boolean {
     return this.userDetails?.role === 'SUPER_ADMIN' || this.userDetails?.role === 'ADMIN';
   }
