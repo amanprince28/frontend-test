@@ -290,3 +290,9 @@ input[readonly] {
   font-size: larger;
   color: #212529;
 }
+
+// Sum row at the bottom of the installment table
+.sum-row td {
+  font-weight: 600;
+  background-color: #f5f5f5;
+}

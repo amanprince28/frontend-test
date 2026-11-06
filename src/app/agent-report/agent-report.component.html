@@ -102,7 +102,14 @@
 
       <ng-container matColumnDef="sumBalance">
         <th mat-header-cell *matHeaderCellDef>Sum Balance</th>
-        <td mat-cell *matCellDef="let el">{{ el.sumBalance | number:'1.2-2' }}</td>
+        <td
+          mat-cell
+          *matCellDef="let el"
+          [class.amount-positive]="el.sumBalance > 0"
+          [class.amount-negative]="el.sumBalance < 0"
+        >
+          {{ el.sumBalance | number:'1.2-2' }}
+        </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

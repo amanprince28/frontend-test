@@ -832,6 +832,46 @@ export class PaymentComponent implements OnInit {
     this.installmentData = [...this.installmentData];
   }
 
+  // Sum row: due amount is added up across all installments
+  get totalDueAmount(): number {
+    return this.installmentData.reduce(
+      (sum: number, el: any) => sum + (Number(el.due_amount) || 0),
+      0
+    );
+  }
+
+  // Display only: accepted_amount is stored as a running total, so the amount
+  // received for this row is its total minus the previous row's total.
+  // The stored accepted_amount is not changed.
+  getReceivedAmount(index: number): number | string {
+    const current = this.installmentData[index]?.accepted_amount;
+    if (current === null || current === undefined || current === '') {
+      return '';
+    }
+
+    let previous = 0;
+    for (let i = index - 1; i >= 0; i--) {
+      const value = this.installmentData[i]?.accepted_amount;
+      if (value !== null && value !== undefined && value !== '') {
+        previous = Number(value) || 0;
+        break;
+      }
+    }
+
+    return (Number(current) || 0) - previous;
+  }
+
+  // Sum row: accepted_amount is already a running total, so take the latest value
+  get latestAcceptedAmount(): number {
+    for (let i = this.installmentData.length - 1; i >= 0; i--) {
+      const value = this.installmentData[i]?.accepted_amount;
+      if (value !== null && value !== undefined && value !== '') {
+        return Number(value) || 0;
+      }
+    }
+    return 0;
+  }
+
   updateAcceptedAmounts() {
     let updatedData = [...this.installmentData];
     let runningTotal = 0;

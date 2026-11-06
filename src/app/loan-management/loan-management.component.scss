@@ -108,6 +108,7 @@
 
 .search-filter-group {
   display: flex;
+  flex-wrap: wrap;
   flex: 1;
   min-width: 300px;
   gap: 0.75rem;
@@ -131,6 +132,10 @@
       padding: 0.5em 0;
     }
   }
+}
+
+.date-input {
+  width: 170px;
 }
 
 .filter-btn, .add-btn {

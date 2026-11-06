@@ -49,6 +49,18 @@ logout(): Observable<any> {
     return this.http.get<any[]>(this.loan, { params });
   }
 
+  // Loan listing filtered by loan created date (fromDate / toDate in yyyy-MM-dd)
+  getLoanByLoanDate(payload: any): Observable<any> {
+    let params = new HttpParams()
+      .set('page', payload.page.toString())
+      .set('limit', payload.limit.toString())
+      .set('filter', payload.filter || '');
+    if (payload.fromDate) params = params.set('fromDate', payload.fromDate);
+    if (payload.toDate) params = params.set('toDate', payload.toDate);
+
+    return this.http.get<any>(`${this.loan}/by-loan-date`, { params });
+  }
+
   getLoanWithFilter(payload:any):Observable<any> {
     const params = new HttpParams()
     .set('page', payload.page.toString())

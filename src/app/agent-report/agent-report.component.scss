@@ -144,6 +144,16 @@
   .mat-row:hover .mat-cell {
     background-color: mat.get-color-from-palette(mat.$indigo-palette, 50);
   }
+
+  td.amount-positive {
+    background-color: #c8e6c9;
+    font-weight: 600;
+  }
+
+  td.amount-negative {
+    background-color: #ffcdd2;
+    font-weight: 600;
+  }
 }
 
 /* Responsive adjustments for form fields */

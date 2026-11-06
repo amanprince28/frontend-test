@@ -106,8 +106,17 @@
           <td>{{ report.totalOldCustomer.actualProfit }}</td>
 
           <!-- Summary -->
-          <td>{{ report.totalNewCustomer.estimateProfit + report.totalOldCustomer.estimateProfit }}</td>
-          <td>{{ report.totalNewCustomer.actualProfit + report.totalOldCustomer.actualProfit }}</td>
+          <ng-container *ngIf="{
+            estimate: report.totalNewCustomer.estimateProfit + report.totalOldCustomer.estimateProfit,
+            actual: report.totalNewCustomer.actualProfit + report.totalOldCustomer.actualProfit
+          } as sum">
+            <td [class.amount-positive]="sum.estimate > 0" [class.amount-negative]="sum.estimate < 0">
+              {{ sum.estimate }}
+            </td>
+            <td [class.amount-positive]="sum.actual > 0" [class.amount-negative]="sum.actual < 0">
+              {{ sum.actual }}
+            </td>
+          </ng-container>
         </tr>
       </tbody>
     </table>

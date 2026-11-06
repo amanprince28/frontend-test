@@ -91,6 +91,16 @@
         font-weight: 500;
         background-color: #e8f5e9;
       }
+
+      td.amount-positive {
+        background-color: #c8e6c9;
+        font-weight: 600;
+      }
+
+      td.amount-negative {
+        background-color: #ffcdd2;
+        font-weight: 600;
+      }
     }
   }
 }

@@ -127,7 +127,7 @@ export class ExpenseComponent implements OnInit {
   }
 
   private loadAvailableYears(): void {
-    this.availableYears.set(['2024', '2025']);
+    this.availableYears.set(['2024', '2025','2026']);
   }
 
   loadExpensesData(): void {
