@@ -1,0 +1,146 @@
+<div class="receivables-report-container">
+  <h2 class="title">Agent Receivables Report</h2>
+
+  <form [formGroup]="filterForm" class="filter-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Agent</mat-label>
+      <mat-select formControlName="agentId" (selectionChange)="onAgentChange($event.value)">
+        <mat-option *ngFor="let agent of agents()" [value]="agent.id">
+          {{ agent.name }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Select Customers</mat-label>
+      <mat-select formControlName="customerIds" multiple>
+        <!-- Select All / Deselect All Option -->
+        <mat-option [value]="selectAllValue" (click)="toggleSelectAllCustomers($event)">
+          {{ isAllCustomersSelected() ? "Deselect All" : "Select All" }}
+        </mat-option>
+        <mat-option *ngFor="let customer of customers()" [value]="customer.id">
+          {{ customer.name }} ({{ customer.ic || '-' }})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Loan Date From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" formControlName="fromDate" />
+      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Loan Date To</mat-label>
+      <input matInput [matDatepicker]="toPicker" formControlName="toDate" />
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="loan-id-input">
+      <mat-label>Loan ID From</mat-label>
+      <input matInput formControlName="loanIdFrom" placeholder="e.g. LN2600001" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="loan-id-input">
+      <mat-label>Loan ID To</mat-label>
+      <input matInput formControlName="loanIdTo" placeholder="e.g. LN2600050" />
+    </mat-form-field>
+
+    <div class="search-button">
+      <button mat-flat-button color="primary" (click)="onSearch()" [disabled]="isLoading()">
+        Search
+      </button>
+    </div>
+  </form>
+
+  <div *ngIf="selectedCustomerNames().length > 0" class="selected-agents">
+    <mat-chip *ngFor="let name of selectedCustomerNames()">{{ name }}</mat-chip>
+  </div>
+
+  <div *ngIf="searched && !dataSource.length && !isLoading()" class="empty-message">
+    No loans found for the selected filters.
+  </div>
+
+  <div class="table-wrapper mat-elevation-z8" *ngIf="dataSource.length">
+    <table mat-table [dataSource]="paginatedDataSource" class="receivables-table">
+      <ng-container matColumnDef="loanId">
+        <th mat-header-cell *matHeaderCellDef>Loan ID</th>
+        <td mat-cell *matCellDef="let el">{{ el.loanGenerateId }}</td>
+        <td mat-footer-cell *matFooterCellDef>Total ({{ totals.loanCount }})</td>
+      </ng-container>
+
+      <ng-container matColumnDef="agentName">
+        <th mat-header-cell *matHeaderCellDef>Agent Name</th>
+        <td mat-cell *matCellDef="let el">
+          {{ el.agentName }}
+          <span
+            *ngIf="el.isShared"
+            class="shared-tag"
+            [title]="'Shared with ' + (el.sharedWith || 'another agent')"
+          >
+            Shared {{ el.sharePercent }}%
+          </span>
+        </td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="loanDate">
+        <th mat-header-cell *matHeaderCellDef>Loan Created Date</th>
+        <td mat-cell *matCellDef="let el">{{ el.loanDate | date: 'dd/MM/yyyy' : 'UTC' }}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerName">
+        <th mat-header-cell *matHeaderCellDef>Customer Name</th>
+        <td mat-cell *matCellDef="let el">{{ el.customerName }}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="customerIC">
+        <th mat-header-cell *matHeaderCellDef>Customer IC</th>
+        <td mat-cell *matCellDef="let el">{{ el.customerIC }}</td>
+        <td mat-footer-cell *matFooterCellDef></td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountGiven">
+        <th mat-header-cell *matHeaderCellDef>Amount Given</th>
+        <td mat-cell *matCellDef="let el">{{ el.amountGiven | number: '1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef>{{ totals.amountGiven | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="payableAmount">
+        <th mat-header-cell *matHeaderCellDef>Payable Amount</th>
+        <td mat-cell *matCellDef="let el">{{ el.payableAmount | number: '1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef>{{ totals.payableAmount | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountReceived">
+        <th mat-header-cell *matHeaderCellDef>Amount Received</th>
+        <td mat-cell *matCellDef="let el">{{ el.amountReceived | number: '1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef>{{ totals.amountReceived | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="amountToReceive">
+        <th mat-header-cell *matHeaderCellDef>Yet To Receive</th>
+        <td mat-cell *matCellDef="let el">{{ el.amountToReceive | number: '1.2-2' }}</td>
+        <td mat-footer-cell *matFooterCellDef>{{ totals.amountToReceive | number: '1.2-2' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr mat-footer-row *matFooterRowDef="displayedColumns" class="total-row"></tr>
+    </table>
+
+    <mat-paginator
+      [length]="dataSource.length"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage"
+      [pageSizeOptions]="pageSizeOptions"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+    >
+    </mat-paginator>
+  </div>
+</div>

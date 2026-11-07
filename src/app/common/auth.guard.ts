@@ -26,11 +26,11 @@ export class RoleGuard implements CanActivate {
 
     // Define allowed routes for each role
     const allowedRoutes: { [key: string]: string[] } = {
-      'SUPER_ADMIN': ['users', 'users-details', 'loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','agent-report','loan-check','sales-report','expense'],
-      'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
-      'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
-      'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report'],
-      "VIEWER": ['loan', 'listing','loan-add','details']
+      'SUPER_ADMIN': ['users', 'users-details', 'loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','agent-report','loan-check','sales-report','expense','agent-receivables-report'],
+      'ADMIN': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report','agent-receivables-report'],
+      'AGENT': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report','agent-receivables-report'],
+      'LEAD': ['loan', 'details', 'listing', 'loan-add', 'change-password', 'payment','customer-check','reports','expense','loan-check','agent-report','sales-report','agent-receivables-report'],
+      "VIEWER": ['loan', 'listing','loan-add','details','agent-receivables-report']
     };
 
     // Check if the user has a valid role

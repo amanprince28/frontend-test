@@ -309,6 +309,20 @@ logout(): Observable<any> {
     return this.http.post(`${this.apiUrl}/loan/getLoanCheck`, payload);
   }
 
+  // Agent Receivables Report
+  getReceivableAgents(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/report/agent-receivables/agents`);
+  }
+
+  getReceivableCustomers(agentId: string): Observable<any[]> {
+    const params = new HttpParams().set('agentId', agentId);
+    return this.http.get<any[]>(`${this.apiUrl}/report/agent-receivables/customers`, { params });
+  }
+
+  getAgentReceivables(payload: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/report/agent-receivables`, payload);
+  }
+
   getAgentReports(payload: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/report/agent-report-summary`, payload);
   }  

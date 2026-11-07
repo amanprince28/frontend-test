@@ -28,6 +28,17 @@
         <span class="menu-label">Loan</span>
       </a>
 
+      <!-- Agent Receivables Report - Visible for all users (data is limited by role on the server) -->
+      <a
+        class="menu-item"
+        [routerLink]="['agent-receivables-report']"
+        routerLinkActive="active"
+        (click)="closeDrawerOnMobile()"
+      >
+        <mat-icon>account_balance_wallet</mat-icon>
+        <span class="menu-label">Agent Receivables</span>
+      </a>
+
       <!-- All other menus hidden for VIEWER -->
       <ng-container *ngIf="!onlyViewer()">
 
