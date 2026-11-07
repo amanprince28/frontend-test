@@ -1,18 +1,18 @@
 
-<div class="customer-form">
+<div class="page-container customer-form">
   <mat-card>
-    <mat-card-title>Customer - Add</mat-card-title>
+    <mat-card-title class="form-card-title">Customer - Add</mat-card-title>
     <mat-card-content>
       <!-- Customer Details -->
-      <h6 class="heading-text">Customer Details</h6>
+      <h6 class="section-title">Customer Details</h6>
       <form [formGroup]="customerForm" class="form-seperate">
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
             <input matInput placeholder="Enter name" formControlName="name">
           </mat-form-field>
         
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>IC</mat-label>
             <input matInput type="text" maxlength="12" placeholder="Enter IC" formControlName="ic">
             <mat-error *ngIf="customerForm.hasError('eitherFieldRequired')">
@@ -20,14 +20,14 @@
             </mat-error>
           </mat-form-field>
       
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Passport</mat-label>
             <input matInput placeholder="Enter Passport" formControlName="passport">
             <mat-error *ngIf="customerForm.hasError('eitherFieldRequired')">
               Either IC or Passport is required.
             </mat-error>
           </mat-form-field>
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Race</mat-label>
             <mat-select formControlName="race" placeholder="Select Race">
               <mat-option *ngFor="let race of race" [value]="race">
@@ -36,8 +36,8 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
             <mat-label>Gender</mat-label>
             <mat-select formControlName="gender">
               <mat-option value="male">Male</mat-option>
@@ -46,7 +46,7 @@
             </mat-select>
           </mat-form-field>
         
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Marital Status</mat-label>
             <mat-select formControlName="marital_status">
               <mat-option value="single">Single</mat-option>
@@ -56,34 +56,34 @@
             </mat-select>
           </mat-form-field>
       
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>No. of Child</mat-label>
             <input matInput type="number" placeholder="Enter No. of Child" formControlName="no_of_child">
           </mat-form-field>
       
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Car Plate</mat-label>
             <input matInput placeholder="Enter Car Plate" formControlName="car_plate">
           </mat-form-field>
         </div>
       
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
             <mat-label>Fb Link</mat-label>
             <input matInput type="email" placeholder="Enter Fb Link" formControlName="fblink">
           </mat-form-field>
           
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Telephone</mat-label>
             <input matInput placeholder="Enter Telephone" type="text" formControlName="tel_no">
           </mat-form-field>
       
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Mobile</mat-label>
             <input matInput placeholder="Enter Mobile" type="text" formControlName="mobile_no">
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Customer Status</mat-label>
             <mat-select formControlName="status">
               <mat-option value="Pending">Pending</mat-option>
@@ -94,8 +94,8 @@
             </mat-select>
           </mat-form-field>
         </div>
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="quarter-width">
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
             <mat-label>Leads</mat-label>
             <mat-select formControlName="leadUser" multiple (selectionChange)="onLeadChange($event.value)">
               <mat-option *ngFor="let leads of leadsUsers" [value]="leads.id">
@@ -104,7 +104,7 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="quarter-width">
+          <mat-form-field appearance="outline">
             <mat-label>Agents</mat-label>
             <mat-select formControlName="agentCust">
               <mat-option *ngFor="let agent of agentsSelected" [value]="agent.id">
@@ -120,21 +120,21 @@
       <mat-tab-group class="form-seperate">
         <mat-tab label="Address & Contact">
           <form [formGroup]="customerAddressForm">
-            <h6 class="heading-text" style="margin-bottom: 10px;">Customer Address</h6>
+            <h6 class="section-title">Customer Address</h6>
           
             <!-- Address Line (Half width) -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="span-2">
                 <mat-label>Address Lines</mat-label>
                 <textarea matInput placeholder="Enter Address Line" formControlName="perm_address_line"></textarea>
               </mat-form-field>
           
-              <mat-form-field class="quarter-width">
+              <mat-form-field appearance="outline">
                 <mat-label>Postal Code</mat-label>
                 <input matInput formControlName="perm_postal_code" placeholder="Postal Code" />
               </mat-form-field>
 
-              <mat-form-field class="one-fifth-width">
+              <mat-form-field appearance="outline">
                 <mat-label>Country</mat-label>
                 <mat-select formControlName="perm_country" (selectionChange)="onCountryChange($event.value)">
                   <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -147,8 +147,8 @@
             </div>
           
             <!-- Row with 4 fields -->
-            <div class="form-row">
-              <mat-form-field class="one-fifth-width">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
                 <mat-label>State</mat-label>
                 <mat-select formControlName="perm_state" (selectionChange)="onStateChange($event.value)">
                   <mat-option *ngFor="let state of states" [value]="state.id">
@@ -157,7 +157,7 @@
                 </mat-select>
               </mat-form-field>
           
-              <mat-form-field class="quarter-width">
+              <mat-form-field appearance="outline">
                 <mat-label>City</mat-label>
                 <mat-select formControlName="perm_city">
                   <mat-option *ngFor="let city of cities" [value]="city.id">
@@ -169,30 +169,31 @@
             </div>
           
             <!-- Staying Since (Full width) -->
-            <!-- <div class="form-row">
+            <!-- <div class="form-grid">
               
             </div> -->
           
             <!-- Checkbox -->
-            <div class="col-sm-12">
-              <input type="checkbox" formControlName="cus_same_as_permanent" /> Correspondence address same as Permanent Address
-            </div>
+            <label class="same-address">
+              <input type="checkbox" formControlName="cus_same_as_permanent" />
+              <span>Correspondence address same as Permanent Address</span>
+            </label>
           
-            <h6 class="heading-text">Correspondence Address</h6>
+            <h6 class="section-title">Correspondence Address</h6>
           
             <!-- Correspondence Address Line (Half width) -->
-            <div class="form-row">
-              <mat-form-field appearance="outline" class="half-width">
+            <div class="form-grid">
+              <mat-form-field appearance="outline" class="span-2">
                 <mat-label>Address Lines</mat-label>
                 <textarea matInput placeholder="Enter Address Line" formControlName="corr_address_line"></textarea>
               </mat-form-field>
           
-              <mat-form-field class="quarter-width">
+              <mat-form-field appearance="outline">
                 <mat-label>Postal Code</mat-label>
                 <input matInput formControlName="corr_postal_code" placeholder="Postal Code" />
               </mat-form-field>
 
-              <mat-form-field class="quarter-width">
+              <mat-form-field appearance="outline">
                 <mat-label>Country</mat-label>
                 <mat-select formControlName="corr_country" (selectionChange)="onCountryChange($event.value)">
                   <mat-option *ngFor="let country of countries" [value]="country.id">
@@ -205,8 +206,8 @@
             </div>
           
             <!-- Correspondence Address Row with 4 fields -->
-            <div class="form-row">
-              <mat-form-field class="quarter-width">
+            <div class="form-grid">
+              <mat-form-field appearance="outline">
                 <mat-label>State</mat-label>
                 <mat-select formControlName="corr_state" (selectionChange)="onStateChange($event.value)">
                   <mat-option *ngFor="let state of states" [value]="state.id">
@@ -215,7 +216,7 @@
                 </mat-select>
               </mat-form-field>
           
-              <mat-form-field class="quarter-width">
+              <mat-form-field appearance="outline">
                 <mat-label>City</mat-label>
                 <mat-select formControlName="corr_city">
                   <mat-option *ngFor="let city of cities" [value]="city.id">
@@ -227,35 +228,35 @@
           </form>
         </mat-tab>
 
-        <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="m-2" >
-          <div class="row m-3">
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+        <mat-tab label="Employment & Company"> <form [formGroup]="customerEmployemntForm" class="tab-form" >
+          <div class="form-grid">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Income</mat-label>
                 <input matInput formControlName="annual_income" placeholder="Annual Income" />
               </mat-form-field>
             </div>
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Business Type</mat-label>
                 <input matInput formControlName="business_type" placeholder="Business Type" />
               </mat-form-field>
             </div>
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Department</mat-label>
                 <input matInput formControlName="department" placeholder="Department" />
               </mat-form-field>
             </div>
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Employee No</mat-label>
                 <input matInput formControlName="employee_no" placeholder="Employee No" />
               </mat-form-field>
             </div>
            
-            <div class="col-sm-3">
-              <mat-form-field appearance="fill">
+            <div>
+              <mat-form-field appearance="outline">
                 <mat-label>Income Date</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="income_date">
                 <mat-datepicker-toggle  matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -263,27 +264,27 @@
               </mat-form-field>
             </div>
             
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Occupation Category</mat-label>
                 <input matInput formControlName="occupation_category" placeholder="Occupation Category" />
               </mat-form-field>
             </div>
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Position</mat-label>
                 <input matInput formControlName="position" placeholder="Position" />
               </mat-form-field>
             </div>
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Remarks</mat-label>
                 <input matInput formControlName="employment_remarks" placeholder="Remarks" />
               </mat-form-field>
             </div>
           
-            <div class="col-sm-3">
-              <mat-form-field class="example-full-width">
+            <div>
+              <mat-form-field appearance="outline" class="example-full-width">
                 <mat-label>Telephone No</mat-label>
                 <input matInput formControlName="telephone_no" placeholder="Telephone No" />
               </mat-form-field>
@@ -292,45 +293,42 @@
          
           </form></mat-tab>
         <mat-tab label="Family & Guarantor">
-          <form [formGroup]="customerRelationshipForm" class="m-2">
+          <form [formGroup]="customerRelationshipForm" class="tab-form">
 
-            <div class="row m-3">
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+            <div class="form-grid">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Name</mat-label>
                   <input matInput formControlName="relationship_name" placeholder="Name" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>IC</mat-label>
                   <input matInput formControlName="relationship_ic" placeholder="IC" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Mobile No</mat-label>
                   <input matInput formControlName="relationship_mobile_no" placeholder="Mobile No" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
+              <div>
                 
-                  <mat-form-field class="example-full-width">
+                  <mat-form-field appearance="outline" class="example-full-width">
                     <mat-label>Relationship</mat-label>
                     <input matInput formControlName="relationship" placeholder="Relationship" />
                   </mat-form-field>
               </div>
             </div>
-            <div class="row">
-              <div class="col-sm-12 d-flex flex-row-reverse">
-                <button mat-raised-button color="primary" type ="submit"  [disabled]="isView" (click)="onCustomerRelationSave()" >Insert</button>
-                
-              </div>
-            </div>  
+            <div class="form-actions">
+              <button mat-flat-button color="primary" type ="submit"  [disabled]="isView" (click)="onCustomerRelationSave()" >Insert</button>
+            </div>
           </form>
       
-          <div class="mat-elevation-z8">
-            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <div class="table-card"><div class="table-scroll">
+            <table mat-table [dataSource]="dataSource" class="table-nowrap">
               <!-- Name Column -->
               <ng-container matColumnDef="name">
                 <th mat-header-cell *matHeaderCellDef>Name</th>
@@ -357,8 +355,8 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record">
-                  <button mat-button color="accent" (click)="onRowClick(record)"><mat-icon>edit</mat-icon></button>
-                  <button mat-button color="warn" (click)="onRowDelete(record)"><mat-icon>delete</mat-icon></button>
+                  <button mat-icon-button color="accent" (click)="onRowClick(record)"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="onRowDelete(record)"><mat-icon>delete</mat-icon></button>
                 </td>
               </ng-container>
           
@@ -370,6 +368,7 @@
               ></tr>
             </table>
           
+            </div>
             <mat-paginator
               [pageSizeOptions]="[10, 20,30]"
               showFirstLastButtons
@@ -381,55 +380,55 @@
         </mat-tab>
 
         <mat-tab label="Banking">
-          <form [formGroup]="bankingForm" class="m-2">
-            <h6>Bank Info</h6>
-            <div class="row m-3">
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+          <form [formGroup]="bankingForm" class="tab-form">
+            <h6 class="section-title">Bank Info</h6>
+            <div class="form-grid">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Bank Name</mat-label>
                   <input matInput formControlName="bankName" placeholder="Bank Name" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Account No</mat-label>
                   <input matInput formControlName="accountNo" placeholder="Account No" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Bank Holder</mat-label>
                   <input matInput formControlName="bankHolder" placeholder="Bank Holder Name" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Bank Card</mat-label>
                   <input matInput formControlName="bankCard" placeholder="Bank Card" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Pin No</mat-label>
                   <input matInput formControlName="pinNo" placeholder="Pin No" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3">
-                <mat-form-field class="example-full-width">
+              <div>
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Remarks</mat-label>
                   <input matInput formControlName="remark" placeholder="Remarks" />
                 </mat-form-field>
               </div>
-              <div class="col-sm-3 d-flex justify-content-end">
-                <button mat-raised-button type="submit" color="primary" [disabled]="isView" (click)="onBankingSubmit()">Insert</button>
+              <div class="grid-action">
+                <button mat-flat-button type="submit" color="primary" [disabled]="isView" (click)="onBankingSubmit()">Insert</button>
               </div>
             </div>
           </form>
         
-          <h3>Bank Records</h3>
+          <h6 class="section-title">Bank Records</h6>
 
-          <div class="mat-elevation-z8">
-            <table mat-table [dataSource]="bankDataSource" class="mat-elevation-z8">
+          <div class="table-card"><div class="table-scroll">
+            <table mat-table [dataSource]="bankDataSource" class="table-nowrap">
               <!-- Name Column -->
               <ng-container matColumnDef="bankName">
                 <th mat-header-cell *matHeaderCellDef>Bank Name</th>
@@ -468,8 +467,8 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record; let i = index">
-                  <button mat-button color="accent" (click)="onBankEdit(record, i)"><mat-icon>edit</mat-icon></button>
-                  <button mat-button color="warn" (click)="onBankDelete(record, i)"><mat-icon>delete</mat-icon></button>
+                  <button mat-icon-button color="accent" (click)="onBankEdit(record, i)"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="onBankDelete(record, i)"><mat-icon>delete</mat-icon></button>
                 </td>
               </ng-container>
           
@@ -478,6 +477,7 @@
               <tr mat-row *matRowDef="let row; columns: displayedColumnsBank;"></tr>
             </table>
           
+            </div>
             <mat-paginator
               [pageSizeOptions]="[10, 20,30]"
               showFirstLastButtons
@@ -500,7 +500,7 @@
                 multiple
               />
             
-              <mat-form-field class="file-name-field">
+              <mat-form-field appearance="outline" class="file-name-field">
                 <mat-label>File Description</mat-label>
                 <input type="text" matInput formControlName="fileDescription" />
               </mat-form-field>
@@ -524,8 +524,9 @@
             
         
             <!-- Table Section -->
-            <div class="table-container" *ngIf="uploadedFiles.length > 0">
-              <table mat-table [dataSource]="uploadedDocumentSource" class="mat-elevation-z8">
+            <div class="table-card" *ngIf="uploadedFiles.length > 0">
+              <div class="table-scroll">
+              <table mat-table [dataSource]="uploadedDocumentSource" class="table-nowrap">
                 <!-- File Name Column -->
                 <ng-container matColumnDef="fileName">
                   <th mat-header-cell *matHeaderCellDef>File Name</th>
@@ -551,8 +552,8 @@
                 <ng-container matColumnDef="actions">
                   <th mat-header-cell *matHeaderCellDef> Actions </th>
                   <td mat-cell *matCellDef="let record let i=index">
-                    <button mat-button color="accent" (click)="onFileEdit(record,i)"><mat-icon>edit</mat-icon></button>
-                    <button mat-button color="warn" (click)="onFileDelete(record,i)"><mat-icon>delete</mat-icon></button>
+                    <button mat-icon-button color="accent" (click)="onFileEdit(record,i)"><mat-icon>edit</mat-icon></button>
+                    <button mat-icon-button color="warn" (click)="onFileDelete(record,i)"><mat-icon>delete</mat-icon></button>
                   </td>
                 </ng-container>
         
@@ -561,31 +562,30 @@
                 <!-- Table Row -->
                 <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               </table>
-        
-            
+              </div>
             </div>
           </div>
         
         </mat-tab>
 
         <mat-tab label="Remarks">
-          <form [formGroup]="remarksForm" class="m-2">
-            <h6>Remarks Forms</h6>
-            <div class="row m-9">
-              <div class="col-sm-9">
-                <mat-form-field class="example-full-width">
+          <form [formGroup]="remarksForm" class="tab-form">
+            <h6 class="section-title">Remarks</h6>
+            <div class="remark-row">
+              <div class="remark-field">
+                <mat-form-field appearance="outline" class="example-full-width">
                   <mat-label>Remarks</mat-label>
                   <textarea matInput formControlName="remark" placeholder="Enter Remarks"></textarea>
                 </mat-form-field>
               </div>
    
-              <div class="col-sm-3 d-flex justify-content-end">
-                <button mat-raised-button type="submit" color="primary" [disabled]="isView" (click)="onRemarksSubmit()">Insert</button>
+              <div class="grid-action">
+                <button mat-flat-button type="submit" color="primary" [disabled]="isView" (click)="onRemarksSubmit()">Insert</button>
               </div>
               
             </div>
           </form>
-          <div class="mat-elevation-z8">
+          <div class="table-card"><div class="table-scroll">
             <table mat-table [dataSource]="remarkDataSource">
               <!-- Name Column -->
           
@@ -608,8 +608,8 @@
               <ng-container matColumnDef="actions">
                 <th mat-header-cell *matHeaderCellDef>Actions</th>
                 <td mat-cell *matCellDef="let record; let i = index">
-                  <button mat-button color="accent" (click)="onRemarksEdit(record, i)"><mat-icon>edit</mat-icon></button>
-                  <button mat-button color="warn" (click)="onRemarksDelete(record, i)"><mat-icon>delete</mat-icon></button>
+                  <button mat-icon-button color="accent" (click)="onRemarksEdit(record, i)"><mat-icon>edit</mat-icon></button>
+                  <button mat-icon-button color="warn" (click)="onRemarksDelete(record, i)"><mat-icon>delete</mat-icon></button>
                 </td>
               </ng-container>
           
@@ -618,6 +618,7 @@
               <tr mat-row *matRowDef="let row; columns: displayedColumnsRemark;"></tr>
             </table>
           
+            </div>
             <mat-paginator
               [pageSizeOptions]="[10, 20,30]"
               showFirstLastButtons
@@ -630,9 +631,9 @@
 
       </mat-tab-group>
 
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" class="save-btn"  [disabled]="isView === true"  (click)="onMasterSubmit()">Save</button>
-        <button mat-raised-button (click)="masterCancel()">Cancel</button>
+      <div class="form-actions action-buttons">
+        <button mat-stroked-button (click)="masterCancel()">Cancel</button>
+        <button mat-flat-button color="primary" class="save-btn"  [disabled]="isView === true"  (click)="onMasterSubmit()">Save</button>
       </div>
     </mat-card-content>
   </mat-card>

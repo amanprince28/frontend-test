@@ -1,65 +1,96 @@
 <div class="login-container">
-  <div class="login-box">
-    <h2>Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
-      <!-- Username Field -->
-      <mat-form-field appearance="outline" class="form-control">
-        <mat-label>Username</mat-label>
-        <input matInput type="text" formControlName="email" placeholder="Enter your username" />
-        <mat-icon matPrefix>person</mat-icon>
-        <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Username is required</mat-error>
-        <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
-      </mat-form-field>
+  <!-- Decorative background shapes -->
+  <span class="bg-blob blob-1"></span>
+  <span class="bg-blob blob-2"></span>
 
-      <!-- Password Field -->
-      <mat-form-field appearance="outline" class="form-control">
-        <mat-label>Password</mat-label>
-        <input 
-          matInput 
-          [type]="hide ? 'password' : 'text'" 
-          formControlName="password" 
-          placeholder="Enter your password"
-          (keydown.enter)="onSubmit()" 
-        />
-        <mat-icon matPrefix>lock</mat-icon>
-        <button 
-          mat-icon-button 
-          matSuffix 
-          (click)="togglePasswordVisibility($event)" 
-          [attr.aria-label]="'Toggle password visibility'" 
-          [attr.aria-pressed]="!hide"
-          type="button"
+  <div class="login-shell">
+    <!-- Decorative panel (left on desktop, compact banner on phones) -->
+    <aside class="brand-panel">
+      <span class="ring ring-1"></span>
+      <span class="ring ring-2"></span>
+
+      <div class="brand-badge">
+        <mat-icon>lock</mat-icon>
+      </div>
+
+      <div class="brand-copy">
+        <h1>Welcome</h1>
+        <p>Sign in securely to access your account.</p>
+      </div>
+    </aside>
+
+    <!-- Sign-in form -->
+    <div class="login-box">
+      <div class="login-header">
+        <h2>Sign in to your account</h2>
+        <p class="login-subtitle">Enter your credentials to continue</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <!-- Username Field -->
+        <mat-form-field appearance="outline" class="login-field">
+          <mat-label>Username</mat-label>
+          <input matInput type="text" formControlName="email" placeholder="Enter your username" />
+          <mat-icon matPrefix>person</mat-icon>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Username is required</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Enter a valid email</mat-error>
+        </mat-form-field>
+
+        <!-- Password Field -->
+        <mat-form-field appearance="outline" class="login-field">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hide ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+            (keydown.enter)="onSubmit()"
+          />
+          <mat-icon matPrefix>lock</mat-icon>
+          <button
+            mat-icon-button
+            matSuffix
+            (click)="togglePasswordVisibility($event)"
+            [attr.aria-label]="'Toggle password visibility'"
+            [attr.aria-pressed]="!hide"
+            type="button"
+          >
+            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('pattern')">
+            Password must be at least 6 characters, include uppercase, lowercase, and a special character
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Submit Button -->
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loginForm.invalid || isLoading"
+          class="login-button"
         >
-          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+          <span>Login</span>
+          <mat-progress-spinner
+            *ngIf="isLoading"
+            mode="indeterminate"
+            diameter="20">
+          </mat-progress-spinner>
         </button>
-        <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-          Password is required
-        </mat-error>
-        <mat-error *ngIf="loginForm.get('password')?.hasError('pattern')">
-          Password must be at least 6 characters, include uppercase, lowercase, and a special character
-        </mat-error>
-      </mat-form-field>
-      
-      <!-- Submit Button -->
-      <button 
-        mat-raised-button 
-        color="primary" 
-        type="submit" 
-        [disabled]="loginForm.invalid || isLoading"  
-        class="login-button"
-      >
-        <span>Login</span>
-        <mat-progress-spinner 
-          *ngIf="isLoading" 
-          mode="indeterminate" 
-          diameter="20">
-        </mat-progress-spinner>
-      </button>
-    </form>
-    
-    <!-- Footer with app version -->
-    <div class="app-footer">
-      <p>Build Version: {{ appVersion }}</p>
+      </form>
+
+      <div class="secure-note">
+        <mat-icon>verified_user</mat-icon>
+        <span>Secure sign-in. Your session is protected.</span>
+      </div>
+
+      <!-- Footer with app version -->
+      <div class="app-footer">
+        <p>Build Version: {{ appVersion }}</p>
+      </div>
     </div>
   </div>
 </div>

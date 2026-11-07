@@ -1,13 +1,11 @@
-<div class="loan-management-container">
+<div class="page-container">
   <!-- Header Section -->
-  <div class="header-section">
-    <nav class="breadcrumb">
-      <h4>Payment</h4>
-    </nav>
-    
-    <form (ngSubmit)="filterTable()" class="search-form">
-      <div class="search-filter-create">
-        <mat-form-field class="search-input" appearance="outline">
+  <div class="page-header">
+    <h4 class="page-title">Payment</h4>
+  </div>
+
+  <form (ngSubmit)="filterTable()" class="filter-bar">
+        <mat-form-field class="filter-grow" appearance="outline">
           <mat-icon matPrefix>search</mat-icon>
           <input
             matInput
@@ -17,12 +15,10 @@
             required
           />
         </mat-form-field>
-        <button mat-raised-button color="primary" type="submit">
+        <button mat-flat-button color="primary" type="submit">
           Search
         </button>
-      </div>
-    </form>
-  </div>
+  </form>
 
   <!-- Main Loan Card -->
   <mat-card class="loan-card">
@@ -32,7 +28,7 @@
     
     <mat-card-content>
       <!-- Loan Details Form -->
-      <form [formGroup]="loanDetailsForm" class="loan-details-form">
+      <form [formGroup]="loanDetailsForm" class="loan-details-form form-grid">
         <div class="form-row">
           <mat-form-field appearance="outline" class="form-field quarter-width">
             <mat-icon matPrefix>attach_money</mat-icon>
@@ -75,7 +71,7 @@
         <!-- Installment Listing Tab -->
         <mat-tab label="Installment Listing">
           <div class="tab-content">
-            <form [formGroup]="installmentForm" (ngSubmit)="onAddInstallment()" class="installment-form">
+            <form [formGroup]="installmentForm" (ngSubmit)="onAddInstallment()" class="installment-form form-grid">
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   <mat-icon matPrefix>event</mat-icon>
@@ -118,8 +114,8 @@
               </div>
             </form>
       
-            <div class="table-container">
-              <table mat-table [dataSource]="installmentData" class="data-table mat-elevation-z8">
+            <div class="table-card"><div class="table-scroll">
+              <table mat-table [dataSource]="installmentData" class="data-table table-nowrap">
                 <ng-container matColumnDef="installment_date">
                   <th mat-header-cell *matHeaderCellDef>Installment Date</th>
                   <td mat-cell *matCellDef="let element">{{ element.installment_date | date: 'dd/MM/yyyy' }}</td>
@@ -154,6 +150,7 @@
                 <tr mat-footer-row *matFooterRowDef="displayedInstallmentColumns" class="sum-row"></tr>
               </table>
             </div>
+            </div>
             
             <div class="action-buttons">
               <button mat-raised-button color="primary" (click)="saveInstallmentListing()" [disabled]="userRole === 'AGENT' || userRole ==='LEAD'">
@@ -166,7 +163,7 @@
         <!-- Payment Listing Tab -->
         <mat-tab label="Payment Listing">
           <div class="tab-content">
-            <form [formGroup]="paymentForm" (ngSubmit)="onAddPayment()" class="payment-form">
+            <form [formGroup]="paymentForm" (ngSubmit)="onAddPayment()" class="payment-form form-grid">
               <div class="form-row">
                 <mat-form-field appearance="outline" class="form-field">
                   
@@ -237,8 +234,8 @@
               </div>
             </form>
       
-            <div class="table-container">
-              <table mat-table [dataSource]="paymentData" class="data-table mat-elevation-z8">
+            <div class="table-card"><div class="table-scroll">
+              <table mat-table [dataSource]="paymentData" class="data-table table-nowrap">
                 <ng-container matColumnDef="paymentType">
                   <th mat-header-cell *matHeaderCellDef>Payment Type</th>
                   <td mat-cell *matCellDef="let element">{{ element.paymentType }}</td>
@@ -286,6 +283,7 @@
                 <tr mat-row *matRowDef="let row; columns: displayedPaymentColumns"></tr>
               </table>
             </div>
+            </div>
             
             <div class="action-buttons">
               <button mat-raised-button color="primary" (click)="savePaymentListing()" [disabled]="userRole === 'AGENT' || userRole ==='LEAD'">
@@ -301,7 +299,8 @@
             <div class="sharing-container">
               <div class="sharing-table">
                 <h6>Agent Name: {{loanSharingData?.user1?.name}}</h6>
-                <table mat-table [dataSource]="dataSourceAgent1" class="data-table mat-elevation-z8">
+                <div class="table-card"><div class="table-scroll">
+                <table mat-table [dataSource]="dataSourceAgent1" class="data-table table-nowrap">
                   <ng-container matColumnDef="paymentType">
                     <th mat-header-cell *matHeaderCellDef>Payment Type</th>
                     <td mat-cell *matCellDef="let element">{{ element.paymentType }}</td>
@@ -317,11 +316,13 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
+                </div></div>
               </div>
               
               <div class="sharing-table">
                 <h6>Agent Name: {{loanSharingData?.user2?.name}}</h6>
-                <table mat-table [dataSource]="dataSourceAgent2" class="data-table mat-elevation-z8">
+                <div class="table-card"><div class="table-scroll">
+                <table mat-table [dataSource]="dataSourceAgent2" class="data-table table-nowrap">
                   <ng-container matColumnDef="paymentType">
                     <th mat-header-cell *matHeaderCellDef>Payment Type</th>
                     <td mat-cell *matCellDef="let element">{{ element.paymentType }}</td>
@@ -337,6 +338,7 @@
                   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
+                </div></div>
               </div>
             </div>
           </div>

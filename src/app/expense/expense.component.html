@@ -1,10 +1,10 @@
-<div class="expense-container">
-  <div class="breadcrumb-header">
-    <h5>Expenses Module</h5>
+<div class="page-container expense-container">
+  <div class="page-header">
+    <h5 class="page-title">Expenses Module</h5>
   </div>
 
-  <div class="selectors">
-    <mat-form-field appearance="outline">
+  <div class="filter-bar selectors">
+    <mat-form-field appearance="outline" class="filter-grow">
       <mat-label>Select Agents</mat-label>
       <mat-select
         [ngModel]="selectedAgentIds()"
@@ -24,7 +24,8 @@
     </mat-form-field>
     
 
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" class="year-field">
+      <mat-label>Year</mat-label>
       <mat-select placeholder="Select Year"
                   [ngModel]="selectedYear()"
                   (ngModelChange)="onYearChange($event)">
@@ -47,8 +48,9 @@
     <span>Loading data...</span>
   </div>
 
-  <div *ngIf="isDataLoaded()" class="table-container">
-    <table mat-table [dataSource]="expenses()" class="mat-elevation-z2 full-width-table">
+  <div *ngIf="isDataLoaded()" class="table-card">
+    <div class="table-scroll">
+    <table mat-table [dataSource]="expenses()" class="full-width-table">
       <!-- Agent Column -->
       <ng-container matColumnDef="agent">
         <th mat-header-cell *matHeaderCellDef>Agent</th>
@@ -82,8 +84,9 @@
       <tr mat-header-row *matHeaderRowDef="tableColumns()"></tr>
       <tr mat-row *matRowDef="let row; columns: tableColumns()"></tr>
     </table>
+    </div>
 
-    <div style="display: flex; justify-content: center; margin-top: 1rem;">
+    <div class="save-bar">
       <button mat-raised-button color="primary"
               (click)="saveExpenses()"
               [disabled]="isLoading()"

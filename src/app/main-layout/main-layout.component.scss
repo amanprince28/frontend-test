@@ -1,388 +1,190 @@
-@use '@angular/material' as mat;
-
+/* App shell: fixed-height container so the toolbar stays pinned while
+   only the page content scrolls. */
 .app-container {
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  min-height: 100vh;
-  background: #f5f5f5;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--app-bg);
 }
 
-.app-toolbar {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: mat.get-color-from-palette(mat.$indigo-palette, 500);
-  color: white;
-  padding: 0 1rem;
-  height: 4rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
-  .menu-button {
-    color: white;
-    margin-right: 1rem;
-  }
-
-  .app-title {
-    font-size: 1.25rem;
-    font-weight: 500;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 50vw;
-  }
-
-  .spacer {
-    flex: 1 1 auto;
-    min-width: 0.5rem;
-  }
-
-  .user-menu {
-    display: flex;
-    align-items: center;
-
-    .user-button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      color: white;
-      font-weight: 400;
-      text-transform: none;
-      padding: 0 0.5rem;
-      height: 100%;
-      min-width: 0;
-
-      .user-icon {
-        color: white;
-      }
-
-      .user-name {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: 120px;
-      }
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.1);
-      }
-    }
-  }
-}
-
+/* ---------------- Sidebar ---------------- */
 .app-sidenav {
-  width: 16rem;
-  background: white;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-  border-right: none;
-  overflow-y: auto;
-
-  .sidenav-header {
-    display: flex;
-    justify-content: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid mat.get-color-from-palette(mat.$gray-palette, 200);
-
-    .sidenav-logo {
-      width: 5rem;
-      height: auto;
-      object-fit: contain;
-    }
-  }
+  width: 248px;
+  background: var(--app-surface);
+  border-right: 1px solid var(--app-border);
+  box-shadow: none;
 
   .sidenav-menu {
     display: flex;
     flex-direction: column;
-    padding: 0.5rem 0;
+    gap: 2px;
+    padding: 12px 10px 24px;
+    /* Start the menu where the top toolbar ends (toolbar is 60px; its border sits on the last px). */
+    margin-top: 59px;
+    border-top: 1px solid var(--app-border);
 
     .menu-item {
+      position: relative;
       display: flex;
       align-items: center;
-      padding: 0.75rem 1rem;
-      margin: 0 0.5rem;
-      color: mat.get-color-from-palette(mat.$gray-palette, 800);
+      gap: 12px;
+      padding: 10px 12px;
+      color: #374151;
+      font-size: 0.9rem;
+      font-weight: 500;
       text-decoration: none;
-      border-radius: 4px;
-      transition: all 0.2s ease;
+      border-radius: 8px;
       white-space: nowrap;
+      transition: background-color 0.15s ease, color 0.15s ease;
 
       mat-icon {
-        margin-right: 1rem;
-        color: mat.get-color-from-palette(mat.$indigo-palette, 500);
         flex-shrink: 0;
+        font-size: 21px;
+        width: 21px;
+        height: 21px;
+        color: #8a93a6;
+        transition: color 0.15s ease;
       }
 
       .menu-label {
         flex: 1;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       &:hover {
-        background: mat.get-color-from-palette(mat.$indigo-palette, 50);
+        background: var(--app-primary-softer);
+        color: var(--app-primary-dark);
+
+        mat-icon { color: var(--app-primary); }
       }
 
       &.active {
-        background: mat.get-color-from-palette(mat.$indigo-palette, 100);
-        color: mat.get-color-from-palette(mat.$indigo-palette, 700);
-        font-weight: 500;
-        
-        mat-icon {
-          color: mat.get-color-from-palette(mat.$indigo-palette, 700);
+        background: var(--app-primary-soft);
+        color: var(--app-primary-dark);
+        font-weight: 600;
+
+        mat-icon { color: var(--app-primary); }
+
+        &::before {
+          content: '';
+          position: absolute;
+          left: -10px;
+          top: 8px;
+          bottom: 8px;
+          width: 3px;
+          border-radius: 0 3px 3px 0;
+          background: var(--app-primary);
         }
       }
     }
   }
 }
 
+/* ---------------- Content column ---------------- */
 .app-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 100%;
   min-width: 0;
+}
+
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 60px;
+  padding: 0 16px 0 8px;
+  background: var(--app-surface);
+  color: var(--app-text);
+  border-bottom: 1px solid var(--app-border);
+
+  .menu-button {
+    color: #4b5563;
+    margin-right: 8px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    .user-button {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 40px;
+      padding: 0 12px 0 8px;
+      min-width: 0;
+      color: var(--app-text);
+      font-weight: 500;
+      border-radius: 999px;
+      background: var(--app-primary-softer);
+
+      .user-icon {
+        color: var(--app-primary);
+        margin: 0;
+      }
+
+      .user-name {
+        max-width: 160px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 .main-content {
   flex: 1;
-  background: white;
+  min-width: 0;
   overflow-x: hidden;
-  padding-bottom: 2rem; 
 }
 
 .app-footer {
-  position: sticky;
-  bottom: 0;
-  width: 100%;
   display: flex;
   justify-content: flex-end;
-  padding: 0.5rem 1rem;
-  background: #f5f5f5;
-  font-size: 0.8rem;
-  color: #555;
-  border-top: 1px solid #ddd;
-}
+  padding: 8px var(--app-gutter);
+  font-size: 0.75rem;
+  color: var(--app-text-muted);
+  background: var(--app-surface);
+  border-top: 1px solid var(--app-border);
 
-.version {
-  font-weight: 500;
-}
-
-.user-dropdown {
-  .mat-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    height: 2.5rem;
-    line-height: 2.5rem;
-    min-width: 180px;
-
-    mat-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
+  .version {
+    font-weight: 500;
   }
 }
 
-/* ============================================= */
-/* 480px Breakpoint (Very Small Phones) */
-/* ============================================= */
-@media (max-width: 480px) {
-  html {
-    font-size: 14px;
-  }
-
+/* ---------------- Small screens ---------------- */
+@media (max-width: 600px) {
   .app-toolbar {
-    height: 3rem;
-    padding: 0 0.5rem;
+    height: 56px;
+    padding: 0 8px 0 4px;
 
-    .menu-button {
-      margin-right: 0.5rem;
-      min-width: 36px;
+    .menu-button { margin-right: 4px; }
+
+    .user-menu .user-button {
       padding: 0 8px;
-    }
 
-    .app-title {
-      font-size: 0.9rem;
-      max-width: 40vw;
-    }
-
-    .user-button {
-      padding: 0 0.25rem;
-
-      .user-name {
-        display: none;
-      }
+      .user-name { max-width: 110px; }
     }
   }
 
   .app-sidenav {
-    width: 12rem;
-    top: 3rem;
+    width: 240px;
 
-    .sidenav-header {
-      padding: 0.5rem 0;
-
-      .sidenav-logo {
-        width: 4rem;
-      }
-    }
-
-    .sidenav-menu .menu-item {
-      padding: 0.5rem;
-      margin: 0 0.25rem;
-      font-size: 0.85rem;
-
-      mat-icon {
-        margin-right: 0.5rem;
-        font-size: 1rem;
-      }
-    }
-  }
-
-  .main-content {
-    padding: 0.5rem;
+    .sidenav-menu { margin-top: 55px; }
   }
 }
 
-/* ============================================= */
-/* 360px Breakpoint (Extremely Small Phones) */
-/* ============================================= */
-@media (max-width: 360px) {
-  html {
-    font-size: 13px;
-    transform: scale(0.95);
-    transform-origin: top left;
-    width: calc(100% / 0.95);
-    height: calc(100% / 0.95);
-  }
-
-  .app-container {
-    min-height: calc(100vh / 0.95);
-  }
-
-  .app-toolbar {
-    height: 2.75rem;
-    padding: 0 0.25rem;
-
-    .menu-button {
-      margin-right: 0.25rem;
-      min-width: 32px;
-      padding: 0 4px;
-    }
-
-    .app-title {
-      font-size: 0.8rem;
-      max-width: 35vw;
-    }
-
-    .spacer {
-      min-width: 0.25rem;
-    }
-  }
-
-  .app-sidenav {
-    width: 10rem;
-    top: 2.75rem;
-
-    .sidenav-menu .menu-item {
-      padding: 0.4rem;
-      margin: 0 0.1rem;
-      font-size: 0.8rem;
-
-      mat-icon {
-        margin-right: 0.4rem;
-        font-size: 0.9rem;
-      }
-    }
-  }
-
-  .main-content {
-    padding: 0.25rem;
-  }
-}
-
-/* ============================================= */
-/* Landscape Mode Optimizations */
-/* ============================================= */
-@media (max-width: 480px) and (orientation: landscape) {
-  html {
-    transform: scale(0.85);
-    transform-origin: top left;
-    width: calc(100% / 0.85);
-    height: calc(100% / 0.85);
-  }
-
-  .app-container {
-    min-height: calc(100vh / 0.85);
-  }
-
-  .app-toolbar {
-    height: 2.5rem;
-    padding: 0;
-
-    .app-title {
-      display: none;
-    }
-
-    .user-button {
-      .user-icon {
-        font-size: 1rem;
-      }
-    }
-  }
-
-  .app-sidenav {
-    width: 9rem;
-    top: 2.5rem;
-
-    .sidenav-menu .menu-item {
-      padding: 0.3rem 0.5rem;
-      font-size: 0.75rem;
-
-      mat-icon {
-        margin-right: 0.3rem;
-        font-size: 0.8rem;
-      }
-    }
-  }
-
-  .main-content {
-    padding: 0;
-  }
-}
-
-@media (max-width: 360px) and (orientation: landscape) {
-  html {
-    transform: scale(0.8);
-    transform-origin: top left;
-    width: calc(100% / 0.8);
-    height: calc(100% / 0.8);
-  }
-
-  .app-container {
-    min-height: calc(100vh / 0.8);
-  }
-
-  .app-toolbar {
-    height: 2.25rem;
-
-    .menu-button {
-      min-width: 28px;
-    }
-  }
-
-  .app-sidenav {
-    width: 8rem;
-    top: 2.25rem;
-
-    .sidenav-menu .menu-item {
-      padding: 0.25rem 0.4rem;
-      font-size: 0.7rem;
-
-      mat-icon {
-        margin-right: 0.25rem;
-        font-size: 0.75rem;
-      }
-    }
+@media (max-width: 380px) {
+  .app-toolbar .user-menu .user-button .user-name {
+    display: none;
   }
 }

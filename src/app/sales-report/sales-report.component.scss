@@ -1,130 +1,71 @@
-.loan-report-container {
-  padding: 20px;
-  font-family: 'Roboto', sans-serif;
+/* Page layout, filter bar and table card come from src/styles.scss. */
 
-  .spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 40px 0;
-  }
-
-  .filter-section {
-    margin-bottom: 20px;
-
-    h2 {
-      color: #3f51b5;
-      margin-bottom: 20px;
-      font-weight: 500;
-    }
-
-    .filter-form {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      align-items: center;
-
-      mat-form-field {
-        min-width: 200px;
-        flex: 1;
-      }
-
-      .search-button {
-        margin-top: 5px;
-        flex: 0 0 auto;
-      }
-    }
-
-    .selected-agents {
-      margin-top: 15px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-
-      mat-chip {
-        margin: 0;
-      }
-    }
-  }
-
-  .table-container {
-    overflow-x: auto;
-    border-radius: 4px;
-    background: white;
-    border: 1px solid #e0e0e0;
-
-    table.loan-report-table {
-      width: 100%;
-      min-width: 1200px;
-      border-collapse: collapse;
-      text-align: center;
-
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px 10px;
-        font-size: 14px;
-      }
-
-      th {
-        background-color: #3f51b5;
-        color: white;
-        font-weight: 600;
-        text-align: center;
-      }
-
-      tr:nth-child(even) {
-        background-color: #fafafa;
-      }
-
-      tr:hover {
-        background-color: #f1f8ff;
-      }
-
-      td.agent-cell {
-        font-weight: 500;
-        text-align: left;
-        color: #3f51b5;
-      }
-
-      td.profit-cell {
-        font-weight: 500;
-        background-color: #e8f5e9;
-      }
-
-      td.amount-positive {
-        background-color: #c8e6c9;
-        font-weight: 600;
-      }
-
-      td.amount-negative {
-        background-color: #ffcdd2;
-        font-weight: 600;
-      }
-    }
-  }
+.filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-// Responsive adjustments
-@media (max-width: 768px) {
-  .loan-report-container {
-    padding: 10px;
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 0;
+}
 
-    .filter-form {
-      flex-direction: column;
-      align-items: stretch !important;
+table.loan-report-table {
+  width: 100%;
+  min-width: 1400px;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.85rem;
 
-      mat-form-field {
-        width: 100%;
-      }
+  th,
+  td {
+    padding: 10px 12px;
+    border: 1px solid #eef0f5;
+    white-space: nowrap;
+  }
 
-      .search-button {
-        align-self: flex-end;
-      }
-    }
+  thead th {
+    background: #f8f9fc;
+    color: #4b5563;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-color: var(--app-border);
+  }
 
-    .table-container {
-      border: 1px solid #e0e0e0;
-    }
+  thead tr:first-child th[colspan] {
+    background: var(--app-primary-soft);
+    color: var(--app-primary-dark);
+  }
+
+  tbody td:first-child {
+    text-align: left;
+    font-weight: 600;
+    position: sticky;
+    left: 0;
+    background: #fff;
+  }
+
+  tbody tr:nth-child(even) td {
+    background: #fbfcfe;
+  }
+
+  tbody tr:hover td {
+    background: var(--app-primary-softer);
+  }
+
+  td.amount-positive {
+    background-color: #e3f4e4 !important;
+    color: #1b5e20;
+    font-weight: 600;
+  }
+
+  td.amount-negative {
+    background-color: #fdecea !important;
+    color: #b42318;
+    font-weight: 600;
   }
 }

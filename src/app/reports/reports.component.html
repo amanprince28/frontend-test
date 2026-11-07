@@ -1,10 +1,10 @@
-<div class="reporting-container">
+<div class="page-container reporting-container">
   <div class="user-management-container">
-    <nav class="breadcrumb">
-      <h4>Reporting</h4>
-    </nav>
+    <div class="page-header">
+      <h4 class="page-title">Reporting</h4>
+    </div>
 
-    <form [formGroup]="form" class="report-form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form" class="filter-bar report-form" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline">
         <mat-label>Report Type</mat-label>
         <mat-select formControlName="reportType">
@@ -43,24 +43,27 @@
         </mat-form-field>
       </ng-container>
 
-      <div class="action-buttons">
-        <button mat-raised-button color="primary" type="submit">Submit</button>
-        <button mat-raised-button color="accent" type="button" (click)="exportXLSX()">Export To XLS</button>
+      <div class="filter-actions">
+        <button mat-flat-button color="primary" type="submit">Submit</button>
+        <button mat-stroked-button color="primary" type="button" (click)="exportXLSX()">
+          Export To XLS
+        </button>
       </div>
     </form>
   
    
     
 
-    <div class="report-table" *ngIf="showTable">
+    <div class="report-table table-card" *ngIf="showTable">
       <div *ngIf="errorMessage" class="no-data-message">{{ errorMessage }}</div>
+      <div class="table-scroll">
 
       <!-- Loan Report Table -->
       <table
         *ngIf="selectedReportType === 'loan'"
         mat-table
         [dataSource]="loanDataSource"
-        class="mat-elevation-z2"
+        class="report-grid"
         matSort
       >
         <ng-container matColumnDef="sucessDate">
@@ -172,6 +175,7 @@
         <tr mat-header-row *matHeaderRowDef="loanDisplayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: loanDisplayedColumns"></tr>
       </table>
+      </div>
 
       <mat-paginator
         *ngIf="selectedReportType === 'loan'"
@@ -182,11 +186,12 @@
       ></mat-paginator>
 
       <!-- Payment Report Table -->
+      <div class="table-scroll">
       <table
         *ngIf="selectedReportType === 'payment'"
         mat-table
         [dataSource]="paymentDataSource"
-        class="mat-elevation-z2"
+        class="report-grid"
         matSort
       >
         <ng-container matColumnDef="paymntin_out">
@@ -240,6 +245,7 @@
         <tr mat-header-row *matHeaderRowDef="paymentDisplayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: paymentDisplayedColumns"></tr>
       </table>
+      </div>
       <mat-paginator
         *ngIf="selectedReportType === 'payment'"
         #paymentPaginator

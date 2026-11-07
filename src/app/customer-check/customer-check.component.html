@@ -1,35 +1,27 @@
-<div class="loan-management-container">
-  <div class="header-section">
-    <nav class="breadcrumb">
-      <h4>Customer Check</h4>
-    </nav>
-
-    <div class="controls-container">
-      <div class="search-filter-group">
-        <mat-form-field appearance="outline" class="search-input">
-          <input
-            matInput
-            [(ngModel)]="searchQuery"
-            placeholder="Customer Name/Customer IC/Passport"
-            name="searchQuery"
-            (keydown.enter)="filterTable()"
-          />
-        </mat-form-field>
-        <button
-          mat-stroked-button
-          color="primary"
-          (click)="filterTable()"
-          class="filter-btn"
-        >
-          Search
-        </button>
-      </div>
-    </div>
+<div class="page-container">
+  <div class="page-header">
+    <h4 class="page-title">Customer Check</h4>
   </div>
 
-  <div class="table-wrapper mat-elevation-z8">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="loan-table">
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-grow">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Customer Name/Customer IC/Passport"
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <button mat-flat-button color="primary" (click)="filterTable()">
+      Search
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" class="table-nowrap">
         <!-- Customer Name Column -->
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef>Customer Name</th>

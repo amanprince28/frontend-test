@@ -1,42 +1,37 @@
-<div class="loan-management-container">
-  <div class="header-section">
-    <nav class="breadcrumb">
-      <h4>Customer Management</h4>
-    </nav>
-    
-    <div class="controls-container">
-      <div class="search-filter-group">
-        <mat-form-field appearance="outline" class="search-input">
-          <input
-            matInput
-            [(ngModel)]="searchQuery"
-            placeholder="Search by name, IC, or mobile..."
-            name="searchQuery"
-            (keydown.enter)="filterTable()"
-          />
-        </mat-form-field>
-        <button mat-stroked-button color="primary" (click)="filterTable()" class="filter-btn">
-          Filter
-        </button>
-      </div>
-      
-      <div class="add-btn-container">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="onAddClick()"
-          [disabled]="userRole === 'AGENT' || userRole ==='LEAD' || userRole ==='VIEWER'"
-          class="add-btn"
-        >
-          Add Customer
-        </button>
-      </div>
-    </div>
+<div class="page-container">
+  <div class="page-header">
+    <h4 class="page-title">Customer Management</h4>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onAddClick()"
+      [disabled]="userRole === 'AGENT' || userRole ==='LEAD' || userRole ==='VIEWER'"
+      class="add-btn"
+    >
+      <mat-icon>add</mat-icon>
+      Add Customer
+    </button>
   </div>
 
-  <div class="table-wrapper mat-elevation-z8">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="loan-table">
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-grow">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Search by name, IC, or mobile..."
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="filterTable()">
+      Filter
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" class="table-nowrap">
         <!-- Customer ID Column -->
         <ng-container matColumnDef="userId">
           <th mat-header-cell *matHeaderCellDef>Customer ID</th>
@@ -95,7 +90,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element" class="actions-cell">
-            <div class="action-buttons">
+            <div class="action-icons">
               <button
                 mat-icon-button
                 color="primary"

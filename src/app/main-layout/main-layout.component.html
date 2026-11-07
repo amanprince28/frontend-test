@@ -1,9 +1,10 @@
 <mat-drawer-container class="app-container" autosize>
-  <mat-drawer #drawer class="app-sidenav" mode="side" [opened]="isDrawerOpen">
-    <div class="sidenav-header">
-      <img src="assets/logo.jpeg" alt="Logo" class="sidenav-logo" />
-    </div>
-
+  <mat-drawer
+    #drawer
+    class="app-sidenav"
+    [mode]="isDrawerOpen ? 'side' : 'over'"
+    [opened]="isDrawerOpen"
+  >
     <nav class="sidenav-menu">
 
       <!-- Customer - Visible for all users -->
@@ -24,7 +25,7 @@
         routerLinkActive="active"
         (click)="closeDrawerOnMobile()"
       >
-        <mat-icon>money</mat-icon>
+        <mat-icon>request_quote</mat-icon>
         <span class="menu-label">Loan</span>
       </a>
 
@@ -59,7 +60,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>group</mat-icon>
+          <mat-icon>person_search</mat-icon>
           <span class="menu-label">Customer Check</span>
         </a>
 
@@ -69,7 +70,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>money</mat-icon>
+          <mat-icon>payments</mat-icon>
           <span class="menu-label">Payment</span>
         </a>
 
@@ -80,7 +81,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>report</mat-icon>
+          <mat-icon>assessment</mat-icon>
           <span class="menu-label">Reporting</span>
         </a>
 
@@ -90,7 +91,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>money</mat-icon>
+          <mat-icon>receipt_long</mat-icon>
           <span class="menu-label">Expenses</span>
         </a>
 
@@ -100,7 +101,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>check</mat-icon>
+          <mat-icon>fact_check</mat-icon>
           <span class="menu-label">Loan Check</span>
         </a>
 
@@ -120,7 +121,7 @@
           routerLinkActive="active"
           (click)="closeDrawerOnMobile()"
         >
-          <mat-icon>reorder</mat-icon>
+          <mat-icon>bar_chart</mat-icon>
           <span class="menu-label">Sales Report</span>
         </a>
 

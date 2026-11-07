@@ -1,38 +1,37 @@
-<div class="user-management-container">
-  <nav class="breadcrumb">
-    <h4>User Management</h4>
-  </nav>
-
-  <div class="controls-container">
-    <div class="search-filter-group">
-      <mat-form-field class="search-input" appearance="outline">
-        <input
-          matInput
-          [(ngModel)]="searchQuery"
-          placeholder="Eg. value"
-          name="searchQuery"
-          (keydown.enter)="filterTable()"
-        />
-      </mat-form-field>
-      <button mat-stroked-button color="primary" (click)="filterTable()" class="filter-btn">
-        Filter
-      </button>
-      <button
-      mat-raised-button
+<div class="page-container">
+  <div class="page-header">
+    <h4 class="page-title">User Management</h4>
+    <button
+      mat-flat-button
       color="primary"
       (click)="onAddClick()"
       [disabled]="userRole === 'AGENT'"
       class="add-btn"
     >
+      <mat-icon>add</mat-icon>
       Add User
     </button>
-    </div>
-   
   </div>
 
-  <div class="table-container mat-elevation-z8">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" class="user-table">
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-grow">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Search users..."
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <button mat-stroked-button color="primary" (click)="filterTable()">
+      Filter
+    </button>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" class="table-nowrap">
         <ng-container matColumnDef="customerId">
           <th mat-header-cell *matHeaderCellDef>User Id</th>
           <td mat-cell *matCellDef="let element">{{ element.generate_id }}</td>
@@ -56,14 +55,16 @@
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Status</th>
           <td mat-cell *matCellDef="let element">
-            {{ element.status ? "Active" : "Inactive" }}
+            <span class="status-pill" [class.inactive]="!element.status">
+              {{ element.status ? "Active" : "Inactive" }}
+            </span>
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element" class="actions-cell">
-            <div class="action-buttons">
+            <div class="action-icons">
               <button
                 mat-icon-button
                 color="primary"

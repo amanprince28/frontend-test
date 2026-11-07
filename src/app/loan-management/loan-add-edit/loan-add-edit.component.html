@@ -1,5 +1,5 @@
-<div class="loan-add-container">
-  <h2>
+<div class="page-container loan-add-container">
+  <h2 class="page-title">
     Loan - {{ action | titlecase }}
     <ng-container *ngIf="(action === 'edit' || action === 'view') && loan_id_header">
       {{ loan_id_header }}
@@ -8,10 +8,10 @@
   <mat-card class="card">
     <!-- Agent Details -->
     <div class="section">
-      <h5>Agent Details</h5>
+      <h5 class="section-title">Agent Details</h5>
       <form [formGroup]="agentDetailsForm">
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="search-field">
+          <mat-form-field appearance="outline" class="search-field">
             <mat-label>Agent Name</mat-label>
             <input formControlName="agentName" matInput required />
             <button mat-icon-button matSuffix (click)="openAgentSearch()">
@@ -19,16 +19,24 @@
             </button>
           </mat-form-field>
 
-          <mat-icon class="clickable-icon" (click)="openAgentSearch('two')">add</mat-icon>
+          <button
+            mat-icon-button
+            type="button"
+            class="clickable-icon"
+            aria-label="Add second agent"
+            (click)="openAgentSearch('two')"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
 
-          <mat-form-field appearance="fill" class="agent-id-field">
+          <mat-form-field appearance="outline" class="agent-id-field">
             <mat-label>Agent ID</mat-label>
             <input formControlName="agentId" matInput required />
           </mat-form-field>
         </div>
 
         <div *ngIf="secondAgent" class="fields-row">
-          <mat-form-field appearance="fill" class="search-field">
+          <mat-form-field appearance="outline" class="search-field">
             <mat-label>Agent Name</mat-label>
             <input formControlName="agentName1" matInput required />
             <button mat-icon-button matSuffix (click)="openAgentSearch()">
@@ -36,7 +44,7 @@
             </button>
           </mat-form-field>
 
-          <mat-form-field appearance="fill" class="agent-id-field">
+          <mat-form-field appearance="outline" class="agent-id-field">
             <mat-label>Agent ID</mat-label>
             <input formControlName="agentId1" matInput required />
           </mat-form-field>
@@ -46,21 +54,21 @@
 
     <!-- Customer Details -->
     <div class="section">
-      <h5>Customer Details</h5>
+      <h5 class="section-title">Customer Details</h5>
       <form [formGroup]="customerDetailsForm">
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="search-field">
+          <mat-form-field appearance="outline" class="search-field">
             <mat-label>Customer IC/Passport</mat-label>
             <input formControlName="customerIc" matInput required />
             <button mat-icon-button matSuffix (click)="openCustomerSearch()">
               <mat-icon>search</mat-icon>
             </button>
           </mat-form-field>
-          <mat-form-field appearance="fill" class="customer-name-field">
+          <mat-form-field appearance="outline" class="customer-name-field">
             <mat-label>Customer Name</mat-label>
             <input formControlName="customerName" matInput required />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="mobile-field">
+          <mat-form-field appearance="outline" class="mobile-field">
             <mat-label>Mobile</mat-label>
             <input formControlName="mobile" matInput type="tel" required />
           </mat-form-field>
@@ -70,22 +78,22 @@
 
     <!-- Loan Details -->
     <div class="section">
-      <h5>Loan Details</h5>
+      <h5 class="section-title">Loan Details</h5>
       <form [formGroup]="loanDetailsForm">
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="amount-field">
+          <mat-form-field appearance="outline" class="amount-field">
             <mat-label>Principal Amount</mat-label>
             <input formControlName="principal_amount" matInput type="number" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="amount-field">
+          <mat-form-field appearance="outline" class="amount-field">
             <mat-label>Deposit Amount</mat-label>
             <input formControlName="deposit_amount" matInput type="number" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="amount-field">
+          <mat-form-field appearance="outline" class="amount-field">
             <mat-label>Application Fees</mat-label>
             <input formControlName="application_fee" matInput type="number" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="date-field">
+          <mat-form-field appearance="outline" class="date-field">
             <mat-label>Repayment Date</mat-label>
             <input matInput [matDatepicker]="picker" formControlName="repayment_date" />
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
@@ -94,7 +102,7 @@
         </div>
 
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="period-field">
+          <mat-form-field appearance="outline" class="period-field">
             <mat-label>Unit Date Period</mat-label>
             <mat-select formControlName="unit_of_date" required>
               <mat-option *ngFor="let unit of dateUnit" [value]="unit.unit">
@@ -102,55 +110,55 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field appearance="fill" class="period-field">
+          <mat-form-field appearance="outline" class="period-field">
             <mat-label>Date Period</mat-label>
             <input formControlName="date_period" matInput type="number" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="term-field">
+          <mat-form-field appearance="outline" class="term-field">
             <mat-label>Repayment Terms</mat-label>
             <input formControlName="repayment_term" matInput type="number" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="interest-field">
+          <mat-form-field appearance="outline" class="interest-field">
             <mat-label>Interest</mat-label>
             <input formControlName="interest" matInput type="number" />
           </mat-form-field>
         </div>
 
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="amount-given-field">
+          <mat-form-field appearance="outline" class="amount-given-field">
             <mat-label>Amount Given</mat-label>
             <input formControlName="amount_given" matInput [readonly]="readonly" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="interest-amount-field">
+          <mat-form-field appearance="outline" class="interest-amount-field">
             <mat-label>Interest Amount</mat-label>
             <input formControlName="interest_amount" matInput [readonly]="readonly" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="payment-field">
+          <mat-form-field appearance="outline" class="payment-field">
             <mat-label>Payment Per Term</mat-label>
             <input formControlName="payment_per_term" matInput [readonly]="readonly" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="remark-field">
+          <mat-form-field appearance="outline" class="remark-field">
             <mat-label>Loan Remark</mat-label>
             <input formControlName="loan_remark" matInput />
           </mat-form-field>
         </div>
 
         <div class="fields-row">
-          <mat-form-field appearance="fill" class="profit-field">
+          <mat-form-field appearance="outline" class="profit-field">
             <mat-label>Estimated Profit</mat-label>
             <input formControlName="estimated_profit" matInput />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="profit-field">
+          <mat-form-field appearance="outline" class="profit-field">
             <mat-label>Actual Profit</mat-label>
             <input formControlName="actual_profit" matInput [readonly]="readonly" />
           </mat-form-field>
-          <mat-form-field appearance="fill" class="loan-date-field">
+          <mat-form-field appearance="outline" class="loan-date-field">
             <mat-label>Loan Date</mat-label>
             <input matInput [matDatepicker]="picker1" formControlName="loan_date" />
             <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
             <mat-datepicker #picker1></mat-datepicker>
           </mat-form-field>
-          <mat-form-field appearance="fill" class="status-field">
+          <mat-form-field appearance="outline" class="status-field">
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">
               <mat-option *ngFor="let element of loanStatus" [value]="element.status">
@@ -160,7 +168,7 @@
           </mat-form-field>
         </div>
         <div class="fields-row">
-          <mat-form-field appearance="fill">
+          <mat-form-field appearance="outline">
             <mat-label>Goodwill</mat-label>
             <input formControlName="goodwill" matInput type="number" />
           </mat-form-field>
@@ -170,9 +178,9 @@
   </mat-card>
 
   <!-- Footer Buttons -->
-  <div class="action-buttons">
-    <button mat-stroked-button color="warn" class="cancel-btn" (click)="cancel()">Cancel</button>
-    <button mat-raised-button color="primary" class="save-btn" (click)="saveLoan()" [disabled]="userRole === 'AGENT' ||userRole ==='VIEWER' || isSaving || isCalculatingGoodwill">
+  <div class="form-actions action-buttons">
+    <button mat-stroked-button class="cancel-btn" (click)="cancel()">Cancel</button>
+    <button mat-flat-button color="primary" class="save-btn" (click)="saveLoan()" [disabled]="userRole === 'AGENT' ||userRole ==='VIEWER' || isSaving || isCalculatingGoodwill">
       <ng-container *ngIf="!isSaving">{{ isEditMode ? 'Update' : 'Save' }}</ng-container>
       <ng-container *ngIf="isSaving">
         <span class="saving-state">

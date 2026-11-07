@@ -1,9 +1,9 @@
-<div class="user-management-container">
-  <nav class="breadcrumb">
-    <h4>Loan Check</h4>
-  </nav>
+<div class="page-container">
+  <div class="page-header">
+    <h4 class="page-title">Loan Check</h4>
+  </div>
 
-  <form [formGroup]="form" (ngSubmit)="fetchData()" class="search-row">
+  <form [formGroup]="form" (ngSubmit)="fetchData()" class="filter-bar">
     <mat-form-field appearance="outline">
       <mat-label>Select Agents</mat-label>
       <mat-select
@@ -50,17 +50,19 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">Search</button>
+    <button mat-flat-button color="primary" type="submit">Search</button>
   </form>
   <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">
     <mat-chip *ngFor="let id of selectedAgentIds()">
       {{ getAgentNameById(id) }}
     </mat-chip>
   </div>
+  <div class="table-card">
+  <div class="table-scroll">
   <table
     mat-table
     [dataSource]="dataSource"
-    class="mat-elevation-z8 full-width"
+    class="full-width table-nowrap"
   >
     <ng-container matColumnDef="agent">
       <th mat-header-cell *matHeaderCellDef>Agent</th>
@@ -107,6 +109,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+  </div>
 
   <mat-paginator
   [length]="totalCount"
@@ -116,4 +119,5 @@
   (page)="onPageChange($event)"
   #paginator>
 </mat-paginator>
+  </div>
 </div>

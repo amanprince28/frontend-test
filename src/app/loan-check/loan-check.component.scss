@@ -1,111 +1,26 @@
-.user-management-container {
-  padding: 1rem;
+/* Page layout, filter bar and table card come from src/styles.scss. */
 
-  .breadcrumb {
-    margin-bottom: 1rem;
+.status-field {
+  flex: 0 1 200px !important;
+}
 
-    h4 {
-      margin: 0;
-      font-weight: 600;
-    }
-  }
-
-  .search-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-end; // aligns all items to bottom
-    margin-bottom: 1.5rem;
-
-    mat-form-field {
-      flex: 1 1 220px;
-      min-width: 200px;
-    }
-
-    .action-buttons {
-      display: flex;
-      align-items: flex-end; // button aligns with bottom of mat-form-field
-      height: 72px; // matches mat-form-field including label height
-    }
-
-    button {
-      margin: 0;
-      padding: 0 24px;
-      height: 56px; // same as input height
-      line-height: 56px;
-    }
-  }
-
-  table {
-    width: 100%;
-
-    th,
-    td {
-      text-align: left;
-      padding: 0.75rem;
-      word-break: break-word;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: 600;
-    }
+@media (max-width: 600px) {
+  .status-field {
+    flex: 1 1 100% !important;
   }
 }
 
-@media (max-width: 768px) {
-  .search-row {
-    flex-direction: column;
-
-    mat-form-field,
-    .action-buttons {
-      width: 100%;
-    }
-
-    .action-buttons {
-      justify-content: flex-end;
-    }
-
-    button {
-      width: 100%;
-    }
-  }
-}
-
+/* Row highlight colours (overdue states) */
 .dark-red {
-  background-color: #8B0000 !important; // dark red
-  color: #ffffff;
+  background-color: #8b0000 !important;
+  color: #ffffff !important;
 }
 
 .pink-red {
-  background-color: #FFB6C1 !important; // light pink red
-  color: #000000;
+  background-color: #ffb6c1 !important;
+  color: #000000 !important;
 }
 
 .normal {
   background-color: transparent;
-}
-
-.select-all-option {
-  font-weight: bold;
-  background-color: #f5f5f5;
-  
-  &:hover {
-    background-color: #e0e0e0 !important;
-  }
-}
-
-.select-all-text {
-  color: #3f51b5; // Primary color
-}
-
-.selected-agents {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  
-  mat-chip {
-    background: #3f51b5;
-    color: white;
-  }
 }

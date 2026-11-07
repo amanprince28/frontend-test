@@ -1,0 +1,433 @@
+/* =====================================================================
+   Global styles
+   Shared look and feel for every page: page layout, filter bars,
+   table cards, forms, dialogs and snackbars.
+   ===================================================================== */
+
+:root {
+  --app-primary: #3f51b5;
+  --app-primary-dark: #303f9f;
+  --app-primary-soft: #e8eaf6;
+  --app-primary-softer: #f3f4fb;
+  --app-bg: #f4f6fb;
+  --app-surface: #ffffff;
+  --app-border: #e3e7ef;
+  --app-border-strong: #d4d9e4;
+  --app-text: #1f2937;
+  --app-text-muted: #6b7280;
+  --app-radius: 12px;
+  --app-radius-sm: 8px;
+  --app-shadow: 0 1px 2px rgba(16, 24, 40, 0.04), 0 1px 3px rgba(16, 24, 40, 0.06);
+  --app-shadow-lg: 0 10px 30px rgba(16, 24, 40, 0.08);
+  --app-gutter: 24px;
+}
+
+@media (max-width: 960px) {
+  :root { --app-gutter: 16px; }
+}
+
+@media (max-width: 480px) {
+  :root { --app-gutter: 12px; }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  color: var(--app-text);
+  background: var(--app-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+mat-form-field { width: 100%; }
+
+/* ---------------------------------------------------------------------
+   Page layout
+   --------------------------------------------------------------------- */
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  padding: var(--app-gutter);
+}
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.page-title,
+.page-header h2,
+.page-header h3,
+.page-header h4,
+.page-header h5 {
+  margin: 0;
+  font-size: 1.375rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--app-text);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 480px) {
+  .page-title,
+  .page-header h2,
+  .page-header h3,
+  .page-header h4,
+  .page-header h5 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Bootstrap's breadcrumb class is reused as a page title wrapper. */
+nav.breadcrumb {
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+/* Surface card used to wrap groups of content. */
+.surface-card {
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+}
+
+/* ---------------------------------------------------------------------
+   Filter bar (search inputs + action buttons above a table)
+   --------------------------------------------------------------------- */
+
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+
+  > .mat-mdc-form-field,
+  > mat-form-field {
+    flex: 1 1 220px;
+    min-width: 0;
+    width: auto;
+  }
+
+  /* Filter fields never show hints or errors, so drop the reserved space. */
+  .mat-mdc-form-field-subscript-wrapper { display: none; }
+
+  > .mat-mdc-button-base,
+  .filter-actions .mat-mdc-button-base {
+    height: 48px;
+    min-width: 96px;
+    border-radius: var(--app-radius-sm);
+  }
+
+  .filter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .filter-grow { flex: 2 1 320px; }
+}
+
+@media (max-width: 600px) {
+  .filter-bar {
+    padding: 12px;
+
+    > .mat-mdc-form-field,
+    > mat-form-field,
+    .filter-grow {
+      flex: 1 1 100%;
+    }
+
+    > .mat-mdc-button-base { flex: 1 1 auto; }
+
+    .filter-actions {
+      width: 100%;
+      margin-left: 0;
+
+      .mat-mdc-button-base { flex: 1 1 auto; }
+    }
+  }
+}
+
+/* Selected-agent chips shown under filter bars. */
+.selected-agents,
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  .mat-mdc-chip {
+    --mdc-chip-elevated-container-color: var(--app-primary-soft);
+    --mdc-chip-label-text-color: var(--app-primary-dark);
+    margin: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Tables
+   --------------------------------------------------------------------- */
+
+.table-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--app-surface);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius);
+  box-shadow: var(--app-shadow);
+  overflow: hidden;
+}
+
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mat-mdc-table {
+  width: 100%;
+  background: var(--app-surface);
+
+  .mat-mdc-header-cell {
+    background: #f8f9fc;
+    color: #4b5563;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--app-border);
+  }
+
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    font-size: 0.875rem;
+    color: var(--app-text);
+    border-bottom-color: #eef0f5;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    padding: 0 16px;
+  }
+
+  .mat-mdc-row:hover .mat-mdc-cell {
+    background: var(--app-primary-softer);
+  }
+
+  .mat-mdc-footer-cell {
+    font-weight: 600;
+    background: #f8f9fc;
+    border-top: 1px solid var(--app-border);
+  }
+}
+
+/* Tables with many columns keep each cell on one line and scroll sideways. */
+.table-nowrap {
+  .mat-mdc-cell,
+  .mat-mdc-footer-cell {
+    white-space: nowrap;
+  }
+}
+
+/* Row action icon buttons (edit / view / delete). */
+.action-icons {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+
+  .mat-mdc-icon-button {
+    --mdc-icon-button-state-layer-size: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+
+    .mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+/* Paginator: wrap nicely on small screens. */
+.mat-mdc-paginator {
+  border-top: 1px solid var(--app-border);
+  background: var(--app-surface);
+
+  .mat-mdc-paginator-container {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0 8px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .mat-mdc-paginator .mat-mdc-paginator-container {
+    justify-content: center;
+  }
+  .mat-mdc-paginator .mat-mdc-paginator-page-size {
+    margin-right: 0;
+  }
+}
+
+.empty-state {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--app-text-muted);
+  font-size: 0.95rem;
+}
+
+/* ---------------------------------------------------------------------
+   Forms
+   --------------------------------------------------------------------- */
+
+/* Responsive grid for form fields: 4 / 3 / 2 / 1 columns depending on width. */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  column-gap: 16px;
+  row-gap: 4px;
+  width: 100%;
+
+  > .span-2 { grid-column: span 2; }
+  > .span-full { grid-column: 1 / -1; }
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+
+    > .span-2 { grid-column: auto; }
+  }
+}
+
+.section-title {
+  margin: 8px 0 12px;
+  padding-bottom: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--app-text);
+  border-bottom: 1px solid var(--app-border);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+
+  .mat-mdc-button-base {
+    min-width: 120px;
+    height: 42px;
+    border-radius: var(--app-radius-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .form-actions .mat-mdc-button-base {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/* Material cards: softer, consistent outline. */
+.mat-mdc-card {
+  border-radius: var(--app-radius) !important;
+  box-shadow: var(--app-shadow) !important;
+  border: 1px solid var(--app-border);
+}
+
+/* Tabs: let the tab header scroll on small screens rather than squash labels. */
+.mat-mdc-tab-group {
+  .mat-mdc-tab-header {
+    border-bottom: 1px solid var(--app-border);
+  }
+  .mat-mdc-tab-body-content {
+    overflow-x: hidden;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Dialogs
+   --------------------------------------------------------------------- */
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: var(--app-radius) !important;
+}
+
+@media (max-width: 768px) {
+  .cdk-overlay-pane.custom-dialog-container {
+    width: 96vw !important;
+    max-width: 96vw !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Snackbars (classes passed via panelClass)
+   --------------------------------------------------------------------- */
+
+.success-snackbar .mdc-snackbar__surface,
+.snackbar-success .mdc-snackbar__surface {
+  background: #2e7d32 !important;
+}
+
+.error-snackbar .mdc-snackbar__surface,
+.snackbar-error .mdc-snackbar__surface {
+  background: #c62828 !important;
+}
+
+.success-snackbar, .snackbar-success,
+.error-snackbar, .snackbar-error {
+  .mdc-snackbar__label,
+  .mat-mdc-snack-bar-action { color: #fff !important; }
+  .mat-mdc-button.mat-mdc-snack-bar-action:not(:disabled) { color: #fff !important; }
+}
+
+.unsaved-changes-snackbar .mdc-snackbar__surface {
+  background: #323232;
+  color: #fff;
+}
+
+.unsaved-changes-snackbar {
+  background: #323232;
+  color: #fff;
+}
+
+/* Small status label used inside table cells. */
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.6;
+  background: var(--app-primary-soft);
+  color: var(--app-primary-dark);
+  white-space: nowrap;
+
+  &.inactive {
+    background: #fdecea;
+    color: #b42318;
+  }
+}

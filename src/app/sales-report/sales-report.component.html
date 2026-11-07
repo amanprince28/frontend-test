@@ -1,10 +1,12 @@
-<div class="loan-report-container">
-  <div class="filter-section">
-    <h3>Sales Report</h3>
+<div class="page-container loan-report-container">
+  <div class="page-header">
+    <h3 class="page-title">Sales Report</h3>
+  </div>
 
+  <div class="filter-section">
     <!-- Filter Form -->
-    <form [formGroup]="filterForm" class="filter-form">
-      <mat-form-field appearance="outline">
+    <form [formGroup]="filterForm" class="filter-bar">
+      <mat-form-field appearance="outline" class="filter-grow">
         <mat-label>Select Agents</mat-label>
         <mat-select
           formControlName="agents"
@@ -36,9 +38,7 @@
         <mat-datepicker #toPicker></mat-datepicker>
       </mat-form-field>
 
-      <div class="search-button">
-        <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
-      </div>
+      <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
     </form>
 
     <!-- Selected Agents -->
@@ -54,7 +54,8 @@
   </div>
 
   <!-- Report Table -->
-  <div class="table-container">
+  <div class="table-card">
+    <div class="table-scroll">
     <table class="loan-report-table">
       <thead>
         <tr>
@@ -120,6 +121,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
 
     <!-- Pagination -->
     <mat-paginator

@@ -35,3 +35,13 @@ $frontend-test-theme: mat.define-light-theme((
 // that you are using.
 @include mat.all-component-themes($frontend-test-theme);
 
+
+// Compact fields inside filter bars so they line up with the buttons next to them.
+.filter-bar {
+  @include mat.form-field-density(-2);
+}
+
+// Slightly denser data tables across the app.
+.mat-mdc-table {
+  @include mat.table-density(-1);
+}

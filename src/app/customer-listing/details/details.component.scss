@@ -1,488 +1,181 @@
+/* Shared grid, section titles, table cards and actions come from src/styles.scss. */
+
 .customer-form {
-  padding: 16px;
-  
   mat-card {
-    margin: 0 auto;
-    max-width: 1400px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    
-    mat-card-title {
-      padding: 16px;
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #3f51b5; // Primary color
-    }
-    
-    mat-card-content {
-      padding: 16px;
-    }
-  }
-  
-  /* Form Headings */
-  .heading-text {
-    margin: 20px 0 10px;
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: rgba(0, 0, 0, 0.87);
-    border-bottom: 1px solid #e0e0e0;
-    padding-bottom: 8px;
-  }
-  
-  /* Form Sections */
-  .form-seperate {
-    margin-bottom: 24px;
-  }
-  
-  /* Form Rows - Flexbox layout */
-  .form-row, .row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    margin-bottom: 16px;
-    
-    > div, mat-form-field {
-      flex: 1 1 calc(25% - 16px);
-      min-width: 200px;
-    }
-    
-    /* Specific width classes */
-    .quarter-width {
-      flex: 1 1 calc(25% - 16px);
-    }
-    
-    .half-width {
-      flex: 1 1 calc(50% - 16px);
-    }
-    
-    .one-fifth-width {
-      flex: 1 1 calc(20% - 16px);
-    }
-    
-    /* Full width fields */
-    .full-width {
-      flex: 1 1 100%;
-    }
-  }
-  
-  /* Tabs Styling */
-  mat-tab-group {
-    margin-top: 24px;
-    
-    .mat-tab-header {
-      margin-bottom: 16px;
-    }
-    
-    .mat-tab-label {
-      min-width: 120px;
-      padding: 0 16px;
-      opacity: 1;
-      
-      &:hover {
-        background: rgba(63, 81, 181, 0.04);
-      }
-    }
-    
-    .mat-tab-label-active {
-      font-weight: 500;
-      color: #3f51b5;
-    }
-    
-    .mat-tab-body-content {
-      padding: 16px 0;
-      overflow: visible;
-    }
-  }
-  
-  /* Form Fields */
-  mat-form-field {
     width: 100%;
-    
-    &.example-full-width {
-      width: 100%;
-    }
-    
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
-    
-    .mat-form-field-outline {
-      color: rgba(0, 0, 0, 0.12);
-    }
-    
-    .mat-form-field-outline-thick {
-      color: #3f51b5;
-    }
+    max-width: 1400px;
+    margin: 0 auto;
+    overflow: hidden;
   }
-  
-  /* Action Buttons */
-  .action-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    margin-top: 24px;
-    padding: 16px 0;
-    border-top: 1px solid #e0e0e0;
-    
-    button {
-      min-width: 120px;
-      padding: 8px 16px;
-      
-      &[color="primary"] {
-        background-color: #3f51b5;
-        color: white;
-      }
-    }
+
+  .form-card-title {
+    padding: 20px 20px 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--app-text);
   }
-  
-  /* Employment & Company Tab */
-  .customerEmployemntForm {
-    .mat-form-field {
-      margin-bottom: 8px;
-    }
-    
-    .income-date-picker {
-      width: 100%;
-    }
+
+  mat-card-content {
+    padding: 8px 20px 20px;
   }
-  
-  /* Family & Guarantor Tab */
-  .customerRelationshipForm {
-    .relationship-table {
-      margin-top: 16px;
-    }
-    
-    .insert-button {
-      margin-top: 8px;
-    }
+
+  .form-grid {
+    margin-bottom: 4px;
   }
-  
-  /* Banking Tab */
-  .bankingForm {
-    h6 {
-      margin: 16px 0 8px;
-      font-size: 1rem;
-      color: rgba(0, 0, 0, 0.87);
-    }
-    
-    .bank-records {
-      margin-top: 24px;
-    }
+
+  mat-tab-group {
+    margin-top: 16px;
   }
-  
-  /* Documents Tab */
-  .documents-tab {
+
+  .tab-form {
+    display: block;
+    padding-top: 16px;
+  }
+
+  /* Tables inside tabs get some breathing room. */
+  .table-card {
+    margin: 16px 0 8px;
+  }
+
+  .mat-column-actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: right;
+  }
+}
+
+/* "Same as permanent address" checkbox */
+.same-address {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 12px;
+  font-size: 0.9rem;
+  color: var(--app-text);
+  cursor: pointer;
+  user-select: none;
+
+  input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--app-primary);
+    cursor: pointer;
+  }
+}
+
+/* Insert button that sits inside a form grid next to the fields. */
+.grid-action {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+
+  button {
+    height: 56px;
+    min-width: 120px;
+    border-radius: var(--app-radius-sm);
+  }
+}
+
+.form-actions {
+  margin-bottom: 4px;
+}
+
+/* Remarks: textarea + insert button on one line, stacked on phones. */
+.remark-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  .remark-field {
+    flex: 1;
+    min-width: 0;
+  }
+
+  button {
+    height: 56px;
+    min-width: 120px;
+    border-radius: var(--app-radius-sm);
+  }
+}
+
+/* Documents tab */
+.documents-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+
+  .upload-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    
-    .upload-container {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      padding: 16px;
-      border: 1px dashed #ccc;
-      border-radius: 4px;
-      background-color: #f9f9f9;
-      
-      .upload-label {
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.6);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        
-        mat-icon {
-          color: #3f51b5;
-        }
-      }
-      
-      #fileUpload {
-        display: none;
-      }
-      
-      .file-name-field {
-        width: 100%;
-      }
-      
-      .file-edit-info {
-        padding: 8px;
-        background-color: #e3f2fd;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        
-        mat-icon {
-          color: #1976d2;
-        }
-      }
-      
-      .button-container {
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-        
-        button {
-          min-width: 120px;
-        }
-      }
-    }
-    
-    .table-container {
-      overflow-x: auto;
-      margin-top: 16px;
-      
-      table {
-        width: 100%;
-        
-        .mat-column-actions {
-          width: 120px;
-        }
-      }
-    }
-  }
-  
-  /* Remarks Tab */
-  .remarksForm {
-    .remarks-textarea {
-      min-height: 100px;
-    }
-    table{
-      width: 100%;
-    }
-    
-    // .remarks-table {
-    //   margin-top: 16px;
-    // }
-  }
-  
-  /* Tables Styling */
-  .mat-elevation-z8 {
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 16px 0;
-    
-    table {
-      width: 100%;
-      
-      th.mat-header-cell {
-        font-weight: 500;
-        color: rgba(0, 0, 0, 0.87);
-        background-color: #f5f5f5;
-      }
-      
-      td.mat-cell, th.mat-header-cell {
-        padding: 12px 16px;
-      }
-      
-      .mat-column-actions {
-        text-align: center;
-        width: 120px;
-        
-        button {
-          min-width: auto;
-          padding: 0 4px;
-          
-          mat-icon {
-            font-size: 20px;
-            width: 20px;
-            height: 20px;
-          }
-        }
-      }
-    }
-    
-    .mat-paginator {
-      background-color: #f5f5f5;
-    }
-  }
-  
-
-  @media (max-width: 768px) {
-    padding: 4px 2px;
-    zoom: 0.95; // Slightly zoom out the entire form
-
-    mat-card {
-      mat-card-title {
-        padding: 8px 6px;
-        font-size: 1.1rem;
-      }
-      
-      mat-card-content {
-        padding: 6px;
-      }
-    }
-
-    .heading-text {
-      margin: 8px 0 6px;
-      font-size: 0.9rem;
-      padding-bottom: 4px;
-    }
-
-    .form-row, .row {
-      gap: 6px;
-      margin-bottom: 6px;
-    }
-
-    mat-tab-group {
-      margin-top: 12px;
-      
-      .mat-tab-label {
-        min-width: 70px;
-        padding: 0 6px !important;
-        font-size: 0.7rem;
-        height: 36px;
-      }
-    }
-
-    mat-form-field {
-      font-size: 13px;
-      
-      .mat-form-field-infix {
-        padding: 0.4em 0;
-        font-size: 13px;
-      }
-      
-      .mat-input-element {
-        transform: scale(0.95);
-        transform-origin: left;
-      }
-      
-      .mat-form-field-label {
-        transform: scale(0.95) translateY(-1.2em);
-      }
-      
-      &.mat-form-field-should-float .mat-form-field-label {
-        transform: scale(0.9) translateY(-1.5em) perspective(100px);
-      }
-    }
-
-    .action-buttons {
-      margin-top: 12px;
-      gap: 6px;
-      
-      button {
-        min-width: 90px;
-        padding: 4px 8px;
-        font-size: 0.8rem;
-        flex: 1 1 calc(50% - 6px);
-      }
-    }
-
-    /* Tables */
-    .mat-elevation-z8 {
-      table {
-        td.mat-cell, th.mat-header-cell {
-          padding: 6px 8px !important;
-          font-size: 0.7rem;
-        }
-        
-        .mat-column-actions {
-          width: 70px;
-          
-          button mat-icon {
-            font-size: 16px !important;
-          }
-        }
-      }
-    }
-
-    /* Documents Tab */
-    .documents-tab {
-      gap: 8px;
-      
-      .upload-container {
-        padding: 8px;
-        
-        .button-container button {
-          min-width: 90px;
-          font-size: 0.8rem;
-        }
-      }
-    }
-
-    /* Form Fields - More compact */
-    .mat-form-field-appearance-outline {
-      .mat-form-field-outline-gap {
-        width: 94%; // Slightly narrower gap for outline fields
-      }
-      
-      .mat-form-field-flex {
-        padding: 0 0.5em;
-      }
-      
-      .mat-form-field-infix {
-        padding: 0.5em 0;
-      }
-    }
-
-    /* Special scaling for select and other form controls */
-    .mat-select {
-      font-size: 13px;
-      
-      .mat-select-value {
-        transform: scale(0.95);
-        transform-origin: left;
-      }
-    }
-
-    /* Checkboxes and radios */
-    .mat-checkbox, .mat-radio-button {
-      transform: scale(0.9);
-    }
-
-    /* Date picker inputs */
-    .mat-datepicker-toggle {
-      width: 24px;
-      
-      .mat-icon-button {
-        width: 24px;
-        height: 24px;
-        line-height: 24px;
-        
-        .mat-datepicker-toggle-default-icon {
-          width: 18px;
-        }
-      }
-    }
+    gap: 12px;
+    padding: 20px;
+    border: 2px dashed var(--app-border-strong);
+    border-radius: var(--app-radius);
+    background-color: #fafbfe;
   }
 
-  
-  /* Tablet adjustments (unchanged from original) */
-  @media (min-width: 769px) and (max-width: 1024px) {
-    .form-row, .row {
-      > div, mat-form-field {
-        flex: 1 1 calc(50% - 16px);
-      }
-    }
-    
-    mat-tab-group {
-      .mat-tab-label {
-        min-width: 100px;
-        padding: 0 12px;
-      }
-    }
-  }
-  
-  /* Larger screens (unchanged from original) */
-  @media (min-width: 1025px) {
-    /* All original desktop styles are preserved */
+  .upload-label {
+    font-weight: 600;
+    color: var(--app-primary-dark);
   }
 
-  table {
+  #fileUpload {
+    font-size: 0.875rem;
+    max-width: 100%;
+  }
 
-    th {
-      background: #2c3e50; // Dark blue for header
-      color: white; // Text color
+  .file-edit-info {
+    padding: 8px 12px;
+    background-color: var(--app-primary-soft);
+    border-radius: var(--app-radius-sm);
+    font-size: 0.875rem;
+
+    p { margin: 0; }
+  }
+
+  .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: flex-end;
+
+    button {
+      min-width: 120px;
+      height: 42px;
+      border-radius: var(--app-radius-sm);
     }
-    td {   
-      color: #333; // Text color
-    }
-    tr:hover td {
-      background: #f1f1f1; // Hover effect for rows
-    }
+  }
+}
+
+.action-buttons {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--app-border);
+}
+
+@media (max-width: 600px) {
+  .customer-form {
+    .form-card-title { padding: 16px 12px 0; font-size: 1.1rem; }
+    mat-card-content { padding: 8px 12px 12px; }
+  }
+
+  .grid-action button,
+  .remark-row button {
+    width: 100%;
+  }
+
+  .remark-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .documents-tab .upload-container {
+    padding: 14px;
+  }
+
+  .documents-tab .button-container button {
+    flex: 1 1 0;
   }
 }

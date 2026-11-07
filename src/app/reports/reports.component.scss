@@ -1,63 +1,29 @@
-.reporting-container {
-  padding: 1rem;
+/* Page layout, filter bar and table card come from src/styles.scss. */
 
-  h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-  }
+.user-management-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
 
-  .report-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: flex-start; // keep fields aligned left
-    align-items: flex-end;
+.report-grid {
+  min-width: 900px;
 
-    mat-form-field {
-      flex: 1 1 200px;
-      min-width: 200px;
-      margin-bottom: 0;
-    }
-
-    // Ensure action buttons always on new line
-    .action-buttons {
-      width: 100%; // full row
-      display: flex;
-      justify-content: flex-end; // align right
-      gap: 0.5rem;
-      margin-top: 1rem; // spacing from inputs
-    }
-  }
-
-  .report-table {
-    margin-top: 2rem;
-    overflow-x: auto;
-
-    table {
-      width: 100%;
-      min-width: 800px;
-    }
+  .mat-mdc-cell {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    vertical-align: top;
+    white-space: nowrap;
   }
 }
 
 .no-data-message {
-  padding: 20px;
+  margin: 16px;
+  padding: 14px 16px;
   text-align: center;
-  font-size: 1.2em;
-  color: #f44336;
-  background-color: #ffebee;
-  border-radius: 4px;
-  margin: 20px 0;
-}
-
-.user-management-container {
-  .breadcrumb {
-    margin-bottom: 1.5rem;
-  }
-
-  mat-form-field {
-    .mat-form-field-wrapper {
-      padding-bottom: 0;
-    }
-  }
+  font-size: 0.95rem;
+  color: #b42318;
+  background: #fdecea;
+  border-radius: var(--app-radius-sm);
 }

@@ -1,8 +1,10 @@
-<div class="agent-report-container">
-  <h2 class="title">Agent Sales Report</h2>
+<div class="page-container">
+  <div class="page-header">
+    <h2 class="page-title">Agent Sales Report</h2>
+  </div>
 
-  <form [formGroup]="filterForm" class="filter-form">
-    <mat-form-field appearance="outline">
+  <form [formGroup]="filterForm" class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-grow">
       <mat-label>Select Agents</mat-label>
       <mat-select
         formControlName="agents"
@@ -36,9 +38,7 @@
       <mat-datepicker #toPicker></mat-datepicker>
     </mat-form-field>
 
-    <div class="search-button">
-      <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
-    </div>
+    <button mat-flat-button color="primary" (click)="onSearch()">Search</button>
   </form>
   
   <div *ngIf="selectedAgentIds().length > 0" class="selected-agents">
@@ -47,8 +47,9 @@
     </mat-chip>
   </div>
 
-  <div class="table-wrapper mat-elevation-z8" *ngIf="paginatedDataSource.length">
-    <table mat-table [dataSource]="paginatedDataSource" class="agent-table">
+  <div class="table-card" *ngIf="paginatedDataSource.length">
+    <div class="table-scroll">
+    <table mat-table [dataSource]="paginatedDataSource" class="agent-table table-nowrap">
 
       <ng-container matColumnDef="agentName">
         <th mat-header-cell *matHeaderCellDef>Agent Name</th>
@@ -115,6 +116,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    </div>
     
     <mat-paginator 
       [length]="dataSource.length"

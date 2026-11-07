@@ -1,4 +1,4 @@
-<div class="customer-form-container">
+<div class="page-container customer-form-container">
   <mat-card class="form-card">
     <mat-card-header>
       <mat-card-title>User - Add</mat-card-title>
@@ -64,18 +64,18 @@
           </ng-container>
 
           <div class="form-field toggle-field">
-            <mat-slide-toggle formControlName="status" class="status-toggle">
+            <mat-slide-toggle formControlName="status" class="status-toggle" color="primary">
               User Status
             </mat-slide-toggle>
           </div>
         </div>
 
         <div class="form-actions">
-          <button mat-raised-button color="primary" (click)="onCustomerSubmit()" [disabled]="userRole === 'AGENT'">
-            Save
-          </button>
-          <button mat-raised-button (click)="onCustomerCancel()">
+          <button mat-stroked-button (click)="onCustomerCancel()">
             Cancel
+          </button>
+          <button mat-flat-button color="primary" (click)="onCustomerSubmit()" [disabled]="userRole === 'AGENT'">
+            Save
           </button>
         </div>
       </form>

@@ -1,62 +1,58 @@
-<div class="loan-management-container">
-  <div class="header-section">
-    <nav class="breadcrumb">
-      <h4>Loan Management</h4>
-    </nav>
-    
-    <div class="controls-container">
-      <div class="search-filter-group">
-        <mat-form-field appearance="outline" class="search-input">
-          <input
-            matInput
-            [(ngModel)]="searchQuery"
-            placeholder="Search with Loan Id/Agent Name/Customer IC/Customer Name"
-            name="searchQuery"
-            (keydown.enter)="filterTable()"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="date-input">
-          <mat-label>Loan Date From</mat-label>
-          <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" name="fromDate" [max]="toDate" (dateChange)="onLoanDateChange()" />
-          <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-          <mat-datepicker #fromPicker></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="date-input">
-          <mat-label>Loan Date To</mat-label>
-          <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" name="toDate" [min]="fromDate" (dateChange)="onLoanDateChange()" />
-          <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
-          <mat-datepicker #toPicker></mat-datepicker>
-        </mat-form-field>
-        <button mat-stroked-button color="primary" (click)="filterTable()" class="filter-btn">
-          Filter
-        </button>
-        <button
-          mat-stroked-button
-          (click)="clearFilters()"
-          class="filter-btn"
-          *ngIf="searchQuery || fromDate || toDate"
-        >
-          Clear
-        </button>
-      </div>
-      
-      <div class="add-btn-container">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="onAddEdit()"
-          [disabled]="userRole === 'AGENT' || userRole ==='LEAD'"
-          class="add-btn"
-        >
-          Add Loan
-        </button>
-      </div>
+<div class="page-container">
+  <div class="page-header">
+    <h4 class="page-title">Loan Management</h4>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="onAddEdit()"
+      [disabled]="userRole === 'AGENT' || userRole ==='LEAD'"
+      class="add-btn"
+    >
+      <mat-icon>add</mat-icon>
+      Add Loan
+    </button>
+  </div>
+
+  <div class="filter-bar">
+    <mat-form-field appearance="outline" class="filter-grow">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [(ngModel)]="searchQuery"
+        placeholder="Search with Loan Id/Agent Name/Customer IC/Customer Name"
+        name="searchQuery"
+        (keydown.enter)="filterTable()"
+      />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="date-input">
+      <mat-label>Loan Date From</mat-label>
+      <input matInput [matDatepicker]="fromPicker" [(ngModel)]="fromDate" name="fromDate" [max]="toDate" (dateChange)="onLoanDateChange()" />
+      <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+      <mat-datepicker #fromPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="date-input">
+      <mat-label>Loan Date To</mat-label>
+      <input matInput [matDatepicker]="toPicker" [(ngModel)]="toDate" name="toDate" [min]="fromDate" (dateChange)="onLoanDateChange()" />
+      <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+      <mat-datepicker #toPicker></mat-datepicker>
+    </mat-form-field>
+    <div class="filter-actions">
+      <button mat-stroked-button color="primary" (click)="filterTable()">
+        Filter
+      </button>
+      <button
+        mat-stroked-button
+        (click)="clearFilters()"
+        *ngIf="searchQuery || fromDate || toDate"
+      >
+        Clear
+      </button>
     </div>
   </div>
 
-  <div class="table-wrapper mat-elevation-z8">
-    <div class="table-responsive">
-      <table mat-table [dataSource]="dataSource" matSort class="loan-table">
+  <div class="table-card">
+    <div class="table-scroll">
+      <table mat-table [dataSource]="dataSource" matSort class="table-nowrap">
         <!-- Loan ID Column -->
         <ng-container matColumnDef="loanId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>Loan ID</th>
@@ -116,7 +112,9 @@
         <!-- Status Column -->
         <ng-container matColumnDef="status">
           <th mat-header-cell *matHeaderCellDef>Status</th>
-          <td mat-cell *matCellDef="let element">{{ element.status }}</td>
+          <td mat-cell *matCellDef="let element">
+            <span class="status-pill">{{ element.status }}</span>
+          </td>
         </ng-container>
 
         <!-- Payment Per Term Column -->
@@ -139,7 +137,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>Actions</th>
           <td mat-cell *matCellDef="let element" class="actions-cell">
-            <div class="action-buttons">
+            <div class="action-icons">
               <button
                 mat-icon-button
                 color="primary"
